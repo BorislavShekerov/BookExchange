@@ -1,0 +1,39 @@
+.contacts-ul {
+    overflow: auto;
+}
+
+.contacts-ul .contacts-li {
+    list-style-type: none;
+}
+
+.contacts-ul .contacts-li .contacts-a .contacts-i {
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 25px;
+    text-align: center;
+    margin-right: 10px;
+    padding-top: 5%;
+    transition: all 0.2s ease-in-out;
+}
+
+.contacts-ul .contacts-li .contacts-a .contacts-i:hover {
+    opacity: .7;
+}
+
+.fa-facebook {
+    background: #3b5998
+}
+
+.fa-linkedin {
+    background: #007bb6
+}
+
+.fa-twitter {
+    background: #00aced
+}
+
+.google-plus {
+    background: #dd4b39
+}

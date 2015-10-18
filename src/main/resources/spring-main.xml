@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <import resource="classpath:/spring-hibernate.xml"/>
+
+    <!--  <bean id="mainController" class="com.blackrock.boris.controllers.MainController">
+            <property name="technologyService" ref="technologyService" />
+      </bean> -->
+	
+	 <bean id="technologyController" class="com.blackrock.boris.controllers.TechnologyController">
+        <property name="technologyService" ref="technologyService" />
+    </bean>
+    
+    <bean id="technologyService" class="com.blackrock.boris.services.TechnologyService">
+        <property name="technologyDao" ref="technologyDao" />
+    </bean>
+
+    <bean id="technologyDao" class="com.blackrock.boris.dao.TechnologyDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="articleController" class="com.blackrock.boris.controllers.ArticleController">
+        <property name="articleService" ref="articleService" />
+    </bean>
+
+    <bean id="articleService" class="com.blackrock.boris.services.ArticleService">
+        <property name="articlesDao" ref="articlesDao" />
+        <property name="notificationDao" ref="notificationDao" />
+    </bean>
+
+    <bean id="articlesDao" class="com.blackrock.boris.dao.ArticlesDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="notificationDao" class="com.blackrock.boris.dao.NotificationDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="eventController" class="com.blackrock.boris.controllers.EventController">
+        <property name="eventService" ref="eventService" />
+    </bean>
+
+    <bean id="eventService" class="com.blackrock.boris.services.EventService">
+        <property name="eventDao" ref="eventDao" />
+    </bean>
+
+    <bean id="eventDao" class="com.blackrock.boris.dao.EventDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="teamController" class="com.blackrock.boris.controllers.TeamController">
+        <property name="teamService" ref="teamService" />
+    </bean>
+
+    <bean id="teamService" class="com.blackrock.boris.services.TeamService">
+        <property name="teamDao" ref="teamDao" />
+    </bean>
+
+    <bean id="teamDao" class="com.blackrock.boris.dao.TeamDao">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+</beans>
