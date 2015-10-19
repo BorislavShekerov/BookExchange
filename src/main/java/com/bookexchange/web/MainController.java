@@ -1,4 +1,4 @@
-package com.mkyong.web.controller;
+package com.bookexchange.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
