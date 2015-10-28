@@ -61,7 +61,7 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
         }
     }
 
-    $http.get('/getAllBooks').
+    $http.get('getAllBooks').
     success(function (data, status, headers, config) {
         allBooks = data;
         splitDataIntoPagesForPagination(data);
@@ -116,7 +116,7 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
     }
 
 
-    $http.get('/getAllCategories').
+    $http.get('getAllCategories').
     success(function (data, status, headers, config) {
         constructCategoriesList(data);
     }).
