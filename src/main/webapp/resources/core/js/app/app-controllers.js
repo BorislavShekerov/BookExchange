@@ -11,6 +11,7 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
     $scope.isCategoriesFilterExpanded = false;
     $scope.isSearchFilterExpanded = true;
     $scope.isCategoriesWantedFilterExpanded = false;
+    var l = 1;
 
     $scope.changePageNumber = function (pageNum) {
         $scope.booksDisplayed = $scope.bookPages[pageNum - 1];
