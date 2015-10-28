@@ -17,6 +17,13 @@ h4 {
     padding-right: 0px;
 }
 
+#menu-item1,
+#menu-item2,
+#menu-item3 {
+    margin-top: 0px;
+    padding-bottom: 0px !important;
+}
+
 .profile-picture {
     height: 30px;
     width: 30px;
@@ -27,6 +34,10 @@ h4 {
     max-height: 100%;
 }
 
+.full-width {
+    max-width: 100%;
+}
+
 
 /* Book Category badge */
 
@@ -34,8 +45,16 @@ h4 {
     font-size: 14px;
 }
 
-.space-out-top {
+.space-out-top-sm {
     margin-top: 0.3em;
+}
+
+.space-out-right-sm {
+    margin-right: 0.3em;
+}
+
+.space-out-top-md {
+    margin-top: 0.6em;
 }
 
 .space-out-left {
@@ -66,6 +85,10 @@ h4 {
     margin-bottom: 2px;
 }
 
+#categories-select {
+    margin-top: 10px;
+}
+
 
 /* Padding below the footer and lighter body text */
 
@@ -75,70 +98,37 @@ body {
 }
 
 
-/* CUSTOMIZE THE NAVBAR
--------------------------------------------------- */
-
-
-/* Special class on .container surrounding .navbar, used for positioning it into place. */
-
-.navbar-wrapper {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 20;
-}
-
-
-/* Flip around the padding for proper display in narrow viewports */
-
-.navbar-wrapper > .container {
-    padding-right: 0;
-    padding-left: 0;
-}
-
-.navbar-wrapper .navbar {
-    padding-right: 15px;
-    padding-left: 15px;
-}
-
-.navbar-wrapper .navbar .container {
-    width: auto;
-}
-
-
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
 
 
-/* Carousel base class */
+/* Paralax Styles */
 
-.carousel {
-    height: 500px;
-    margin-bottom: 60px;
+#home {
+    background: url(/resources/core/img/reading-1.jpg) no-repeat center center fixed;
+    display: table;
+    height: 100%;
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
-
-/* Since positioning the image, we need to help out the caption */
-
-.carousel-caption {
-    z-index: 10;
+.text-vcenter {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
 }
 
-
-/* Declare heights because of positioning of img element */
-
-.carousel .item {
-    height: 500px;
-    background-color: #777;
+blockquote > p {
+    color: floralwhite
 }
 
-.carousel-inner > .item > img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    min-width: 100%;
-    height: 500px;
+blockquote > p > small {
+    color: floralwhite
 }
 
 
@@ -204,44 +194,6 @@ a:hover {
 
 a:active {
     text-decoration: none;
-}
-
-
-/* RESPONSIVE CSS
--------------------------------------------------- */
-
-@media (min-width: 768px) {
-    /* Navbar positioning foo */
-    .navbar-wrapper {
-        margin-top: 20px;
-    }
-    .navbar-wrapper .container {
-        padding-right: 15px;
-        padding-left: 15px;
-    }
-    .navbar-wrapper .navbar {
-        padding-right: 0;
-        padding-left: 0;
-    }
-    /* The navbar becomes detached from the top, so we round the corners */
-    .navbar-wrapper .navbar {
-        border-radius: 4px;
-    }
-    /* Bump up size of carousel content */
-    .carousel-caption p {
-        margin-bottom: 20px;
-        font-size: 21px;
-        line-height: 1.4;
-    }
-    .featurette-heading {
-        font-size: 50px;
-    }
-}
-
-@media (min-width: 992px) {
-    .featurette-heading {
-        margin-top: 120px;
-    }
 }
 
 

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class UserDao {
-    @Autowired
+       @Autowired
     private SessionFactory sessionFactory;
 
-        public void addUser(User user) {
-            sessionFactory.getCurrentSession().save(user);
-        }
+    public void addUser(User user) {
+        sessionFactory.getCurrentSession().save(user);
+    }
 
 }

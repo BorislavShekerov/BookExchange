@@ -1,15 +1,15 @@
-<div class="col-sm-4 ">
+<div class="col-xs-12 col-sm-12 col-md-4 ">
     <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
-        <div class="panel-thumbnail"><img src="{{bookOnExchange.img}}" class="img-responsive"></div>
+        <img src="{{bookOnExchange.imgUrl}}" class="img-responsive full-width">
         <div class="panel-body">
             <div class="media">
                 <div class="media-left ">
                     <a href="#">
-                        <img class="media-object profile-picture" src="{{bookOnExchange.publishedBy.avatar}}" alt="...">
+                        <img class="media-object profile-picture" src="{{bookOnExchange.postedBy.avatarUrl}}" alt="...">
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading">{{bookOnExchange.publishedBy.firstname+' '+bookOnExchange.publishedBy.surname}}</h4>
+                    <h4 class="media-heading">{{bookOnExchange.postedBy.firstname+' '+bookOnExchange.postedBy.surname}}</h4>
                     <h4 class="media-heading">Exchanges for:</h4>
                 </div>
             </div>

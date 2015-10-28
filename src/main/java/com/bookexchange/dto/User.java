@@ -1,5 +1,6 @@
 package com.bookexchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class User {
     @Column(name = "password")
     private String password;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "postedBy")
+    @JsonIgnore
     List<Book> booksPostedOnExchange;
     @Column(name = "avatarUrl")
     private String avatarUrl;

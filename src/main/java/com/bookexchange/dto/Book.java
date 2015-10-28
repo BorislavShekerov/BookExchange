@@ -13,26 +13,25 @@ import java.util.List;
 @Table(name = "Books")
 public class Book {
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
     @Column(name = "TITLE")
     private String title;
     @Column(name = "AUTHOR")
     private String author;
-    @Column(name = "CATEGORY")
-    private String category;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CATEGORY_ID", nullable = false)
+    private BookCategory category;
     @Column(name = "IMG_URL")
     private String imgUrl;
     @Column(name = "DATE_POSTED")
     private LocalDateTime datePosted;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User postedBy;
-    @ElementCollection
-    @CollectionTable(name="Categories", joinColumns=@JoinColumn(name="user_id"))
-    @Column(name="CATEGORIES_INTERESTED_IN")
-    List<String> categoriesInterestedIn;
+    @Column(name = "CATEGORIES_INTERESTED_IN")
+    String categoriesInterestedIn;
 
     public String getTitle() {
         return title;
@@ -50,20 +49,20 @@ public class Book {
         this.author = author;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public String getImgUrl() {
         return imgUrl;
     }
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public BookCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(BookCategory category) {
+        this.category = category;
     }
 
     public LocalDateTime getDatePosted() {
@@ -90,11 +89,11 @@ public class Book {
         this.postedBy = postedBy;
     }
 
-    public List<String> getCategoriesInterestedIn() {
+    public String getCategoriesInterestedIn() {
         return categoriesInterestedIn;
     }
 
-    public void setCategoriesInterestedIn(List<String> categoriesInterestedIn) {
+    public void setCategoriesInterestedIn(String categoriesInterestedIn) {
         this.categoriesInterestedIn = categoriesInterestedIn;
     }
 
