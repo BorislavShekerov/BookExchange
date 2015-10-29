@@ -45,7 +45,6 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
 
     $scope.navCategoryFilter = function (category) {
         $scope.addCategoryFilter(category);
-        $scope.changeFilterPanelIcon('category', true);
         $('option[value=' + category + ']', $('#categories-select')).prop('selected', true);
 
         $('#categories-select').multiselect('refresh');
