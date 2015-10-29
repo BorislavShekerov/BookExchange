@@ -1,6 +1,8 @@
 package com.bookexchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "Book_Category")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class BookCategory {
     @Id
     @GeneratedValue(generator="increment")
@@ -17,7 +20,6 @@ public class BookCategory {
     @Column(name = "CATEGORY_NAME")
     private String categoryName;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
-    @JsonIgnore
     private List<Book> booksForCategory;
 
     public long getId() {

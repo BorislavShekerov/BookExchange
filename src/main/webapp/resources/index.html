@@ -74,18 +74,16 @@
                                         </div>
                                         <!-- End Carousel Inner -->
                                     </div>
-                                    <!-- /.carousel -->
-                                    <li class="divider"></li>
                                 </ul>
                             </li>
                             <li class="col-sm-3">
                                 <ul>
                                     <li class="dropdown-header">Books Offered</li>
-                                    <li><a href="#">Unique Features</a></li>
-                                    <li><a href="#">Image Responsive</a></li>
-                                    <li><a href="#">Auto Carousel</a></li>
-                                    <li><a href="#">Newsletter Form</a></li>
-                                    <li><a href="#">Four columns</a></li>
+                                    <li ng-repeat="category in categoriesToDisplayInNav" ng-click="navCategoryFilter(category.categoryName)"><a href="#">{{category.categoryName}} <span class="badge pull-right">{{category.booksForCategory.length}}</span></a></li>
+                                    <li class="btn-group" role="group" aria-label="...">
+                                        <button type="button" class="btn btn-default" disabled="disabled" id="showPrevCategoriesButton" ng-click="showPrevCategories()"><span class="glyphicon glyphicon-menu-left"></span></button>
+                                        <button type="button" class="btn btn-default" ng-click="showNextCategories()" id="showNextCategoriesButton"><span class="glyphicon glyphicon-menu-right"></span></button>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="col-sm-3">
@@ -184,7 +182,7 @@
                                     <span class="glyphicon glyphicon-search space-out-right-sm"></span>Search<span class="pull-right" ng-class="{'glyphicon glyphicon-menu-down': isSearchFilterExpanded,'glyphicon glyphicon-menu-right': !isSearchFilterExpanded}"></span></a>
                             </h3>
                         </div>
-                        <div role="tabpanel" class="panel-collapse in" id="search" aria-labelledby="headingDanny">
+                        <div role="tabpanel" class="panel-collapse" ng-class="{'in':isSearchFilterExpanded,'collapse':!isSearchFilterExpanded}" id="search" aria-labelledby="headingDanny">
                             <div class="panel-body">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="x" placeholder="Search here...">
@@ -205,7 +203,7 @@
                                    Categories Filter<span class="pull-right" ng-class="{'glyphicon glyphicon-menu-down': isCategoriesFilterExpanded,'glyphicon glyphicon-menu-right': !isCategoriesFilterExpanded}"></span></a>
                             </h3>
                         </div>
-                        <div role="tabpanel" class="panel-collapse collapse" id="categories" aria-labelledby="headingAgumbe">
+                        <div role="tabpanel" class="panel-collapse " ng-class="{'in':isCategoriesFilterExpanded,'collapse':!isCategoriesFilterExpanded}" id="categories" aria-labelledby="headingAgumbe">
                             <div class="panel-body">
                                 <select id="categories-select" multiple="multiple" class="space-out-top-sm">
                                 </select>
@@ -225,7 +223,7 @@
                                    Categories Wanted<span class="pull-right" ng-class="{'glyphicon glyphicon-menu-down': isCategoriesWantedFilterExpanded,'glyphicon glyphicon-menu-right': !isCategoriesWantedFilterExpanded}"></span></a>
                             </h3>
                         </div>
-                        <div role="tabpanel" class="panel-collapse collapse" id="alberto" aria-labelledby="headingAlberto">
+                        <div role="tabpanel" class="panel-collapse" ng-class="{'in':isCategoriesWantedFilterExpanded,'collapse':!isCategoriesWantedFilterExpanded}" id="alberto" aria-labelledby="headingAlberto">
                             <div class="panel-body">
                                 <select id="categories-wanted-select" multiple="multiple" class="space-out-top-sm">
                                 </select>
@@ -237,6 +235,7 @@
             </div>
 
             <div class="col-sm-12 col-sm-6 col-md-8 sidebar-offcanvas " id="sidebar ">
+                <div class="pagination-centered text-center" ng-show="shouldShowLoadingIndicator()"><img src="/resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
                 <div ng-repeat="bookOnExchange in booksDisplayed " class="col-xs-12 col-sm-12 col-md-4 ">
                     <div class="panel panel-default col-xs-12" ng-show="shouldDipslayCategory(bookOnExchange.category.categoryName)" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
                         <img src="{{bookOnExchange.imgUrl}}" class="img-responsive full-width">
@@ -325,6 +324,12 @@
 
         $(window).scroll(function (e) {
             parallax();
+        });
+
+        $(document).ready(function () {
+            $('#showNextCategoriesButton,#showPrevCategoriesButton').click(function (e) {
+                e.stopPropagation();
+            });
         });
     </script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

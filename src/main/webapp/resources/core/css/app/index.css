@@ -17,6 +17,11 @@ h4 {
     padding-right: 0px;
 }
 
+#loading-indicator {
+    min-width: 50px;
+    min-height: 50px;
+}
+
 #menu-item1,
 #menu-item2,
 #menu-item3 {

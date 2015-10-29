@@ -1,17 +1,24 @@
 bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', function ($scope, dummyData, $http) {
     $scope.searchIconClicked = false;
     $scope.searchFor = '';
+
     $scope.bookPages = [];
-    var allBooks = [];
     $scope.booksDisplayed = [];
     $scope.bookToSearchFor = '';
+    var allBooks = [];
+    var categoryIdToNameMap = {};
+
     $scope.selectedCategories = [];
     $scope.categoriesToDisplay = [];
     $scope.allCategories = [];
+    $scope.categoriesToDisplayInNav = [];
+    var categoriesSetShownInNav = 1;
+    var allCategoriesStrings = [];
+
+    $scope.showLoadingIndicator = true;
     $scope.isCategoriesFilterExpanded = false;
     $scope.isSearchFilterExpanded = true;
     $scope.isCategoriesWantedFilterExpanded = false;
-    var l = 1;
 
     $scope.changePageNumber = function (pageNum) {
         $scope.booksDisplayed = $scope.bookPages[pageNum - 1];
@@ -21,7 +28,7 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
     $scope.removeCategory = function (category) {
         $scope.selectedCategories.splice($.inArray(category, $scope.selectedCategories), 1);
         if ($scope.categoriesToDisplay.length == 1) {
-            $scope.categoriesToDisplay = $scope.allCategories;
+            $scope.categoriesToDisplay = allCategoriesStrings;
         } else {
             $scope.categoriesToDisplay.splice($.inArray(category, $scope.categoriesToDisplay), 1);
         }
@@ -31,6 +38,18 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
         $('#categories-select').multiselect('refresh');
     };
 
+    $scope.filterByCategoryFilter = function (category) {
+        addCategoryFilter(category);
+        $scope.$apply();
+    }
+
+    $scope.navCategoryFilter = function (category) {
+        $scope.addCategoryFilter(category);
+        $scope.changeFilterPanelIcon('category', true);
+        $('option[value=' + category + ']', $('#categories-select')).prop('selected', true);
+
+        $('#categories-select').multiselect('refresh');
+    }
     $scope.addCategoryFilter = function (category) {
         if (jQuery.inArray(category, $scope.selectedCategories) > -1) { //Removing catgory from filter
             $scope.selectedCategories.splice($.inArray(category, $scope.selectedCategories), 1);
@@ -58,7 +77,6 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
                 reconfigurePagination();
             }
 
-            $scope.$apply();
         }
     }
 
@@ -66,6 +84,7 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
     success(function (data, status, headers, config) {
         allBooks = data;
         splitDataIntoPagesForPagination(data);
+        $scope.showLoadingIndicator = false;
     }).
     error(function (data, status, headers, config) {
         alert("Error");
@@ -93,6 +112,13 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
                 pageData = [];
             } else {
                 bookData[i].categoriesInterestedInList = bookData[i].categoriesInterestedIn.split(",");
+                if (typeof bookData[i].category.categoryName === 'undefined') {
+                    var categoryId = bookData[i].category.toString();
+                    bookData[i].category = {};
+                    bookData[i].category.categoryName = categoryIdToNameMap[categoryId];
+                } else {
+                    categoryIdToNameMap[bookData[i].category.id] = bookData[i].category.categoryName;
+                }
                 pageData.push(bookData[i]);
             }
 
@@ -138,13 +164,13 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
                 return labels.join(' - ');
             },
             onChange: function (option, checked, select) {
-                $scope.addCategoryFilter($(option).val());
+                $scope.filterByCategoryFilter($(option).val());
             }
         });
 
         var options = [];
         $.each(data, function (index, value) {
-            $scope.allCategories.push(value.categoryName);
+            $scope.allCategories.push(value);
 
             var option = {};
             option.label = value.categoryName;
@@ -155,7 +181,12 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
             options.push(option);
         });
 
-        $scope.categoriesToDisplay = $scope.allCategories;
+        $.each($scope.allCategories, function (index, value) {
+            $scope.categoriesToDisplay.push(value.categoryName);
+            allCategoriesStrings.push(value.categoryName);
+        });
+
+        $scope.categoriesToDisplayInNav = $scope.allCategories.slice(0, 10);
         $('#categories-select,#categories-wanted-select').multiselect('dataprovider', options);
     }
 
@@ -203,5 +234,40 @@ bookApp.controller('welcomeController', ['$scope', 'dummyData', '$http', functio
             }
             break;
         }
+    }
+
+    $scope.shouldShowLoadingIndicator = function () {
+        return $scope.showLoadingIndicator;
+    }
+
+    $scope.showNextCategories = function () {
+        $('#showPrevCategoriesButton').prop('disabled', false);
+        var spliceStart = categoriesSetShownInNav * 10;
+        var spliceEnd = spliceStart + 10;
+        if (spliceEnd > $scope.allCategories.length) {
+            $scope.categoriesToDisplayInNav = $scope.allCategories.slice(spliceStart, $scope.allCategories.length);
+        } else {
+            $scope.categoriesToDisplayInNav = $scope.allCategories.slice(spliceStart, spliceEnd);
+        }
+        categoriesSetShownInNav++;
+        if (categoriesSetShownInNav == 3) {
+            $scope.nextCategoriesButtonDispl = true;
+            $('#showNextCategoriesButton').prop('disabled', true);
+        }
+    }
+
+    $scope.showPrevCategories = function () {
+        $('#showNextCategoriesButton').prop('disabled', false);
+        var spliceEnd = categoriesSetShownInNav * 10 - 10;
+        var spliceStart = spliceEnd - 10;
+
+        $scope.categoriesToDisplayInNav = $scope.allCategories.slice(spliceStart, spliceEnd);
+
+        categoriesSetShownInNav--;
+        if (categoriesSetShownInNav == 1) {
+            $scope.nextCategoriesButtonDispl = true;
+            $('#showPrevCategoriesButton').prop('disabled', true);
+        }
+
     }
 }]);
