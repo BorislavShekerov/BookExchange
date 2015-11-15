@@ -4,14 +4,14 @@ import com.bookexchange.dao.CategoryDao;
 import com.bookexchange.dto.BookCategory;
 import com.bookexchange.utils.BookCategoryComparator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-@Component
+@Service("categoryService")
 @Transactional
 public class CategoryService {
 

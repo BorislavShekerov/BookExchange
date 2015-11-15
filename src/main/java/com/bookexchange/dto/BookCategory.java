@@ -7,10 +7,11 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
-@Table(name = "Book_Category")
+@Table(name = "BOOK_CATEGORIES")
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
 public class BookCategory {
     @Id
@@ -21,7 +22,9 @@ public class BookCategory {
     private String categoryName;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
     private List<Book> booksForCategory;
-
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categoriesInterestedIn")
+    Set<User> usersInterestedInCategory;
     public long getId() {
         return id;
     }
@@ -44,6 +47,14 @@ public class BookCategory {
 
     public void setBooksForCategory(List<Book> booksForCategory) {
         this.booksForCategory = booksForCategory;
+    }
+
+    public Set<User> getUsersInterestedInCategory() {
+        return usersInterestedInCategory;
+    }
+
+    public void setUsersInterestedInCategory(Set<User> usersInterestedInCategory) {
+        this.usersInterestedInCategory = usersInterestedInCategory;
     }
 
     @Override

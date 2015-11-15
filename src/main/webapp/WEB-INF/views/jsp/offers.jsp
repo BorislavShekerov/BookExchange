@@ -29,6 +29,7 @@
 
 
         <div class="col-xs-12 col-sm-2 col-md-2">
+            <i class="text-center fa fa-arrow-right fa-3x"></i>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">

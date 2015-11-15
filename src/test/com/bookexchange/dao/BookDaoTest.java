@@ -3,7 +3,6 @@ package com.bookexchange.dao;
 import com.bookexchange.dto.Book;
 import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
-import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import static junit.framework.Assert.assertEquals;
 public class BookDaoTest {
 
     public static final String DUMMY_BOOK_TITLE = "Book Title";
-    public static final String DUMMY_FIRSTNAME = "Firstname";
+    public static final String DUMMY_USERNAME = "Firstname";
     public static final String SCIENCE_CATEGORY = "Science";
 
     @Autowired
@@ -37,7 +36,7 @@ public class BookDaoTest {
     @Test
     public void postBookOnExchange(){
         User user = new User();
-        user.setFirstname(DUMMY_FIRSTNAME);
+        user.setUsername(DUMMY_USERNAME);
 
         Book b = new Book();
         b.setTitle(DUMMY_BOOK_TITLE);

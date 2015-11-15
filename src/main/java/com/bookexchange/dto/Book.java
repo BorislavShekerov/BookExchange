@@ -14,7 +14,7 @@ import java.util.List;
  * Created by sheke on 10/18/2015.
  */
 @Entity
-@Table(name = "Books")
+@Table(name = "BOOKS")
 public class Book {
     @Id
     @GeneratedValue(generator = "increment")
@@ -34,8 +34,6 @@ public class Book {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User postedBy;
-    @Column(name = "CATEGORIES_INTERESTED_IN")
-    String categoriesInterestedIn;
 
     public String getTitle() {
         return title;
@@ -93,36 +91,4 @@ public class Book {
         this.postedBy = postedBy;
     }
 
-    public String getCategoriesInterestedIn() {
-        return categoriesInterestedIn;
-    }
-
-    public void setCategoriesInterestedIn(String categoriesInterestedIn) {
-        this.categoriesInterestedIn = categoriesInterestedIn;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book)) return false;
-
-        Book book = (Book) o;
-
-        if (!getTitle().equals(book.getTitle())) return false;
-        if (!getAuthor().equals(book.getAuthor())) return false;
-        if (!getCategory().equals(book.getCategory())) return false;
-        if (!getImgUrl().equals(book.getImgUrl())) return false;
-        return getDatePosted().equals(book.getDatePosted());
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getTitle().hashCode();
-        result = 31 * result + getAuthor().hashCode();
-        result = 31 * result + getCategory().hashCode();
-        result = 31 * result + getImgUrl().hashCode();
-        result = 31 * result + getDatePosted().hashCode();
-        return result;
-    }
 }

@@ -26,7 +26,7 @@ bookApp.directive('myEnter', function () {
 bookApp.directive('selectedCategoryBadge', function () {
     return {
         restrict: 'E',
-        templateUrl: 'selectedCategoryBadge.html',
+        templateUrl: 'selectedCategoryBadge',
         replace: true,
         scope: {
             selectedCategory: "@",

@@ -1,4 +1,4 @@
-bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http) {
+bookApp.controller('welcomeController', ['$scope', '$http', function ($scope, $http) {
     $scope.searchIconClicked = false;
     $scope.searchFor = '';
 
@@ -6,7 +6,6 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
     $scope.booksDisplayed = [];
     $scope.bookToSearchFor = '';
     var allBooks = [];
-    var categoryIdToNameMap = {};
 
     $scope.selectedCategories = [];
     $scope.categoriesToDisplay = [];
@@ -32,6 +31,10 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
         } else {
             $scope.categoriesToDisplay.splice($.inArray(category, $scope.categoriesToDisplay), 1);
         }
+
+        $('option[value=' + category + ']', $('#categories-select')).prop('selected', false);
+
+        $('#categories-select').multiselect('refresh');
     };
 
     $scope.filterByCategoryFilter = function (category) {
@@ -41,6 +44,9 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
 
     $scope.navCategoryFilter = function (category) {
         $scope.addCategoryFilter(category);
+        $('option[value=' + category + ']', $('#categories-select')).prop('selected', true);
+
+        $('#categories-select').multiselect('refresh');
     }
     $scope.addCategoryFilter = function (category) {
         if (jQuery.inArray(category, $scope.selectedCategories) > -1) { //Removing catgory from filter
@@ -72,7 +78,7 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
         }
     }
 
-    $http.get('/getAllBooks').
+    $http.get('getAllBooks').
     success(function (data, status, headers, config) {
         allBooks = data;
         splitDataIntoPagesForPagination(data);
@@ -97,8 +103,6 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
         var pageData = [];
         $scope.bookPages = [];
         for (i = 0; i < bookData.length; i++) {
-         bookData[i].ownerAvatar = "../"+ bookData[i].ownerAvatar ;
-         bookData[i].imgUrl = "../"+ bookData[i].imgUrl ;
             if (i > 0 && i % 29 == 0) {
                 pageData.push(bookData[i]);
                 $scope.bookPages.push(pageData);
@@ -106,6 +110,7 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
             } else {
                 pageData.push(bookData[i]);
             }
+
         }
         if (pageData.length > 0) {
             $scope.bookPages.push(pageData);
@@ -127,7 +132,7 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
     }
 
 
-    $http.get('/getAllCategories').
+    $http.get('getAllCategories').
     success(function (data, status, headers, config) {
         constructCategoriesList(data);
     }).
@@ -136,14 +141,42 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
     });
 
     function constructCategoriesList(data) {
-     $.each(data, function (index, value) {
-                $scope.allCategories.push(value);
-                $scope.categoriesToDisplay.push(value.categoryName);
-                allCategoriesStrings.push(value.categoryName);
+        $('#categories-select,#categories-wanted-select').multiselect({
+            buttonText: function (options, select) {
+                return 'Pick Categories';
+            },
+            buttonTitle: function (options, select) {
+                var labels = [];
+                options.each(function () {
+                    labels.push($(this).text());
+                });
+                return labels.join(' - ');
+            },
+            onChange: function (option, checked, select) {
+                $scope.filterByCategoryFilter($(option).val());
+            }
+        });
 
-            });
+        var options = [];
+        $.each(data, function (index, value) {
+            $scope.allCategories.push(value);
+
+            var option = {};
+            option.label = value.categoryName;
+            option.title = value.categoryName;
+            option.value = value.categoryName;
+            option.selected = false;
+
+            options.push(option);
+        });
+
+        $.each($scope.allCategories, function (index, value) {
+            $scope.categoriesToDisplay.push(value.categoryName);
+            allCategoriesStrings.push(value.categoryName);
+        });
 
         $scope.categoriesToDisplayInNav = $scope.allCategories.slice(0, 10);
+        $('#categories-select,#categories-wanted-select').multiselect('dataprovider', options);
     }
 
     $scope.shouldDipslayCategory = function (category) {
@@ -151,6 +184,45 @@ bookApp.controller('mainController', ['$scope', '$http', function ($scope, $http
             return true;
         }
         return false;
+    }
+
+    $scope.changeFilterPanelIcon = function (filterName, value) {
+        switch (filterName) {
+        case 'category':
+            {
+                if (value) {
+                    $scope.isCategoriesFilterExpanded = true;
+                    $scope.isSearchFilterExpanded = false;
+                    $scope.isCategoriesWantedFilterExpanded = false;
+                } else {
+                    $scope.isCategoriesFilterExpanded = false;
+                }
+            }
+            break;
+
+        case 'search':
+            {
+                if (value) {
+                    $scope.isSearchFilterExpanded = true;
+                    $scope.isCategoriesFilterExpanded = false;
+                    $scope.isCategoriesWantedFilterExpanded = false;
+                } else {
+                    $scope.isSearchFilterExpanded = false;
+                }
+            }
+            break;
+        case 'category-wanted':
+            {
+                if (value) {
+                    $scope.isCategoriesWantedFilterExpanded = true;
+                    $scope.isCategoriesFilterExpanded = false;
+                    $scope.isSearchFilterExpanded = false;
+                } else {
+                    $scope.isCategoriesWantedFilterExpanded = false;
+                }
+            }
+            break;
+        }
     }
 
     $scope.shouldShowLoadingIndicator = function () {

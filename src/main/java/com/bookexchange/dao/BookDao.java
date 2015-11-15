@@ -22,6 +22,7 @@ public class BookDao {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(Book.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         List<Book> booksOnExchange = criteria.list();
         return booksOnExchange;
     }

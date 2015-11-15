@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Fixed Top Navbar Example for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../resources/core/css/bootstrap.min.css" rel="stylesheet">
+    <link href="..resources/core/css/bootstrap-multiselect.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+
+
+    <!-- Custom styles for index page-->
+    <link href="resources/core/css/app/nav_bar.css" rel="stylesheet">
+    <link href="resources/core/css/app/side_menu.css" rel="stylesheet">
+</head>
+
+<body ng-app="myApp" ng-controller="mainController">
+
+    <!-- Fixed navbar -->
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><img src="resources/core/img/logo.png"></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <!-- Books Filter Drop Down -->
+                    <li class="dropdown mega-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Books <span class="caret"></span></a>
+
+                        <ul class="dropdown-menu mega-dropdown-menu row">
+                            <li class="col-sm-3">
+                                <ul>
+                                    <li class="dropdown-header">New on the Exchange</li>
+                                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="item active">
+                                                <a href="#"><img src="resources/core/img/spring_mvc.jpg" class="img-responsive" alt="product 1"></a>
+                                                <h4><small>Summer dress floral prints</small></h4>
+                                                <button href="#" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
+                                            </div>
+                                            <!-- End Item -->
+                                            <div class="item">
+                                                <a href="#"><img src="resources/core/img/java_patterns.jpg" class="img-responsive" alt="product 2"></a>
+                                                <h4><small>Gold sandals with shiny touch</small></h4>
+                                                <button href="#" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
+                                            </div>
+                                            <!-- End Item -->
+                                            <div class="item">
+                                                <a href="#"><img src="resources/core/img/hibernate_in_action.jpg" class="img-responsive" alt="product 3"></a>
+                                                <h4><small>Denin jacket stamped</small></h4>
+                                                <button href="#" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
+                                            </div>
+                                            <!-- End Item -->
+                                        </div>
+                                        <!-- End Carousel Inner -->
+                                    </div>
+                                </ul>
+                            </li>
+                            <li class="col-sm-3">
+                                <ul>
+                                    <li class="dropdown-header">Books Offered</li>
+                                    <li ng-repeat="category in categoriesToDisplayInNav" ng-click="navCategoryFilter(category.categoryName)"><a href="#">{{category.categoryName}} <span class="badge pull-right">{{category.booksForCategory.length}}</span></a></li>
+                                    <li class="btn-group" role="group" aria-label="...">
+                                        <button type="button" class="btn btn-default" disabled="disabled" id="showPrevCategoriesButton" ng-click="showPrevCategories()"><span class="glyphicon glyphicon-menu-left"></span></button>
+                                        <button type="button" class="btn btn-default" ng-click="showNextCategories()" id="showNextCategoriesButton"><span class="glyphicon glyphicon-menu-right"></span></button>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="col-sm-3">
+                                <ul>
+                                    <li class="dropdown-header">Books wanted</li>
+                                    <li><a href="#">Easy to customize</a></li>
+                                    <li><a href="#">Glyphicons</a></li>
+                                    <li><a href="#">Pull Right Elements</a></li>
+                                </ul>
+                            </li>
+                            <li class="col-sm-3">
+                                <ul>
+                                    <li class="dropdown-header">Newsletter</li>
+                                    <form class="form" role="form">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="email">Email address</label>
+                                            <input type="email" class="form-control" id="email" placeholder="Enter email">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+                                    </form>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+    <!-- uncomment code for absolute positioning tweek see top comment in css -->
+    <!-- <div class="absolute-wrapper"> </div> -->
+    <!-- Menu -->
+    <div class="side-menu">
+
+        <nav class="navbar navbar-default" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+
+            <!-- Main Menu -->
+            <div class="side-menu-container">
+                <ul class="nav navbar-nav">
+
+                    <li><a href="#"><span class="glyphicon glyphicon-send"></span> Link</a></li>
+                    <li class="active"><a href="#"><span class="glyphicon glyphicon-globe"></span> Exchange</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-cloud"></span> Link</a></li>
+
+                    <!-- Dropdown-->
+                    <li class="panel panel-default" id="dropdown">
+                        <a data-toggle="collapse" href="#dropdown-lvl1">
+                            <span class="glyphicon glyphicon-user"></span> Sub Level <span class="caret"></span>
+                        </a>
+
+                        <!-- Dropdown level 1 -->
+                        <div id="dropdown-lvl1" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <ul class="nav navbar-nav">
+                                    <li><a href="#">Link</a></li>
+                                    <li><a href="#">Link</a></li>
+                                    <li><a href="#">Link</a></li>
+
+                                    <!-- Dropdown level 2 -->
+                                    <li class="panel panel-default" id="dropdown">
+                                        <a data-toggle="collapse" href="#dropdown-lvl2">
+                                            <span class="glyphicon glyphicon-off"></span> Sub Level <span class="caret"></span>
+                                        </a>
+                                        <div id="dropdown-lvl2" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <ul class="nav navbar-nav">
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+                                                    <li><a href="#">Link</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li><a href="#"><span class="glyphicon glyphicon-signal"></span> Link</a></li>
+
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="side-body" id="main-content">
+            <div ng-repeat="bookOnExchange in booksDisplayed " class="col-xs-12 col-sm-12 col-md-4 ">
+                <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
+                    <img src="{{bookOnExchange.imgUrl}}" class="img-responsive full-width">
+                    <div class="panel-body">
+                        <div class="media">
+                            <div class="media-left ">
+                                <a href="#">
+                                    <img class="media-object profile-picture" src="{{bookOnExchange.postedBy.avatarUrl}}" alt="...">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">{{bookOnExchange.postedBy.firstname+' '+bookOnExchange.postedBy.surname}}</h4>
+                                <h4 class="media-heading">Exchanges for:</h4>
+                            </div>
+                        </div>
+                        <ul class="list-inline">
+                            <li ng-repeat="category in bookOnExchange.exchangesFor">
+                                <span class="label label-default">{{category}}</span></li>
+                        </ul>
+                        <div class="space-out-top">
+                            <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
+    <script src="resources/core/js/bootstrap.js "></script>
+    <script src="resources/core/js/angular.js "></script>
+    <script src="resources/core/js/jquery.bootpag.js"></script>
+    <script src="resources/core/js/app/app.js "></script>
+    <script src="resources/core/js/app/app-controllers.js "></script>
+    <script>
+        $(document).ready(function () {
+            $('#showNextCategoriesButton,#showPrevCategoriesButton').click(function (e) {
+                e.stopPropagation();
+            });
+
+            $('.navbar-toggle').click(function () {
+                $('.navbar-nav').toggleClass('slide-in');
+                $('.side-body').toggleClass('body-slide-in');
+                $('#search').removeClass('in').addClass('collapse').slideUp(200);
+
+                /// uncomment code for absolute positioning tweek see top comment in css
+                //$('.absolute-wrapper').toggleClass('slide-in');
+
+            });
+
+            // Remove menu for searching
+            $('#search-trigger').click(function () {
+                $('.navbar-nav').removeClass('slide-in');
+                $('.side-body').removeClass('body-slide-in');
+
+                /// uncomment code for absolute positioning tweek see top comment in css
+                //$('.absolute-wrapper').removeClass('slide-in');
+
+            });
+        });
+    </script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js "></script>
+</body>
+
+</html>

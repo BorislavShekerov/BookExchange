@@ -1,48 +1,65 @@
 package com.bookexchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by sheke on 10/18/2015.
  */
 @Entity
-@Table(name = "User")
+@Table(name = "USERS")
 public class User {
+
     @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    private long id;
-    @Column(name = "firstname")
-    private String firstname;
-    @Column(name = "surname")
-    private String surname;
-    @Column(name = "password")
+    @Column(name = "USERNAME")
+    private String username;
+    @Column(name = "PASSWORD")
     private String password;
+    @Column(name = "EMAIL")
+    private String email;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "postedBy")
     @JsonIgnore
-    List<Book> booksPostedOnExchange;
-    @Column(name = "avatarUrl")
+    Set<Book> booksPostedOnExchange;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_CATEGORIES_INTERESTED", joinColumns = {@JoinColumn(name = "USER_ID")},inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID")})
+    Set<BookCategory> categoriesInterestedIn;
+    @Column(name = "AVATAR_URL")
     private String avatarUrl;
+    @Column(name = "ENABLED")
+    private boolean enabled;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersForUserRole",cascade = CascadeType.ALL )
+    @JsonIgnore
+    private Set<UserRole> userRole;
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_EXCHANGE_CURRENT", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
+    private Set<BookExchange> currentExchanges = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_EXCHANGE_HISTORY", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
+    private Set<BookExchange> exchangeHistory = new HashSet<>();
 
-    public String getFirstname() {
-        return firstname;
+    public void addBookExchange(BookExchange bookExchange){
+        this.currentExchanges.add(bookExchange);
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void completeExchange(BookExchange bookExchange){
+        this.exchangeHistory.add(bookExchange);
+    }
+    public String getUsername() {
+        return username;
     }
 
-    public String getSurname() {
-        return surname;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getPassword() {
@@ -61,11 +78,51 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    public List<Book> getBooksPostedOnExchange() {
+    public Set<Book> getBooksPostedOnExchange() {
         return booksPostedOnExchange;
     }
 
-    public void setBooksPostedOnExchange(List<Book> booksPostedOnExchange) {
+    public void setBooksPostedOnExchange(Set<Book> booksPostedOnExchange) {
         this.booksPostedOnExchange = booksPostedOnExchange;
+    }
+
+    public Set<BookCategory> getCategoriesInterestedIn() {
+        return categoriesInterestedIn;
+    }
+
+    public void setCategoriesInterestedIn(Set<BookCategory> categoriesInterestedIn) {
+        this.categoriesInterestedIn = categoriesInterestedIn;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Set<UserRole> getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(Set<UserRole> userRole) {
+        this.userRole = userRole;
+    }
+
+    public Set<BookExchange> getCurrentExchanges() {
+        return currentExchanges;
+    }
+
+    public void setCurrentExchanges(Set<BookExchange> currentExchanges) {
+        this.currentExchanges = currentExchanges;
+    }
+
+    public Set<BookExchange> getExchangeHistory() {
+        return exchangeHistory;
+    }
+
+    public void setExchangeHistory(Set<BookExchange> exchangeHistory) {
+        this.exchangeHistory = exchangeHistory;
     }
 }
