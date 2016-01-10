@@ -1,10 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <sec:csrfMetaTags />
+     <meta name="_csrf_parameter" content="${_csrf_parameter}"/>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
@@ -21,9 +26,22 @@
     <link href="../resources/core/css/app/nav_bar.css" rel="stylesheet">
       <link href="../resources/core/css/app/app.css" rel="stylesheet">
     <link href="../resources/core/css/app/side_menu.css" rel="stylesheet">
+    <link href="../resources/core/css/app/notifications.css" rel="stylesheet">
+    <!-- Include Bootstrap-select CSS, JS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css" />
+
 </head>
 
-<body ng-app="myApp" ng-controller="mainController">
+<body ng-app="myApp">
+
+            <c:url value="/j_spring_security_logout" var="logoutUrl" />
+
+                        	<!-- csrt for log out-->
+                        	<form action="${logoutUrl}" method="post" id="logoutForm">
+                        	  <input type="hidden"
+                        		name="${_csrf.parameterName}"
+                        		value="${_csrf.token}" />
+                        	</form>
 
     <!-- Fixed navbar -->
 
@@ -43,75 +61,15 @@
                     <li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <!-- Books Filter Drop Down -->
-                    <li class="dropdown mega-dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Books <span class="caret"></span></a>
 
-                        <ul class="dropdown-menu mega-dropdown-menu row">
-                            <li class="col-sm-3">
-                                <ul>
-                                    <li class="dropdown-header">New on the Exchange</li>
-                                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                                        <div class="carousel-inner">
-                                            <div class="item active">
-                                                <a href="#"><img src="../resources/core/img/spring_mvc.jpg" class="img-responsive" alt="product 1"></a>
-                                                <h4><small>Summer dress floral prints</small></h4>
-                                                <button href="#" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
-                                            </div>
-                                            <!-- End Item -->
-                                            <div class="item">
-                                                <a href="#"><img src="../resources/core/img/java_patterns.jpg" class="img-responsive" alt="product 2"></a>
-                                                <h4><small>Gold sandals with shiny touch</small></h4>
-                                                <button href="#" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
-                                            </div>
-                                            <!-- End Item -->
-                                            <div class="item">
-                                                <a href="#"><img src="../resources/core/img/hibernate_in_action.jpg" class="img-responsive" alt="product 3"></a>
-                                                <h4><small>Denin jacket stamped</small></h4>
-                                                <button href="#" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
-                                            </div>
-                                            <!-- End Item -->
-                                        </div>
-                                        <!-- End Carousel Inner -->
-                                    </div>
-                                </ul>
-                            </li>
-                            <li class="col-sm-3">
-                                <ul>
-                                    <li class="dropdown-header">Books Offered</li>
-                                    <li ng-repeat="category in categoriesToDisplayInNav" ng-click="navCategoryFilter(category.categoryName)"><a href="#">{{category.categoryName}} <span class="badge pull-right">{{category.booksForCategory.length}}</span></a></li>
-                                    <li class="btn-group" role="group" aria-label="...">
-                                        <button type="button" class="btn btn-default" disabled="disabled" id="showPrevCategoriesButton" ng-click="showPrevCategories()"><span class="glyphicon glyphicon-menu-left"></span></button>
-                                        <button type="button" class="btn btn-default" ng-click="showNextCategories()" id="showNextCategoriesButton"><span class="glyphicon glyphicon-menu-right"></span></button>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-3">
-                                <ul>
-                                    <li class="dropdown-header">Books wanted</li>
-                                    <li><a href="#">Easy to customize</a></li>
-                                    <li><a href="#">Glyphicons</a></li>
-                                    <li><a href="#">Pull Right Elements</a></li>
-                                </ul>
-                            </li>
-                            <li class="col-sm-3">
-                                <ul>
-                                    <li class="dropdown-header">Newsletter</li>
-                                    <form class="form" role="form">
-                                        <div class="form-group">
-                                            <label class="sr-only" for="email">Email address</label>
-                                            <input type="email" class="form-control" id="email" placeholder="Enter email">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-block">Sign up</button>
-                                    </form>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
+                           <li>
+                                                            <a role="button" data-toggle="modal" data-target="#addBookModal">
+                                                                                                       <span class="glyphicon glyphicon-plus"></span>Add Book
+                                                            </a>
+                                                           </li>
                      <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                            <span class="glyphicon glyphicon-user"></span> 
-                                            <strong>Account</strong>
+                                        <a class="dropdown-toggle" data-toggle="dropdown" role="button">
+                                            <span class="glyphicon glyphicon-user"></span>
                                              <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu">
@@ -139,14 +97,42 @@
                                                 <div class="navbar-login navbar-login-session">
                                                     <div class="row">
                                                         <div class="col-sm-10 col-sm-10-offset-1">
-                                                            <p>
-                                                                <a href="#" class="btn btn-danger btn-block">Log Out</a>
+                                                            <p class="col-sm-10 col-sm-10-offset-1">
+                                                                <a href="javascript:formSubmit()" class="btn btn-danger btn-block">Log Out</a>
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </li>
                                         </ul>
+                                    </li>
+
+                                    <li class="dropdown">
+                                      <a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle"  data-target="#">
+                                        <span class="glyphicon glyphicon-bell"></span>
+                                      </a>
+
+                                      <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+
+                                        <div class="notification-heading"><h4 class="menu-title">Notifications</h4><h4 class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>
+                                        </div>
+                                        <li class="divider"></li>
+                                       <div class="notifications-wrapper">
+                                          <c:forEach var="notification" items="${userDetails.userNotifications}">
+                                               <a class="content" href="#">
+
+                                                <div class="notification-item">
+                                                 <h4 class="item-title">${notification.message}</h4>
+                                                  <p class="item-info">Marketing 101, Video Assignment</p>
+                                                  </div>
+
+                                                  </a>
+                                          </c:forEach>
+
+                                       </div>
+                                        <li class="divider"></li>
+                                        <div class="notification-footer"><h4 class="menu-title">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+                                      </ul>
                                     </li>
                 </ul>
             </div>
@@ -188,7 +174,73 @@
 
     </div>
 
+    <!-- Add Book Modal -->
+<div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller = "moduleController">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Adding a new Book</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <form class="form-horizontal" role="form">
+              <fieldset>
 
+                <!-- Form Name -->
+                <legend>Book Details</legend>
+
+                <!-- Text input-->
+                <div class="form-group">
+                 <label class="col-sm-2 control-label" for="textinput">Title</label>
+                  <div class="col-sm-10">
+                    <input type="text" placeholder="Book Title" class="form-control" ng-model="bookTitle">
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="textinput">Author</label>
+                  <div class="col-sm-10">
+                    <input type="text" placeholder="Book Author" class="form-control" ng-model="bookAuthor">
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                 <label class="col-sm-2 control-label" for="textinput">Genre</label>
+                  <div class="col-sm-10">
+                    <input type="text" placeholder="Book Genre" class="form-control" ng-model="bookCategory">
+                  </div>
+                </div>
+
+
+                <!-- Text input-->
+                                <div class="form-group">
+                                 <label class="col-sm-2 control-label" for="textinput">Cover</label>
+                                  <div class="row" ng-show="showBookCoverImage">
+                                                         <img src="{{imgUrl}}" alt="Book Cover" id="bookCoverImage">
+                                                                             </div>
+                                  <div class="col-sm-10" ng-class="{'col-sm-offset-2':showBookCoverImage}">
+                                    <input type="text" placeholder="Book Genre" class="form-control" ng-model="imgUrl" ng-change="textChanged()">
+                                  </div>
+                                </div>
+
+
+
+              </fieldset>
+            </form>
+          </div><!-- /.col-lg-12 -->
+      </div><!-- /.row -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="addBook()">Add Book</button>
+      </div>
+    </div>
+  </div>
+</div>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -198,9 +250,16 @@
     <script src="../resources/core/js/angular-route.js "></script>
     <script src="../resources/core/js/jquery.bootpag.js"></script>
     <script src="../resources/core/js/app/app.js "></script>
-    <script src="../resources/core/js/app/app-controllers.js "></script>
+      <script src="../resources/core/js/app/app-controllers.js "></script>
     <script>
+      var  username="${userDetails.username}";
+
+      function formSubmit() {
+      			document.getElementById("logoutForm").submit();
+      		}
+
         $(document).ready(function () {
+            var  username="${userDetails.username}";
             $('#showNextCategoriesButton,#showPrevCategoriesButton').click(function (e) {
                 e.stopPropagation();
             });
@@ -224,10 +283,13 @@
                 //$('.absolute-wrapper').removeClass('slide-in');
 
             });
+
         });
     </script>
+    <script src="../resources/core/js/app/app-services.js "></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../assets/js/ie10-viewport-bug-workaround.js "></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/js/bootstrap-select.min.js"></script>
 </body>
 
 </html>

@@ -9,6 +9,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Created by sheke on 10/19/2015.
  */
@@ -31,5 +33,14 @@ public class UserDao {
         Criteria criteria = currentSession.createCriteria(User.class);
         criteria.add(Restrictions.eq("username", username));
         return (User) criteria.uniqueResult();
+    }
+
+    public List<User> getAllUsers(){
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(User.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+        return criteria.list();
     }
 }

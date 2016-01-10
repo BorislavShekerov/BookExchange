@@ -3,6 +3,7 @@ package com.bookexchange.dao;
 import com.bookexchange.dto.Book;
 import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by sheke on 10/19/2015.
@@ -33,8 +37,8 @@ public class BookDaoTest {
     @Autowired
     protected CategoryDao categoryDao = null;
 
-    @Test
-    public void postBookOnExchange(){
+    @Before
+    public void init(){
         User user = new User();
         user.setUsername(DUMMY_USERNAME);
 
@@ -51,10 +55,21 @@ public class BookDaoTest {
         categoryDao.addCategory(category);
         bookDao.postBookOnExchange(b);
 
+
+    }
+    @Test
+    public void postBookOnExchange(){
         List<Book> allBooksOnExchange = bookDao.getAllBooksOnExchange();
 
         assertEquals("Books on exchange should be 1 after the insertion", 1, allBooksOnExchange.size());
         assertEquals("Title of the book on the exchange should be"+DUMMY_BOOK_TITLE,DUMMY_BOOK_TITLE, allBooksOnExchange.get(0).getTitle());
         assertEquals("Category of the book on the exchange should be"+SCIENCE_CATEGORY,SCIENCE_CATEGORY, allBooksOnExchange.get(0).getCategory().getCategoryName());
+    }
+
+    @Test
+    public void getBookForUsername(){
+        Optional<Book> bookForUser = bookDao.getBookForUsername(DUMMY_BOOK_TITLE, DUMMY_USERNAME);
+
+       assertNotNull(bookForUser.get());
     }
 }

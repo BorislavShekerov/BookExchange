@@ -1,14 +1,13 @@
 package com.bookexchange.web;
 
-import com.bookexchange.dao.BookDao;
 import com.bookexchange.dto.Book;
+import com.bookexchange.dto.User;
 import com.bookexchange.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +23,15 @@ public class BookController {
     @RequestMapping(value = "/getAllBooks", method = RequestMethod.GET)
     public @ResponseBody List<Book> getAllBooks(ModelMap model) {
         return bookService.getAllBooksOnExchange();
+    }
+
+    @RequestMapping(value="/app/addBook", method=RequestMethod.POST)
+    public @ResponseBody String addBookToExchange(@RequestBody User userData, Model model) {
+        Book bookToAdd = userData.getBookToAddToExchange();
+        bookToAdd.getPostedBy().setUsername(userData.getUsername());
+
+        bookService.addBookToExchange(bookToAdd);
+
+        return "Success";
     }
 }

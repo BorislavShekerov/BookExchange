@@ -1,7 +1,9 @@
 package com.bookexchange.service;
 
 import com.bookexchange.dao.BookDao;
+import com.bookexchange.dao.UserDao;
 import com.bookexchange.dto.Book;
+import com.bookexchange.dto.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,9 @@ public class BookService {
     @Autowired
     private BookDao bookDao;
 
+    @Autowired
+    private UserDao userDao;
+
     public void setBookDao(BookDao bookDao) {
         this.bookDao = bookDao;
     }
@@ -30,5 +35,16 @@ public class BookService {
         bookToPost.setDatePosted(LocalDateTime.now());
 
         bookDao.postBookOnExchange(bookToPost);
+    }
+
+    public void addBookToExchange(Book bookToAdd) {
+        User userDetails = userDao.findUserByUsername(bookToAdd.getPostedBy().getUsername());
+        bookToAdd.setPostedBy(userDetails);
+
+        bookDao.postBookOnExchange(bookToAdd);
+
+        userDetails.addBookToExchange(bookToAdd);
+
+        userDao.updateUser(userDetails);
     }
 }

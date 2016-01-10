@@ -249,7 +249,7 @@
                 <div class="pagination-centered text-center" ng-show="shouldShowLoadingIndicator()"><img src="/resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
                 <div ng-repeat="bookOnExchange in booksDisplayed " class="col-xs-12 col-sm-12 col-md-4 " ng-cloak>
                     <div class="panel panel-default col-xs-12" ng-show="shouldDipslayCategory(bookOnExchange.category)" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ng-cloak>
-                        <img src="{{bookOnExchange.imgUrl}}" class="img-responsive full-width">
+                        <img src="{{bookOnExchange.imgUrl}}" class="img-responsive full-width" id="bookCoverImg">
                         <div class="panel-body">
                             <div class="media">
                                 <div class="media-left ">

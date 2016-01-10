@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
@@ -30,7 +27,7 @@ public class MainController {
     }
 
     @RequestMapping(value = "/app/", method = RequestMethod.GET)
-    public ModelAndView goToApp(ModelMap model, @ModelAttribute User user) {
+    public ModelAndView launchApp(ModelMap model, @ModelAttribute User user) {
         Authentication authentication = getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
@@ -38,15 +35,23 @@ public class MainController {
         userDetails.setPassword("");
 
 
-        LOGGER.info("USER :" + currentPrincipalName);
+        LOGGER.debug("USER :" + currentPrincipalName);
         ModelAndView modelAndView = new ModelAndView("app");
         modelAndView.addObject("userDetails",userDetails);
         return modelAndView;
 
     }
 
+    @RequestMapping(value = "/app/udetails/{username}", method = RequestMethod.GET)
+    public @ResponseBody User getUserData(@PathVariable String username) {
+        User userDetails = userService.findUserByUsername(username);
+
+        return userDetails;
+
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView loginPage(@RequestParam(value = "error", required = false) String error,
+    public ModelAndView userLogin(@RequestParam(value = "error", required = false) String error,
                                   @RequestParam(value = "logout", required = false) String logout) {
 
         ModelAndView model = new ModelAndView();
@@ -68,7 +73,7 @@ public class MainController {
 
 
     @RequestMapping(value = "/account", method = RequestMethod.GET)
-    public String getUserAccount(ModelMap model) {
+    public String getAccountSettingsPage(ModelMap model) {
         return "account";
     }
 

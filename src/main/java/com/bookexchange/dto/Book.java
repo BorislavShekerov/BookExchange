@@ -1,9 +1,8 @@
 package com.bookexchange.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -30,10 +29,11 @@ public class Book {
     @Column(name = "IMG_URL")
     private String imgUrl;
     @Column(name = "DATE_POSTED")
-    private LocalDateTime datePosted;
+    @JsonIgnore
+    private LocalDateTime datePosted ;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false)
-    private User postedBy;
+    private User postedBy = new User();
 
     public String getTitle() {
         return title;
@@ -91,4 +91,39 @@ public class Book {
         this.postedBy = postedBy;
     }
 
+    public static class BookBuilder{
+        private Book book;
+
+        public BookBuilder(){
+            book = new Book();
+        }
+
+        public BookBuilder setTitle(String title) {
+            book.setTitle(title); return this;
+        }
+
+        public BookBuilder setAuthor(String author) {
+            book.setAuthor(author); return this;
+        }
+
+        public BookBuilder setImgUrl(String imgUrl) {
+            book.setImgUrl(imgUrl); return this;
+        }
+
+        public BookBuilder setCategory(BookCategory category) {
+            book.setCategory(category); return this;
+        }
+
+        public BookBuilder setDatePosted(LocalDateTime datePosted) {
+            book.setDatePosted(datePosted); return this;
+        }
+
+        public BookBuilder setPostedBy(User postedBy) {
+            book.setPostedBy(postedBy); return this;
+        }
+
+        public Book buildBook(){
+            return book;
+        }
+    }
 }

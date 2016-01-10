@@ -310,9 +310,9 @@ bookApp.controller('exchangeController', ['$scope', '$http', '$location', 'dataS
     $scope.userDetails = dataService.getUserData();
     $scope.bookToExchangeFor = exchangeService.getBookToExchangeFor();
     $scope.selectedBook = "Select a book";
-    $scope.exchangeOptionExists = false;
-    $scope.exchangeOptionPath = [];
 
+    var csrfParameter = $("meta[name='_csrf_parameter']").attr("content");
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var csrfToken = $("meta[name='_csrf']").attr("content");
 
     $scope.userHasBooksOfInterest = function () {
@@ -321,45 +321,21 @@ bookApp.controller('exchangeController', ['$scope', '$http', '$location', 'dataS
                 return true;
             }
         });
+
         return false;
     }
 
     $scope.exploreOtherOptions = function () {
-      var exchangeOrder = constructExchangeOrder();
-
-           var req = {
-                    method: 'POST',
-                    url: '/app/exploreOptions',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    data: exchangeOrder
-                }
-
-                $http(req).then(function (response) {
-                $('#processing-modal').modal('hide');
-                   $scope.exchangeOptionPath = response.data;
-                   $scope.exchangeOptionExists = true;
-                }, function () {
-                    alert("error");
-                    $scope.exchangeOptionExists = false;
-                });
-
-    }
-
-    var constructExchangeOrder = function(){
-      var exchangeOrder = {};
-            exchangeOrder.bookUnderOffer = $scope.bookToExchangeFor.title;
-            exchangeOrder.bookUnderOfferOwner = $scope.bookToExchangeFor.ownedBy;
-            exchangeOrder.bookOfferedInExchange = $scope.selectedBook;
-            exchangeOrder.bookOfferedInExchangeOwner = $scope.userDetails.username;
-
-            return exchangeOrder;
 
     }
     $scope.initiateOffer = function () {
 
-        var exchangeOrder = constructExchangeOrder();
+        var exchangeOrder = {};
+        exchangeOrder.bookUnderOffer = $scope.bookToExchangeFor.title;
+        exchangeOrder.bookUnderOfferOwner = $scope.bookToExchangeFor.ownedBy;
+        exchangeOrder.bookOfferedInExchange = $scope.selectedBook;
+        exchangeOrder.bookOfferedInExchangeOwner = $scope.userDetails.username;
+
 
         var req = {
             method: 'POST',
@@ -370,9 +346,9 @@ bookApp.controller('exchangeController', ['$scope', '$http', '$location', 'dataS
             data: exchangeOrder
         }
 
-        $http(req).then(function (response) {
-            alert(response);
-        }, function (response) {
+        $http(req).then(function () {
+            $location.path('/');
+        }, function () {
             alert("error");
         });
     }

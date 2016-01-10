@@ -5,7 +5,7 @@
             <div class="alert alert-warning" role="alert" ng-hide="userHasBooksOfInterest()"><strong>Warning!</strong> You have no books that match {{bookToExchangeFor.ownedBy}}''s interests</div>
             <label class="control-label">Pick A Book</label>
             <div class="selectContainer">
-                <select name="language" class="selectpicker" ng-model="selectedBook">
+                <select name="language" class="form-control" ng-model="selectedBook">
                     <option ng-repeat="book in userDetails.booksPostedOnExchange" value="{{book.title}}">{{book.title}}</option>
                 </select>
             </div>
@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-primary text-center" ng-click="exploreOtherOptions()"><span class="glyphicon glyphicon-flash margin-right-small"></span> Explore Other Options</button>
+                <button type="button" class="btn btn-primary text-center" ng-click="exploreOtherOptions()" data-toggle="modal" data-target="#processing-modal"><span class="glyphicon glyphicon-flash margin-right-small"></span> Explore Other Options</button>
             </div>
         </div>
 
@@ -63,7 +63,7 @@
                 <!-- complete -->
                 <div class=" text-center bs-wizard-stepnum ">
                     <button>{{username}}</button>
-                    <</div>
+                    </div>
                         <div class="progress ">
                             <div class="progress-bar "></div>
                         </div>
@@ -76,7 +76,7 @@
                     <!-- active -->
                     <div class="text-center bs-wizard-stepnum ">
                         <button>{{bookToExchangeFor.ownedBy}}</button>
-                        <</div>
+                        </div>
                             <div class="progress ">
                                 <div class="progress-bar "></div>
                             </div>
@@ -84,5 +84,19 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- Static Modal -->
+        <div class="modal modal-static fade" id="processing-modal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="http://www.travislayne.com/images/loading.gif" class="icon" />
+                            <h4>Processing...</h4>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
