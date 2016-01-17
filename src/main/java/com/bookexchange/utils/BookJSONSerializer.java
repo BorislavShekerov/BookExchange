@@ -30,7 +30,9 @@ public class BookJSONSerializer extends JsonSerializer<Book> {
     }
 
     private void addOwnerData(User postedBy, JsonGenerator jsonGen) throws IOException {
-        jsonGen.writeStringField("ownedBy", postedBy.getUsername());
+        jsonGen.writeStringField("ownerFirstname", postedBy.getFirstName());
+        jsonGen.writeStringField("ownerLastname", postedBy.getLastName());
+        jsonGen.writeStringField("ownerEmail", postedBy.getEmail());
         jsonGen.writeStringField("ownerAvatar",postedBy.getAvatarUrl());
 
         jsonGen.writeFieldName("ownerCategoriesOfInterest");

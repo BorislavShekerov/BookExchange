@@ -4,7 +4,6 @@ import com.bookexchange.dto.Book;
 import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.BookExchange;
 import com.bookexchange.dto.User;
-import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,8 @@ import static junit.framework.Assert.*;
 @Transactional
 public class BookExchangeDaoTest {
 
-    public static final String DUMMY_USERNAME_1 = "Firstname";
-    public static final String DUMMY_USERNAME_2 = "Secondname";
+    public static final String DUMMY_EMAIL_1 = "FirstEmail";
+    public static final String DUMMY_EMAIL_2 = "SecondEmail";
     public static final String DUMMY_BOOK_TITLE_1 = "Book Title 1";
     public static final String DUMMY_BOOK_TITLE_2 = "Book Title 2";
     public static final String DUMMY_CATEGORY_1 = "Category 1";
@@ -41,10 +40,10 @@ public class BookExchangeDaoTest {
     @Test
     public void addBookExchange(){
         User user1 = new User();
-        user1.setUsername(DUMMY_USERNAME_1);
+        user1.setEmail(DUMMY_EMAIL_1);
 
         User user2 = new User();
-        user2.setUsername(DUMMY_USERNAME_2);
+        user2.setEmail(DUMMY_EMAIL_2);
 
         Book user1Book = new Book();
         user1Book.setTitle(DUMMY_BOOK_TITLE_1);
@@ -80,8 +79,8 @@ public class BookExchangeDaoTest {
         userDao.updateUser(user1);
         userDao.updateUser(user2);
 
-        user1 = userDao.findUserByUsername(DUMMY_USERNAME_1);
-        user2 = userDao.findUserByUsername(DUMMY_USERNAME_2);
+        user1 = userDao.findUserByEmail(DUMMY_EMAIL_1);
+        user2 = userDao.findUserByEmail(DUMMY_EMAIL_2);
 
         assertEquals("Exchange Added To User 1", bookExchange, user1.getCurrentExchanges().iterator().next());
         assertEquals("Exchange Added To User 2", bookExchange, user2.getCurrentExchanges().iterator().next());

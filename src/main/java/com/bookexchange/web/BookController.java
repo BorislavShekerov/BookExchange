@@ -21,17 +21,18 @@ public class BookController {
     private BookService bookService;
 
     @RequestMapping(value = "/getAllBooks", method = RequestMethod.GET)
-    public @ResponseBody List<Book> getAllBooks(ModelMap model) {
+      public @ResponseBody List<Book> getAllBooks(ModelMap model) {
         return bookService.getAllBooksOnExchange();
     }
 
     @RequestMapping(value="/app/addBook", method=RequestMethod.POST)
     public @ResponseBody String addBookToExchange(@RequestBody User userData, Model model) {
         Book bookToAdd = userData.getBookToAddToExchange();
-        bookToAdd.getPostedBy().setUsername(userData.getUsername());
+        bookToAdd.getPostedBy().setFirstName(userData.getEmail());
 
         bookService.addBookToExchange(bookToAdd);
 
         return "Success";
     }
+
 }

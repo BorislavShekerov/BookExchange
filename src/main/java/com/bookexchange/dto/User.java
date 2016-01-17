@@ -15,6 +15,9 @@ import java.util.Set;
 @Table(name = "USERS")
 public class User {
 
+    @Id
+    @Column(name = "EMAIL")
+    private String email;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "postedBy")
     List<Book> booksPostedOnExchange = new ArrayList<>();
     @Transient
@@ -22,13 +25,12 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_CATEGORIES_INTERESTED", joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID")})
     Set<BookCategory> categoriesInterestedIn;
-    @Id
-    @Column(name = "USERNAME")
-    private String username;
+    @Column(name = "FIRST_NAME")
+    private String firstName;
+    @Column(name = "LAST_NAME")
+    private String lastName;
     @Column(name = "PASSWORD")
     private String password;
-    @Column(name = "EMAIL")
-    private String email;
     @Column(name = "AVATAR_URL")
     private String avatarUrl;
     @Column(name = "ENABLED")
@@ -53,12 +55,12 @@ public class User {
         this.exchangeHistory.add(bookExchange);
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public boolean isEnabled() {
@@ -133,6 +135,14 @@ public class User {
         return exchangeHistory;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public void setExchangeHistory(Set<BookExchangeCompleted> exchangeHistory) {
         this.exchangeHistory = exchangeHistory;
     }
@@ -161,8 +171,8 @@ public class User {
             user = new User();
         }
 
-        public UserBuilder setUsername(String username) {
-            user.setUsername(username);
+        public UserBuilder setFirstName(String firstName) {
+            user.setFirstName(firstName);
             return this;
         }
 

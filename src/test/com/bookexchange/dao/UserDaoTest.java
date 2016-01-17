@@ -1,7 +1,5 @@
 package com.bookexchange.dao;
 
-import com.bookexchange.dto.Book;
-import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -22,19 +18,22 @@ import static junit.framework.Assert.assertNotNull;
 @ContextConfiguration("classpath:spring-main.xml")
 @Transactional
 public class UserDaoTest {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String EMAIL = "email";
+
     @Autowired
     protected UserDao userDao = null;
 
     @Test
     public void postBookOnExchange(){
         User user = new User();
-       user.setUsername(USERNAME);
+        user.setFirstName(USERNAME);
         user.setPassword(PASSWORD);
+        user.setEmail(EMAIL);
 
         userDao.addUser(user);
-        User userForUsername = userDao.findUserByUsername(USERNAME);
+        User userForUsername = userDao.findUserByEmail(EMAIL);
 
         assertNotNull(userForUsername);
         assertEquals("Pasword should be the same as input",PASSWORD,userForUsername.getPassword());

@@ -13,7 +13,7 @@
         <!--&lt;!&ndash; access denied page &ndash;&gt;-->
         <!--<access-denied-handler error-page="/403" />-->
         <!--<form-login login-page="/login" authentication-failure-url="/"-->
-                    <!--username-parameter="username" password-parameter="password" />-->
+                    <!--firstName-parameter="firstName" password-parameter="password" />-->
         <!--<logout logout-success-url="/" />-->
         <!--&lt;!&ndash; enable csrf protection &ndash;&gt;-->
         <!--<csrf />-->

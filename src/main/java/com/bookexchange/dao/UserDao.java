@@ -27,11 +27,11 @@ public class UserDao {
         sessionFactory.getCurrentSession().update(user);
     }
 
-    public User findUserByUsername(String username) {
+    public User findUserByEmail(String email) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(User.class);
-        criteria.add(Restrictions.eq("username", username));
+        criteria.add(Restrictions.eq("email", email));
         return (User) criteria.uniqueResult();
     }
 

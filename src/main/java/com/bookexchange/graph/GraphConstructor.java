@@ -22,10 +22,10 @@ public class GraphConstructor {
 
         users.stream().forEach(user -> {
             Vertex userVertex;
-            if (!usernameToVertexMap.containsKey(user.getUsername())) {
-                userVertex = new Vertex(user.getUsername());
-                usernameToVertexMap.put(user.getUsername(), userVertex);
-            } else userVertex = usernameToVertexMap.get(user.getUsername());
+            if (!usernameToVertexMap.containsKey(user.getEmail())) {
+                userVertex = new Vertex(user.getEmail());
+                usernameToVertexMap.put(user.getEmail(), userVertex);
+            } else userVertex = usernameToVertexMap.get(user.getEmail());
 
             user.getBooksPostedOnExchange().stream().map(book -> {
                 return book.getCategory().getCategoryName();
@@ -49,8 +49,8 @@ public class GraphConstructor {
         return buildGraph(usernameToVertexMap, edgesList);
     }
 
-    private Graph<String> buildGraph(Map<String, Vertex<String>> usernameToVertexMap,Set<Edge<String>> edges) {
-        List<Vertex<String>> verticiesList = new ArrayList<>(usernameToVertexMap.values());
+    private Graph<String> buildGraph(Map<String, Vertex<String>> userEmailToVertexMap,Set<Edge<String>> edges) {
+        List<Vertex<String>> verticiesList = new ArrayList<>(userEmailToVertexMap.values());
 
         Graph<String> graph = new Graph<>(verticiesList, new ArrayList<>());
         edges.stream().forEach( edge -> graph.addEdge(edge.getFrom(),edge.getTo(),0));
@@ -64,9 +64,9 @@ public class GraphConstructor {
         users.stream().forEach(user -> {
             user.getCategoriesInterestedIn().stream().forEach(bookCategory -> {
                 if (categoryToUserListMap.containsKey(bookCategory.getCategoryName())) {
-                    categoryToUserListMap.get(bookCategory.getCategoryName()).add(user.getUsername());
+                    categoryToUserListMap.get(bookCategory.getCategoryName()).add(user.getEmail());
                 } else {
-                    categoryToUserListMap.put(bookCategory.getCategoryName(), new ArrayList<String>(Arrays.asList(user.getUsername())));
+                    categoryToUserListMap.put(bookCategory.getCategoryName(), new ArrayList<String>(Arrays.asList(user.getEmail())));
                 }
             });
         });

@@ -28,13 +28,13 @@ public class BookDao {
         return booksOnExchange;
     }
 
-    public Optional<Book> getBookForUsername(String bookTitle, String username) {
+    public Optional<Book> getBookForEmail(String bookTitle, String email) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(Book.class);
         criteria.createAlias("postedBy", "userPosted")
                 .add(Restrictions.eq("title", bookTitle))
-                .add(Restrictions.eq("userPosted.username", username));
+                .add(Restrictions.eq("userPosted.email", email));
 
         Book bookForUsername = (Book) criteria.uniqueResult();
         return Optional.of(bookForUsername);

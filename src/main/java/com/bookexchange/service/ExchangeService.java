@@ -31,8 +31,8 @@ public class ExchangeService {
     UserDao userDao;
 
     public void recordExchange(ExchangeOrder exchangeOrder) throws BookExchangeInternalException {
-        Book bookUnderOffer = bookDao.getBookForUsername(exchangeOrder.getBookUnderOffer(), exchangeOrder.getBookUnderOfferOwner()).orElseThrow(() -> new BookExchangeInternalException("Book under offer not found"));
-        Book bookOfferedInExchange = bookDao.getBookForUsername(exchangeOrder.getBookOfferedInExchange(), exchangeOrder.getBookOfferedInExchangeOwner()).orElseThrow(() -> new BookExchangeInternalException("Book offered in exhange not found"));
+        Book bookUnderOffer = bookDao.getBookForEmail(exchangeOrder.getBookUnderOffer(), exchangeOrder.getBookUnderOfferOwner()).orElseThrow(() -> new BookExchangeInternalException("Book under offer not found"));
+        Book bookOfferedInExchange = bookDao.getBookForEmail(exchangeOrder.getBookOfferedInExchange(), exchangeOrder.getBookOfferedInExchangeOwner()).orElseThrow(() -> new BookExchangeInternalException("Book offered in exhange not found"));
 
         BookExchange exchangeToRecord = buildBookExchange(bookUnderOffer, bookOfferedInExchange);
 

@@ -4,10 +4,7 @@ import com.bookexchange.dto.ExchangeOrder;
 import com.bookexchange.graph.Vertex;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -25,15 +22,15 @@ public class ExchangeServiceTest {
         Set<Vertex<String>> component1 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>(EXCHANGE_INITATOR), new Vertex<String>(USER_UNDER_OFFER)));
         Set<Vertex<String>> component2 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ddd"), new Vertex<String>("zzz")));
         Set<Vertex<String>> component3 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ff"), new Vertex<String>("xx"), new Vertex<String>("zzzdf")));
-        Set<Vertex<String>> component4 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ff"), new Vertex<String>("xx"), new Vertex<String>("zzzdf"), new Vertex<String>(EXCHANGE_INITATOR), new Vertex<String>(USER_UNDER_OFFER)));
+        Set<Vertex<String>> component4 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ff"), new Vertex<String>("xx"), new Vertex<String>("zzzdf"), new Vertex<String>(EXCHANGE_INITATOR)));
 
         ExchangeOrder exchangeOrder = new ExchangeOrder();
         exchangeOrder.setBookOfferedInExchangeOwner(EXCHANGE_INITATOR);
         exchangeOrder.setBookUnderOfferOwner(USER_UNDER_OFFER);
 
-        Set<Set<Vertex<String>>> filteredComponents = testObj.filterRelevantComponents(new HashSet<>(Arrays.asList(component1, component2, component3, component4)), exchangeOrder);
+        Optional<Set<Vertex<String>>> filteredComponents = testObj.filterRelevantComponents(new HashSet<>(Arrays.asList(component1, component2, component3, component4)), exchangeOrder);
 
-        assertEquals(2, filteredComponents.size());
+        assertEquals(2, filteredComponents.get().size());
     }
 
 //    @Test

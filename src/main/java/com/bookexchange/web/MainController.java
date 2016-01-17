@@ -77,4 +77,9 @@ public class MainController {
         return "account";
     }
 
+    @RequestMapping(value = "/signup", method = RequestMethod.GET)
+    public String getSignUpPage(ModelMap model) {
+        return "register";
+    }
+
 }

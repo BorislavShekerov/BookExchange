@@ -23,10 +23,12 @@ public class BookJSONSerializerTest {
 
     public static final String DUMMY_TITLE = "dummy_title";
     public static final String DUMMY_IMG_URL = "dummy_img_url";
-    public static final String DUMMY_USERNAME = "dummy-username";
+    public static final String DUMMY_FIRSTNAME = "dummy-firstname";
     public static final String DUMMY_CATEGORY_NAME_1 = "dummy-category-name-1";
     public static final String DUMMY_CATEGORY_NAME_2 = "dummy-category-name-2";
     public static final String DUMMY_USER_AVATAR_URL = "ummy-user-avatar-url";
+    private static final String DUMMY_LASTNAME = "lastname";
+    private static final String DUMMY_USER_EMAIL = "dummyEMail";
     BookJSONSerializer testObj = new BookJSONSerializer();
     JsonGenerator jsonGeneratorMock;
 
@@ -44,7 +46,9 @@ public class BookJSONSerializerTest {
         bookToTestWith.setImgUrl(DUMMY_IMG_URL);
 
         User bookOwner = new User();
-        bookOwner.setUsername(DUMMY_USERNAME);
+        bookOwner.setFirstName(DUMMY_FIRSTNAME);
+        bookOwner.setLastName(DUMMY_LASTNAME);
+        bookOwner.setEmail(DUMMY_USER_EMAIL);
         bookOwner.setAvatarUrl(DUMMY_USER_AVATAR_URL);
         Set<BookCategory> categoriesInterestedIn = new HashSet<>();
 
@@ -67,7 +71,9 @@ public class BookJSONSerializerTest {
         Mockito.verify(jsonGeneratorMock).writeObjectField("datePosted", dateOfPublish);
         Mockito.verify(jsonGeneratorMock).writeStringField("category", DUMMY_CATEGORY_NAME_1);
 
-        Mockito.verify(jsonGeneratorMock).writeStringField("ownedBy",DUMMY_USERNAME);
+        Mockito.verify(jsonGeneratorMock).writeStringField("ownerFirstname", DUMMY_FIRSTNAME);
+        Mockito.verify(jsonGeneratorMock).writeStringField("ownerLastname", DUMMY_LASTNAME);
+        Mockito.verify(jsonGeneratorMock).writeStringField("ownerEmail", DUMMY_USER_EMAIL);
         Mockito.verify(jsonGeneratorMock).writeStringField("ownerAvatar", DUMMY_USER_AVATAR_URL);
         Mockito.verify(jsonGeneratorMock).writeFieldName("ownerCategoriesOfInterest");
         Mockito.verify(jsonGeneratorMock).writeString(DUMMY_CATEGORY_NAME_1);

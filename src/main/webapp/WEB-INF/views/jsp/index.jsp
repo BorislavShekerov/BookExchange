@@ -21,6 +21,7 @@
     <link href="resources/core/css/app/index.css" rel="stylesheet">
     <link href="resources/core/css/app/nav_bar.css" rel="stylesheet">
     <link href="resources/core/css/app/footer.css" rel="stylesheet">
+    <link href="resources/core/css/app/sign_in_popup.css" rel="stylesheet">
 </head>
 
 <body ng-app="myApp" id="welcomeController" ng-controller="welcomeController">
@@ -163,7 +164,7 @@
                 <p>"Nothing is more expensive than a missed opportunity."</p>
                 <p><small>H. Jackson Brown, Jr</small></p>
             </blockquote>
-            <a href="#about" class="btn btn-primary btn-lg">Sign Up</a>
+            <a href="/signup" class="btn btn-primary btn-lg">Sign Up</a>
         </div>
     </div>
 
@@ -258,7 +259,7 @@
                                     </a>
                                 </div>
                                 <div class="media-body">
-                                    <h4 class="media-heading">{{bookOnExchange.ownedBy}}</h4>
+                                    <h4 class="media-heading">{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</h4>
                                     <h4 class="media-heading">Exchanges for:</h4>
                                 </div>
                             </div>
@@ -267,7 +268,7 @@
                                     <span class="label label-default">{{category}}</span></li>
                             </ul>
                             <div class="space-out-top">
-                                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
                             </div>
 
                         </div>
@@ -314,6 +315,80 @@
         </div>
     </footer>
 
+    <!-- Sign In Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+ 	<div class="modal-dialog" role="document">
+ 		<div class="modal-content panel-login">
+ 			<div class="modal-header panel-header">
+ 				<div class="row">
+ 					<div class="col-xs-6">
+ 						<a href="#" class="active" id="login-form-link">Login</a>
+ 					</div>
+ 					<div class="col-xs-6">
+ 						<a href="#" id="register-form-link">Register</a>
+ 					</div>
+ 				</div>
+ 				<hr>
+ 			</div>
+ 			<div class="modal-body panel-body">
+ 				<div class="row">
+ 					<div class="col-lg-12">
+ 						<form action="${loginUrl}" method="post" style="display: block;">
+                        	<div class="form-group">
+                        		<input type="text" id="username" name="username" class="form-control" id="exampleInputEmail2" placeholder="Username" />
+                        	</div>
+                        	<div class="form-group">
+                        		<input name="password" type="password" class="form-control" id="passwordInputField" placeholder="Password" />
+                        	</div>
+                        	<div class="form-group text-center">
+                        		<input type="checkbox" tabindex="3" class="" name="remember" id="remember">
+                        		<label for="remember"> Remember Me</label>
+                        	</div>
+                        	<div class="form-group">
+                        	    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        		<div class="row">
+                        			<div class="col-sm-6 col-sm-offset-3">
+                        	    		<input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+                        			</div>
+                        		</div>
+                        	/div>
+                        	<div class="form-group">
+                        	    <div class="row">
+                        			<div class="col-lg-12">
+                        				<div class="text-center">
+                        		            <a href="http://phpoll.com/recover" tabindex="5" class="forgot-password">Forgot Password?</a>
+                        				</div>
+                        		    </div>
+                        		</div>
+                        	</div>
+                        </form>
+ 						<form id="register-form" action="http://phpoll.com/register/process" method="post" role="form" style="display: none;">
+ 							<div class="form-group">
+ 								<input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
+ 							</div>
+ 							<div class="form-group">
+ 								<input type="email" name="email" id="email" tabindex="1" class="form-control" placeholder="Email Address" value="">
+ 							</div>
+ 							<div class="form-group">
+ 								<input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+ 							</div>
+ 							<div class="form-group">
+ 								<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">
+ 							</div>
+ 							<div class="form-group">
+ 								<div class="row">
+ 									<div class="col-sm-6 col-sm-offset-3">
+ 										<input type="submit" name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">
+ 									</div>
+ 								</div>
+ 							</div>
+ 						</form>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
+ </div>
 </html>
 <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -343,6 +418,22 @@
         $('#showNextCategoriesButton,#showPrevCategoriesButton').click(function (e) {
             e.stopPropagation();
         });
+
+
+    $('#login-form-link').click(function(e) {
+		$("#login-form").delay(100).fadeIn(100);
+ 		$("#register-form").fadeOut(100);
+		$('#register-form-link').removeClass('active');
+		$(this).addClass('active');
+		e.preventDefault();
+	});
+	$('#register-form-link').click(function(e) {
+		$("#register-form").delay(100).fadeIn(100);
+ 		$("#login-form").fadeOut(100);
+		$('#login-form-link').removeClass('active');
+		$(this).addClass('active');
+		e.preventDefault();
+	});
     });
 </script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

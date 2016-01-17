@@ -38,7 +38,7 @@ public class BookService {
     }
 
     public void addBookToExchange(Book bookToAdd) {
-        User userDetails = userDao.findUserByUsername(bookToAdd.getPostedBy().getUsername());
+        User userDetails = userDao.findUserByEmail(bookToAdd.getPostedBy().getEmail());
         bookToAdd.setPostedBy(userDetails);
 
         bookDao.postBookOnExchange(bookToAdd);

@@ -15,6 +15,15 @@ public class UserService {
     private UserDao userDao;
 
     public User findUserByUsername(String username){
-        return userDao.findUserByUsername(username);
+        return userDao.findUserByEmail(username);
+    }
+
+    public boolean userAlreadyExists(User userData) {
+        return userDao.findUserByEmail(userData.getEmail()) != null;
+    }
+
+    public void registerUser(User userData) {
+
+        userDao.addUser(userData);
     }
 }

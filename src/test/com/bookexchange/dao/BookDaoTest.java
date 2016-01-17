@@ -27,7 +27,7 @@ import static junit.framework.Assert.assertTrue;
 public class BookDaoTest {
 
     public static final String DUMMY_BOOK_TITLE = "Book Title";
-    public static final String DUMMY_USERNAME = "Firstname";
+    public static final String DUMMY_EMAIL= "email";
     public static final String SCIENCE_CATEGORY = "Science";
 
     @Autowired
@@ -40,7 +40,7 @@ public class BookDaoTest {
     @Before
     public void init(){
         User user = new User();
-        user.setUsername(DUMMY_USERNAME);
+        user.setEmail(DUMMY_EMAIL);
 
         Book b = new Book();
         b.setTitle(DUMMY_BOOK_TITLE);
@@ -68,7 +68,7 @@ public class BookDaoTest {
 
     @Test
     public void getBookForUsername(){
-        Optional<Book> bookForUser = bookDao.getBookForUsername(DUMMY_BOOK_TITLE, DUMMY_USERNAME);
+        Optional<Book> bookForUser = bookDao.getBookForEmail(DUMMY_BOOK_TITLE, DUMMY_EMAIL);
 
        assertNotNull(bookForUser.get());
     }

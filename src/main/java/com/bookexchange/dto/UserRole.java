@@ -18,7 +18,7 @@ public class UserRole {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "email")
     @JsonIgnore
     private User usersForUserRole;
 

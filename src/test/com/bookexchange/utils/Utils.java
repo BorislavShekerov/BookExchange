@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  */
 public class Utils {
 
-    public static User constructUser(String username, List<String> booksPostedOnExchange, List<String> categoriesInterestedIn) {
+    public static User constructUser(String email, List<String> booksPostedOnExchange, List<String> categoriesInterestedIn) {
         User.UserBuilder userBuilder = new User.UserBuilder();
 
-        User user = userBuilder.setUsername(username).setBooksPostedOnExchange(booksPostedOnExchange.stream()
+        User user = userBuilder.setEmail(email).setBooksPostedOnExchange(booksPostedOnExchange.stream()
                 .map(bookPostedCategory -> {
                     return new Book.BookBuilder().setCategory(new BookCategoryBuilder().setCategoryName(bookPostedCategory).buildBookCategory()).buildBook();
                 }).collect(Collectors.toList()))
