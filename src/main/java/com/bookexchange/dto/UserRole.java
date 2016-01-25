@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "USER_ROLE")
 public class UserRole {
+    public static final String ROLE_USER = "ROLE_USER";
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")

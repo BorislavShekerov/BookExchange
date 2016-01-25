@@ -22,7 +22,7 @@ public class CategoryDao {
     private SessionFactory sessionFactory;
 
     public void addCategory(BookCategory category) {
-        sessionFactory.getCurrentSession().save(category);
+        sessionFactory.getCurrentSession().saveOrUpdate(category);
     }
 
     public List<BookCategory> getAllCategories() {

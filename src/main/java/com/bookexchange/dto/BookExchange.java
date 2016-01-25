@@ -10,6 +10,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "BOOK_EXCHANGES")
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        name="DTYPE",
+        discriminatorType=DiscriminatorType.STRING
+)
+@DiscriminatorValue(value="CURRENT")
 public class BookExchange {
     @Id
     @GeneratedValue(generator = "increment")

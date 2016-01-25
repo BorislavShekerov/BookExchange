@@ -18,9 +18,10 @@ bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $ht
     $scope.passwordRepeat = "";
     $scope.emailRepeat = "";
     $scope.categoriesInterestedIn = [];
-
-    var invalidInputCount = 0;
+    $scope.emailAlreadyInUse = false;
+     var invalidInputCount = 0;
     var previouslySelectedAvatarImg;
+    var allCategories = [];
     $scope.submitted = false;
 
     $scope.emailsDifferent = false;
@@ -48,21 +49,6 @@ bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $ht
        }
     }
 
-    var addCategoriesInterestedInToUserData = function () {
-          $.each($scope.categoriesInterestedIn, function (index, value) {
-                var category = { categoryName : value};
-                $scope.user.categoriesInterestedIn.push(category);
-          });
-    }
-
-    var sendSignUpRequest = function () {
-        $http.post('/registerUser', $scope.user).then(function(response){
-            console.log(response.status);
-        }, function(response){
-            console.log(response.status);
-        });
-    }
-
     $scope.submitForm = function (isFormValid){
         $scope.submitted = true;
         invalidInputCount = 0;
@@ -75,9 +61,9 @@ bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $ht
 
 
         if(invalidInputCount == 0 && isFormValid && $scope.userAvatarSet &&  $scope.categoriesInterestedIn.length>0){
-             addCategoriesInterestedInToUserData();
+            $('#avatarUrl').val($scope.user.avatarUrl);
 
-             sendSignUpRequest();
+            $('#userRegisterForm').submit();
         }
     };
 
@@ -89,54 +75,6 @@ bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $ht
     error(function (data, status, headers, config) {
         alert("Error");
     });
-
-    function constructCategoriesList(data) {
-        $('#categories-wanted-select').multiselect({
-            buttonText: function (options, select) {
-                return 'Pick Categories Interested In';
-            },
-            buttonTitle: function (options, select) {
-                var labels = [];
-                options.each(function () {
-                    labels.push($(this).text());
-                });
-                return labels.join(' - ');
-            },
-            onChange: function (option, checked, select) {
-                $scope.addCategoryInterestedIn($(option).val());
-            }
-        });
-
-        var options = [];
-        $.each(data, function (index, value) {
-
-            var option = {};
-            option.label = value.categoryName;
-            option.title = value.categoryName;
-            option.value = value.categoryName;
-            option.selected = false;
-
-            options.push(option);
-        });
-
-        $('#categories-wanted-select').multiselect('dataprovider', options);
-    }
-
-      $scope.addCategoryInterestedIn = function (category) {
-            $scope.categoriesInterestedIn.push(category);
-
-            $('option[value=' + category + ']', $('#categories-select')).prop('selected', true);
-
-            $('#categories-wanted-select').multiselect('refresh');
-            $scope.$apply();
-        }
-    $scope.removeCategory = function (category) {
-        $scope.categoriesInterestedIn.splice($.inArray(category, $scope.categoriesInterestedIn), 1);
-
-        $('option[value=' + category + ']', $('#categories-wanted-select')).prop('selected', false);
-
-        $('#categories-wanted-select').multiselect('refresh');
-    };
 
     var updateUserAvatar = function(newVal){
         $scope.userAvatarSet = newVal;

@@ -101,4 +101,8 @@ public class ExchangeService {
 
         return relevantStronglyConnectedComponent;
     }
+
+    public List<BookExchange> getBookExchangesForUser(String userEmail){
+        return bookExchangeDao.getBookExchangesForUser(userEmail);
+    }
 }

@@ -9,6 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "BOOK_EXCHANGES")
+@DiscriminatorValue(value="COMPLETED")
 public class BookExchangeCompleted extends BookExchange{
     @Column(name = "EXCHANGE_SUCCESS")
     private boolean exchangeSuccess;

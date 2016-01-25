@@ -1,7 +1,7 @@
 package com.bookexchange.dao;
 
-import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
+import com.bookexchange.dto.UserRole;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by sheke on 10/19/2015.
@@ -27,12 +28,12 @@ public class UserDao {
         sessionFactory.getCurrentSession().update(user);
     }
 
-    public User findUserByEmail(String email) {
+    public Optional<User> findUserByEmail(String email) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(User.class);
         criteria.add(Restrictions.eq("email", email));
-        return (User) criteria.uniqueResult();
+        return Optional.ofNullable((User) criteria.uniqueResult());
     }
 
     public List<User> getAllUsers(){
@@ -43,4 +44,9 @@ public class UserDao {
 
         return criteria.list();
     }
+
+    public void addUserRole(UserRole userRole){
+        sessionFactory.getCurrentSession().save(userRole);
+    }
+
 }

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 	<html lang="en">
 
 	<head>
@@ -8,7 +9,10 @@
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 		<meta name="description" content="">
 		<meta name="author" content="">
-
+          <sec:csrfMetaTags />
+             <meta name="_csrf_parameter" content="${_csrf_parameter}"/>
+            <meta name="_csrf" content="${_csrf.token}"/>
+            <meta name="_csrf_header" content="${_csrf.headerName}"/>
 		<title>Fixed Top Navbar Example for Bootstrap</title>
 
 		<!-- Bootstrap core CSS -->
@@ -42,42 +46,44 @@
 
 			<div class="row">
 				<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-					<form name="userForm" ng-submit="submitForm(userForm.$valid)" novalidate>
+				 <c:url value="/registerUser" var="registerUserUrl"/>
+					<form:form id="userRegisterForm" name="userForm" action="/registerUser" modelAttribute="userData"  >
 						<h2>Please Sign Up <small>It''s free and always will be.</small></h2>
 
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="form-group" ng-class="{ 'has-error' : userForm.first_name.$invalid && !userForm.first_name.$pristine && submitted || (submitted && userForm.first_name.$pristine)}">
-									<input type="text" name="first_name" id="first_name" class="form-control input-lg" placeholder="First Name" tabindex="1" autocomplete="off" ng-model="user.firstName" required>
+									<form:input path="firstName" type="text" name="first_name" id="first_name" class="form-control input-lg" placeholder="First Name" tabindex="1" autocomplete="off" ng-model="user.firstName"/>
 									<p ng-show="submitted && (userForm.first_name.$pristine || (userForm.first_name.$invalid && !userForm.first_name.$pristine))" class="help-block">You first name is required.</p>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="form-group" ng-class="{ 'has-error' : userForm.last_name.$invalid && !userForm.last_name.$pristine && submitted || (submitted && userForm.last_name.$pristine)}">
-									<input type="text" name="last_name" id="last_name" class="form-control input-lg" placeholder="Last Name" tabindex="2" autocomplete="off" ng-model="user.lastName" required>
+									<form:input path="lastName" type="text" name="last_name" id="last_name" class="form-control input-lg" placeholder="Last Name" tabindex="2" autocomplete="off" ng-model="user.lastName"/>
 									<p ng-show="submitted && (userForm.last_name.$pristine || (userForm.last_name.$invalid && !userForm.last_name.$pristine)) " class="help-block">You last name is required.</p>
 								</div>
 							</div>
 						</div>
-						<div class="form-group" ng-class="{ 'has-error' : ((userForm.email.$invalid && !userForm.email.$pristine) || emailsDifferent) && submitted || (submitted && userForm.email.$pristine)}">
-							<input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4" autocomplete="off" ng-model="user.email">
+						<div class="form-group" ng-class="{ 'has-error' : emailAlreadyInUse || ((userForm.email.$invalid && !userForm.email.$pristine) || emailsDifferent) && submitted || (submitted && userForm.email.$pristine)}">
+							<form:input path="email" type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4" autocomplete="off" ng-model="user.email" />
 							<p ng-show="submitted && (userForm.email.$pristine || (userForm.email.$invalid && !userForm.email.$pristine)) " class="help-block">Enter a valid email.</p>
+							<p ng-show="emailAlreadyInUse" class="help-block">Enter a valid email.</p>
 						</div>
 						<div class="form-group" ng-class="{ 'has-error' : ((userForm.email.$invalid && !userForm.email.$pristine) || emailsDifferent) && submitted || (submitted && userForm.email_confirmation.$pristine)}">
-							<input type="email" name="email_confirmation" id="email_confirmation" class="form-control input-lg" placeholder="Confirm Email Address" autocomplete="off" tabindex="5" ng-model="emailRepeat">
+							<input type="email" name="email_confirmation" id="email_confirmation" class="form-control input-lg" placeholder="Confirm Email Address" autocomplete="off" tabindex="5" ng-model="emailRepeat"/>
 							<p ng-show="submitted && emailsDifferent" class="help-block">Emails must be the same.</p>
 						</div>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="form-group" ng-class="{ 'has-error' : ((userForm.password.$error.minlength && !userForm.email.$pristine)|| passwordsDifferent) && submitted || (submitted && userForm.password.$pristine)}">
-									<input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" tabindex="6" autocomplete="off" ng-minlength="8" ng-model="user.password">
+									<form:input path="password" type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" tabindex="6" autocomplete="off" ng-minlength="8" ng-model="user.password" />
 									<p ng-show="submitted && (userForm.password.$pristine || userForm.password.$error.minlength)" class="help-block">Password must be at least 8 characters long.</p>
 									<p ng-show="submitted && passwordsDifferent" class="help-block">Passwords must be the same.</p>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="form-group" ng-class="{ 'has-error' : ((userForm.email.$invalid && !userForm.email.$pristine)|| passwordsDifferent) && submitted || (submitted && userForm.password_confirmation.$pristine)}">
-									<input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Confirm Password" tabindex="7" autocomplete="off" ng-minlength="8" ng-model="passwordRepeat">
+									<input type="password" name="password_confirmation" id="password_confirmation" class="form-control input-lg" placeholder="Confirm Password" tabindex="7" autocomplete="off" ng-minlength="8" ng-model="passwordRepeat" />
 								</div>
 							</div>
 						</div>
@@ -119,6 +125,7 @@
 
 								<div class="col-xs-12 col-md-3 col-md-offset-3" id="uploadAvatarPicker">
 									<div class="row">
+									    <form:input path="avatarUrl" type="hidden" name="avatarUrl" id="avatarUrl" ng-model="$scope.user.avatarUrl"/>
 										<img src="resources/core/img/empty-avatar.png" />
 									</div>
 									<div class="row">
@@ -145,13 +152,15 @@
 						</div>
 						<div class="row">
 							<div class="col-xs-12 col-md-6 col-md-offset-3">
-								<input type="submit" value="Sign Up" class="btn btn-primary btn-block btn-lg" tabindex="8">
+							<input path="tokenName" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+							<form:button type="button" ng-click="submitForm(true)" value="Sign Up" class="btn btn-primary btn-block btn-lg" tabindex="8" />
 							</div>
 						</div>
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>
+
 		<!--  Footer -->
 		<footer class="footer-distributed">
 			<div class="footer-left">

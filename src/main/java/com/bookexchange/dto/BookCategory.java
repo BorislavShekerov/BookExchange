@@ -41,6 +41,9 @@ public class BookCategory {
         return categoryName;
     }
 
+    public void addUserInterestedInCategory(User userInterestedInCategory){
+        usersInterestedInCategory.add(userInterestedInCategory);
+    }
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
@@ -107,5 +110,7 @@ public class BookCategory {
         public BookCategory buildBookCategory(){
             return bookCategory;
         }
+
+
     }
 }

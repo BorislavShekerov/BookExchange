@@ -4,6 +4,7 @@ import com.bookexchange.dao.BookDao;
 import com.bookexchange.dao.UserDao;
 import com.bookexchange.dto.Book;
 import com.bookexchange.dto.User;
+import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +38,8 @@ public class BookService {
         bookDao.postBookOnExchange(bookToPost);
     }
 
-    public void addBookToExchange(Book bookToAdd) {
-        User userDetails = userDao.findUserByEmail(bookToAdd.getPostedBy().getEmail());
+    public void addBookToExchange(Book bookToAdd) throws BookExchangeInternalException {
+        User userDetails = userDao.findUserByEmail(bookToAdd.getPostedBy().getEmail()).orElseThrow(()-> new BookExchangeInternalException("UNKNOWN USERNAME"));
         bookToAdd.setPostedBy(userDetails);
 
         bookDao.postBookOnExchange(bookToAdd);

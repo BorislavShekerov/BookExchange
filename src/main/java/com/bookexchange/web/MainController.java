@@ -1,6 +1,7 @@
 package com.bookexchange.web;
 
 import com.bookexchange.dto.User;
+import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,28 @@ public class MainController {
 
     }
 
+/*    @RequestMapping(value = "/registration/success/", method = RequestMethod.POST)
+    public ModelAndView getIndex(ModelMap model) {
+
+        ModelAndView modelAndView = new ModelAndView("index");
+        modelAndView.addObject("user", new User());
+        modelAndView.addObject("registrationSuccess",true);
+        return modelAndView;
+
+    }*/
+
     @RequestMapping(value = "/app/", method = RequestMethod.GET)
-    public ModelAndView launchApp(ModelMap model, @ModelAttribute User user) {
+    public ModelAndView launchApp(ModelMap model, @ModelAttribute User user) throws BookExchangeInternalException {
         Authentication authentication = getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
 
-        User userDetails = userService.findUserByUsername(currentPrincipalName);
+        User userDetails = null;
+        if(currentPrincipalName!=null){
+            userDetails = userService.findUserByEmail(currentPrincipalName);
+            userService.updateUserLoginCount(userDetails);
+        }else{
+            userDetails = new User();
+        }
         userDetails.setPassword("");
 
 
@@ -42,12 +59,19 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = "/app/udetails/{username}", method = RequestMethod.GET)
-    public @ResponseBody User getUserData(@PathVariable String username) {
-        User userDetails = userService.findUserByUsername(username);
+    @RequestMapping(value = "/app/udetails/", method = RequestMethod.GET)
+    public @ResponseBody User getUserData(ModelMap model) throws BookExchangeInternalException {
+        Authentication authentication = getContext().getAuthentication();
+        String currentPrincipalEmail = authentication.getName();
+
+        User userDetails = userService.findUserByEmail(currentPrincipalEmail);
 
         return userDetails;
+    }
 
+    @RequestMapping(value = "/app/firstTimeLogin", method = RequestMethod.GET)
+    public String userFirstTimeLogin(ModelMap model) {
+        return "firstTimeLoginModal";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -78,8 +102,11 @@ public class MainController {
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
-    public String getSignUpPage(ModelMap model) {
-        return "register";
+    public ModelAndView getSignUpPage(ModelMap model) {
+
+        ModelAndView modelAndView = new ModelAndView("register");
+        modelAndView.addObject("userData",new User());
+        return modelAndView;
     }
 
 }

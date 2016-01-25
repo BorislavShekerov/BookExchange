@@ -1,0 +1,7 @@
+.selected-menu-item{
+    background-color : #e7e7e7;
+}
+
+.selected-menu-item > a{
+   color : black !important;
+}

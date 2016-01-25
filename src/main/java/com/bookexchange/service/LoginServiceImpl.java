@@ -3,6 +3,7 @@ package com.bookexchange.service;
 import com.bookexchange.dao.UserDao;
 import com.bookexchange.dto.User;
 import com.bookexchange.dto.UserRole;
+import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,7 +31,7 @@ public class LoginServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findUserByEmail(username);
+        User user = userDao.findUserByEmail(username).orElseThrow(()->new UsernameNotFoundException("UNKNOWN USERNAME"));
 
         List<GrantedAuthority> authorities = buildUserAuthority(user
                 .getUserRole());

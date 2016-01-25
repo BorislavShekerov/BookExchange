@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Created by sheke on 10/18/2015.
@@ -22,9 +23,9 @@ public class User {
     List<Book> booksPostedOnExchange = new ArrayList<>();
     @Transient
     Book bookToAddToExchange;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "USER_CATEGORIES_INTERESTED", joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID")})
-    Set<BookCategory> categoriesInterestedIn;
+    Set<BookCategory> categoriesInterestedIn = new HashSet<>();
     @Column(name = "FIRST_NAME")
     private String firstName;
     @Column(name = "LAST_NAME")
@@ -35,22 +36,26 @@ public class User {
     private String avatarUrl;
     @Column(name = "ENABLED")
     private boolean enabled;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersForUserRole", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersForUserRole", cascade = {javax.persistence.CascadeType.PERSIST})
     @JsonIgnore
-    private Set<UserRole> userRole;
+    private Set<UserRole> userRole = new HashSet<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_EXCHANGE_CURRENT", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
     private Set<BookExchange> currentExchanges = new HashSet<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_EXCHANGE_HISTORY", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
     private Set<BookExchangeCompleted> exchangeHistory = new HashSet<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userNotified")
-    private Set<Notification> userNotifications;
-
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userNotified", cascade = {javax.persistence.CascadeType.PERSIST})
+    private Set<Notification> userNotifications = new HashSet<>();
+    @Column(name = "LOGIN_COUNT")
+    private int  loginCount;
     public void addBookExchange(BookExchange bookExchange) {
         this.currentExchanges.add(bookExchange);
     }
 
+    public void addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn){
+        this.categoriesInterestedIn.addAll(categoriesInterestedIn);
+    }
     public void completeExchange(BookExchangeCompleted bookExchange) {
         this.exchangeHistory.add(bookExchange);
     }
@@ -107,6 +112,9 @@ public class User {
         this.booksPostedOnExchange.add(book);
     }
 
+    public void addUserRole(UserRole userRole) {
+        this.userRole.add(userRole);
+    }
     public String getEmail() {
         return email;
     }
@@ -147,6 +155,9 @@ public class User {
         this.exchangeHistory = exchangeHistory;
     }
 
+    public void addNotification(Notification newNotification){
+        userNotifications.add(newNotification);
+    }
     public Set<Notification> getUserNotifications() {
         return userNotifications;
     }
@@ -163,6 +174,17 @@ public class User {
         this.bookToAddToExchange = bookToAddToExchange;
     }
 
+    public int getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(int loginCount) {
+        this.loginCount = loginCount;
+    }
+
+    public void increaseLoginCount(){
+        loginCount++;
+    }
     public static class UserBuilder {
 
         private User user;
@@ -223,6 +245,11 @@ public class User {
 
         public UserBuilder setUserNotifications(Set<Notification> userNotifications) {
             user.setUserNotifications(userNotifications);
+            return this;
+        }
+
+        public UserBuilder setLoginCount(int loginCount) {
+            user.setLoginCount(loginCount);
             return this;
         }
 

@@ -1,10 +1,13 @@
 package com.bookexchange.web;
 
+import com.bookexchange.dto.BookExchange;
 import com.bookexchange.dto.ExchangeOrder;
 import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.service.ExchangeService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -34,6 +37,16 @@ public class ExchangeController {
     public String getUserOffersPage(ModelMap model) {
         return "offers";
 
+    }
+
+    @RequestMapping(value = "/app/getUserCurrentExchanges", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<BookExchange> getUserCurrentExchanges(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        return exchangeService.getBookExchangesForUser(userEmail);
     }
 
     @RequestMapping(value = "/offerExchange", method = RequestMethod.GET)

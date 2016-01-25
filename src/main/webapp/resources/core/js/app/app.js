@@ -1,4 +1,4 @@
-var bookApp = angular.module('myApp', ['ngRoute']);
+var bookApp = angular.module('myApp', ['ngRoute','ui.bootstrap','ngToast']);
 
 bookApp.config(function ($routeProvider) {
     $routeProvider
@@ -6,7 +6,7 @@ bookApp.config(function ($routeProvider) {
     // route for the home page
         .when('/', {
         templateUrl: '/exchange',
-        controller: 'mainController'
+        controller: 'exchangeController'
     })
 
     // route for the about page
@@ -35,7 +35,7 @@ bookApp.config(function ($routeProvider) {
 
       .when('/offerExchange', {
             templateUrl: '/offerExchange',
-            controller: 'exchangeController'
+            controller: 'exchangeOfferController'
         });
 
 
