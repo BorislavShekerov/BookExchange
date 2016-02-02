@@ -1,6 +1,8 @@
 package com.bookexchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,6 +23,9 @@ public class User {
     private String email;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "postedBy")
     List<Book> booksPostedOnExchange = new ArrayList<>();
+    @OneToMany(mappedBy = "exchangeInitiator")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    Set<BookExchangeChain> exchageChainsInitiated = new HashSet<>();
     @Transient
     Book bookToAddToExchange;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -49,6 +54,9 @@ public class User {
     private Set<Notification> userNotifications = new HashSet<>();
     @Column(name = "LOGIN_COUNT")
     private int  loginCount;
+    @Column(name = "VIP_TOKENS")
+    private int vipTokens;
+
     public void addBookExchange(BookExchange bookExchange) {
         this.currentExchanges.add(bookExchange);
     }
@@ -134,7 +142,9 @@ public class User {
     public Set<BookExchange> getCurrentExchanges() {
         return currentExchanges;
     }
-
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
     public void setCurrentExchanges(Set<BookExchange> currentExchanges) {
         this.currentExchanges = currentExchanges;
     }
@@ -151,6 +161,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public Set<BookExchangeChain> getExchageChainsInitiated() {
+        return exchageChainsInitiated;
+    }
+
+    public void setExchageChainsInitiated(Set<BookExchangeChain> exchageChainsInitiated) {
+        this.exchageChainsInitiated = exchageChainsInitiated;
+    }
+
     public void setExchangeHistory(Set<BookExchangeCompleted> exchangeHistory) {
         this.exchangeHistory = exchangeHistory;
     }
@@ -164,6 +182,18 @@ public class User {
 
     public void setUserNotifications(Set<Notification> userNotifications) {
         this.userNotifications = userNotifications;
+    }
+
+    public int getVipTokens() {
+        return vipTokens;
+    }
+
+    public void setVipTokens(int vipTokens) {
+        this.vipTokens = vipTokens;
+    }
+
+    public void addVipToken(){
+        this.vipTokens++;
     }
 
     public Book getBookToAddToExchange() {
@@ -227,6 +257,10 @@ public class User {
             user.setEmail(email);
             return this;
         }
+        public UserBuilder setLastName(String lastName){
+            user.setLastName(lastName);
+            return this;
+        }
 
         public UserBuilder setUserRole(Set<UserRole> userRole) {
             user.setUserRole(userRole);
@@ -257,5 +291,21 @@ public class User {
             return user;
         }
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return email != null ? email.equals(user.email) : user.email == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return email != null ? email.hashCode() : 0;
     }
 }

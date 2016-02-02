@@ -1,4 +1,4 @@
-bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', function ($scope, $http, $location, dataService, exchangeService) {
+bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', '$uibModalInstance', 'eventRecordService', function ($scope, $http, $location, dataService, exchangeService, $uibModalInstance, eventRecordService) {
 	$scope.userDetails = dataService.getUserData();
 	$scope.bookToExchangeFor = exchangeService.getBookToExchangeFor();
 	$scope.selectedBook = "Select a book";
@@ -16,6 +16,29 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 		return false;
 	}
 
+    $scope.initiateExchangeChain = function(){
+            var userEmails = [];
+            angular.forEach($scope.exchangeOptionPath,function(value,index){
+                userEmails.push(value.email);
+            });
+        	var req = {
+        			method: 'POST',
+        			url: '/app/exchangeChainOrder',
+        			headers: {
+        				'X-CSRF-TOKEN': csrfToken
+        			},
+        			data: userEmails
+        		}
+
+        		$http(req).then(function (response) {
+        		   if(response.data == "Success"){
+        		    $uibModalInstance.close();
+        		   }
+        		}, function (response) {
+        			alert("error");
+        		});
+
+    }
 	$scope.exploreOtherOptions = function () {
 		var exchangeOrder = constructExchangeOrder();
 
@@ -27,6 +50,7 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 			},
 			data: exchangeOrder
 		}
+
 
 		$http(req).then(function (response) {
 			$('#processing-modal').modal('hide');
@@ -42,9 +66,9 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 	var constructExchangeOrder = function () {
 		var exchangeOrder = {};
 		exchangeOrder.bookUnderOffer = $scope.bookToExchangeFor.title;
-		exchangeOrder.bookUnderOfferOwner = $scope.bookToExchangeFor.ownedBy;
+		exchangeOrder.bookUnderOfferOwner = $scope.bookToExchangeFor.ownerEmail;
 		exchangeOrder.bookOfferedInExchange = $scope.selectedBook;
-		exchangeOrder.bookOfferedInExchangeOwner = $scope.userDetails.username;
+		exchangeOrder.bookOfferedInExchangeOwner = $scope.userDetails.email;
 
 		return exchangeOrder;
 
@@ -63,7 +87,8 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 		}
 
 		$http(req).then(function (response) {
-			alert(response);
+		    eventRecordService.recordNewOfferEvents();
+			$uibModalInstance.close();
 		}, function (response) {
 			alert("error");
 		});

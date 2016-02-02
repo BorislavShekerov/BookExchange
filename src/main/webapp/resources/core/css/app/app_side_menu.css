@@ -5,3 +5,7 @@
 .selected-menu-item > a{
    color : black !important;
 }
+
+.badge{
+    background-color: #D00F2F;
+}

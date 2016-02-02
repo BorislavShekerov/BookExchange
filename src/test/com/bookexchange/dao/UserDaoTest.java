@@ -33,7 +33,7 @@ public class UserDaoTest {
         user.setEmail(EMAIL);
 
         userDao.addUser(user);
-        User userForUsername = userDao.findUserByEmail(EMAIL);
+        User userForUsername = userDao.findUserByEmail(EMAIL).get();
 
         assertNotNull(userForUsername);
         assertEquals("Pasword should be the same as input",PASSWORD,userForUsername.getPassword());

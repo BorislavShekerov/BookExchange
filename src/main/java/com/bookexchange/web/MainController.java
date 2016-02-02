@@ -27,15 +27,6 @@ public class MainController {
 
     }
 
-/*    @RequestMapping(value = "/registration/success/", method = RequestMethod.POST)
-    public ModelAndView getIndex(ModelMap model) {
-
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("user", new User());
-        modelAndView.addObject("registrationSuccess",true);
-        return modelAndView;
-
-    }*/
 
     @RequestMapping(value = "/app/", method = RequestMethod.GET)
     public ModelAndView launchApp(ModelMap model, @ModelAttribute User user) throws BookExchangeInternalException {

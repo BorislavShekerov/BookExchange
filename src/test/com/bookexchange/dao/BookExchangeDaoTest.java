@@ -1,9 +1,6 @@
 package com.bookexchange.dao;
 
-import com.bookexchange.dto.Book;
-import com.bookexchange.dto.BookCategory;
-import com.bookexchange.dto.BookExchange;
-import com.bookexchange.dto.User;
+import com.bookexchange.dto.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.*;
@@ -25,6 +23,7 @@ public class BookExchangeDaoTest {
 
     public static final String DUMMY_EMAIL_1 = "FirstEmail";
     public static final String DUMMY_EMAIL_2 = "SecondEmail";
+    public static final String DUMMY_EMAIL_3 = "SecondEmail";
     public static final String DUMMY_BOOK_TITLE_1 = "Book Title 1";
     public static final String DUMMY_BOOK_TITLE_2 = "Book Title 2";
     public static final String DUMMY_BOOK_TITLE_3 = "Book Title 3";
@@ -83,8 +82,8 @@ public class BookExchangeDaoTest {
         userDao.updateUser(user1);
         userDao.updateUser(user2);
 
-        user1 = userDao.findUserByEmail(DUMMY_EMAIL_1);
-        user2 = userDao.findUserByEmail(DUMMY_EMAIL_2);
+        user1 = userDao.findUserByEmail(DUMMY_EMAIL_1).get();
+        user2 = userDao.findUserByEmail(DUMMY_EMAIL_2).get();
 
         assertEquals("Exchange Added To User 1", bookExchange, user1.getCurrentExchanges().iterator().next());
         assertEquals("Exchange Added To User 2", bookExchange, user2.getCurrentExchanges().iterator().next());
@@ -103,14 +102,7 @@ public class BookExchangeDaoTest {
         Book user2Book1 = new Book.BookBuilder().setTitle(DUMMY_BOOK_TITLE_2).setCategory(category2).setPostedBy(user1).buildBook();
         Book user2Book2 = new Book.BookBuilder().setTitle(DUMMY_BOOK_TITLE_4).setCategory(category1).setPostedBy(user1).buildBook();
 
-        userDao.addUser(user1);
-        userDao.addUser(user2);
-        categoryDao.addCategory(category1);
-        categoryDao.addCategory(category2);
-        bookDao.postBookOnExchange(user1Book1);
-        bookDao.postBookOnExchange(user1Book1);
-        bookDao.postBookOnExchange(user2Book1);
-        bookDao.postBookOnExchange(user2Book2);
+        persistData(Arrays.asList(user1,user2), Arrays.asList(category1,category2), Arrays.asList(user1Book1, user1Book2, user2Book1, user2Book2));
 
         BookExchange bookExchange1 = new BookExchange();
         bookExchange1.setBookPostedOnExchange(user1Book1);
@@ -126,6 +118,54 @@ public class BookExchangeDaoTest {
         List<BookExchange> result = bookExchangeDao.getBookExchangesForUser("DUMMY_EMAIL_1");
 
         assertEquals("There must be 2 exchanges for user1",2,result.size());
+    }
+
+    @Test
+    public void addBookExchangeChain(){
+        BookCategory category1 = new BookCategory.BookCategoryBuilder().setCategoryName(DUMMY_CATEGORY_1).buildBookCategory();
+
+        User user1 = new User.UserBuilder().setEmail(DUMMY_EMAIL_1).buildUser();
+        Book user1Book1 = new Book.BookBuilder().setTitle(DUMMY_BOOK_TITLE_1).setCategory(category1).setPostedBy(user1).buildBook();
+
+        User user2 = new User.UserBuilder().setEmail(DUMMY_EMAIL_2).buildUser();
+        Book user2Book1 = new Book.BookBuilder().setTitle(DUMMY_BOOK_TITLE_2).setCategory(category1).setPostedBy(user1).buildBook();
+
+        User user3 = new User.UserBuilder().setEmail(DUMMY_EMAIL_2).buildUser();
+        Book user3Book1 = new Book.BookBuilder().setTitle(DUMMY_BOOK_TITLE_2).setCategory(category1).setPostedBy(user1).buildBook();
+
+        persistData(Arrays.asList(user1,user2,user3), Arrays.asList(category1), Arrays.asList(user1Book1,user2Book1,user3Book1));
+
+        BookExchangeChain bookExchangeChain = new BookExchangeChain();
+        bookExchangeChain.setExchangeInitiator(user1);
+
+        ExchangeChainRequest exchangeChainRequest1 = new ExchangeChainRequest();
+        exchangeChainRequest1.setUserOffering(user1);
+        exchangeChainRequest1.setUserChoosing(user2);
+
+        ExchangeChainRequest exchangeChainRequest2 = new ExchangeChainRequest();
+        exchangeChainRequest2.setUserOffering(user2);
+        exchangeChainRequest2.setUserChoosing(user3);
+
+        bookExchangeChain.setExchangeChainRequests(Arrays.asList(exchangeChainRequest1, exchangeChainRequest2));
+
+        bookExchangeDao.addBookExchangeChainRequest(exchangeChainRequest1);
+        bookExchangeDao.addBookExchangeChainRequest(exchangeChainRequest2);
+        bookExchangeDao.addBookExchangeChain(bookExchangeChain);
+
+        List<BookExchangeChain> result = bookExchangeDao.getExchangeChainsInitiatedByUser(user1.getEmail());
+
+        assertEquals("There should only be one exchange chain initiated by user",1,result.size());
+
+        List<ExchangeChainRequest> exchangeChainRequests = result.get(0).getExchangeChainRequests();
+        assertEquals("There should be 2 chain exchange requests in chain",2, exchangeChainRequests.size());
+        assertEquals("There should be 2 chain exchange requests in chain",2, exchangeChainRequests.size());
+
+    }
+
+    private void persistData(List<User> users, List<BookCategory> bookCategories, List<Book> books) {
+        users.stream().forEach(user -> userDao.addUser(user));
+        bookCategories.stream().forEach(bookCategory -> categoryDao.addCategory(bookCategory));
+        books.stream().forEach(book -> bookDao.postBookOnExchange(book));
     }
 
 }

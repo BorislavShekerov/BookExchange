@@ -9,24 +9,28 @@ import com.bookexchange.dto.User;
 import com.bookexchange.dto.UserRole;
 import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by sheke on 11/9/2015.
  */
 @Service("userService")
 public class UserService {
-
+    private static final int INITIAL_VIP_TOKENS = 5;
     @Autowired
     private UserDao userDao;
 
     @Autowired
     private CategoryDao bookCategoryDao;
 
+    @Value("${notification.new_user}")
+    private String welcomeMessage;
     @Autowired
     private NotificationsDao notificationsDao;
 
@@ -41,6 +45,7 @@ public class UserService {
     public void registerUser(User userData) {
         userData.setEnabled(true);
         userData.setLoginCount(0);
+        userData.setVipTokens(INITIAL_VIP_TOKENS);
         userDao.addUser(userData);
 
         addUserRole(userData);
@@ -58,10 +63,10 @@ public class UserService {
     private void addNewUserNotificationToUserData(User userData) {
         Notification newUserNotification = new Notification();
         newUserNotification.setDateCreated(LocalDateTime.now());
-        newUserNotification.setMessage("Welcome to WeSwap," + userData.getFirstName() + "!Enjoy your journey!");
+        newUserNotification.setMessage(welcomeMessage);
         newUserNotification.setUserNotified(userData);
 
-        notificationsDao.addNotification(newUserNotification);
+        notificationsDao.saveNotification(newUserNotification);
     }
 
     public void updateUserLoginCount(User userDetails) {
@@ -70,10 +75,13 @@ public class UserService {
         userDao.updateUser(userDetails);
     }
 
+    public List<User> fetchUsersForEmail(List<String> userEmails){
+        return userEmails.stream().map(userEmail -> userDao.findUserByEmail(userEmail).get()).collect(Collectors.toList());
+    }
+
     public void addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn,String userEmail) throws BookExchangeInternalException {
         Optional<User> userForEmail = userDao.findUserByEmail(userEmail);
         User userDetails = userForEmail.orElseThrow(() -> new BookExchangeInternalException("UNKNOWN USERNAME"));
-     //   userDetails.addCategoriesInterestedIn(categoriesInterestedIn);
 
         userDao.updateUser(userDetails);
     }

@@ -62,7 +62,7 @@ public class UserControllerTest {
 
         String result = testObj.registerUser(user2, null,null);
 
-        user2 = userDao.findUserByEmail(EMAIL2);
+        user2 = userDao.findUserByEmail(EMAIL2).get();
 
         assertEquals("User should have the firstname given to him",user2FirstName, user2.getFirstName());
         assertEquals("New user notification must be set","Welcome to WeSwap," + user2.getFirstName() + "!Enjoy your journey!",user2.getUserNotifications().iterator().next().getMessage());

@@ -1,4 +1,4 @@
-bookApp.controller('mainController', ['$scope', '$location', 'dataService', 'exchangeService', '$http', '$uibModal', 'ngToast', function ($scope, $location, dataService, exchangeService, $http, $uibModal, ngToast) {
+bookApp.controller('mainController', ['dataService', '$uibModal', 'ngToast' ,'notificationsService', function (dataService, $uibModal, ngToast, notificationsService) {
 	dataService.setEmail(email);
 
 	function init() {
@@ -36,6 +36,14 @@ bookApp.controller('mainController', ['$scope', '$location', 'dataService', 'exc
 	}
 
 	init();
+
+	 $interval(function(){
+                       var newOffers = eventRecordService.getNewOfferEvents();
+                       if (newOffers > 0){
+                       updateMenuItemEventProperties("Your Offers",true,newOffers);
+                       }
+
+                   },5000);
 
 }]);
 

@@ -75,6 +75,10 @@ public class Book {
         this.datePosted = datePosted;
     }
 
+    public String getOwnerName(){
+        return postedBy.getFirstName()+" "+postedBy.getLastName();
+    }
+
     public long getId() {
         return id;
     }

@@ -1,4 +1,4 @@
-var bookApp = angular.module('myApp', ['ngRoute','ui.bootstrap','ngToast']);
+var bookApp = angular.module('myApp', ['ngRoute','ui.bootstrap','ngToast','infinite-scroll']);
 
 bookApp.config(function ($routeProvider) {
     $routeProvider

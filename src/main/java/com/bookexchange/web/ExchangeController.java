@@ -2,8 +2,12 @@ package com.bookexchange.web;
 
 import com.bookexchange.dto.BookExchange;
 import com.bookexchange.dto.ExchangeOrder;
+import com.bookexchange.dto.User;
 import com.bookexchange.exception.BookExchangeInternalException;
+import com.bookexchange.service.ExchangeChainService;
+import com.bookexchange.service.ExchangePathSuggestionService;
 import com.bookexchange.service.ExchangeService;
+import com.bookexchange.service.UserService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,6 +31,12 @@ public class ExchangeController {
 
     @Autowired
     ExchangeService exchangeService;
+    @Autowired
+    ExchangePathSuggestionService exchangePathSuggestionService;
+    @Autowired
+    ExchangeChainService exchangeChainService;
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = "/exchange", method = RequestMethod.GET)
     public String getExchangePage(ModelMap model) {
@@ -36,6 +46,12 @@ public class ExchangeController {
     @RequestMapping(value = "/offers", method = RequestMethod.GET)
     public String getUserOffersPage(ModelMap model) {
         return "offers";
+
+    }
+
+    @RequestMapping(value = "/app/openChainRequestModal", method = RequestMethod.GET)
+    public String openChainRequestModal(ModelMap model) {
+        return "chainRequestModal";
 
     }
 
@@ -51,20 +67,44 @@ public class ExchangeController {
 
     @RequestMapping(value = "/offerExchange", method = RequestMethod.GET)
     public String getOfferExchange(ModelMap model) {
-        return "offerExchange";
+        return "offerExchangeModal";
     }
 
     @RequestMapping(value = "/app/exchangeOrder", method = RequestMethod.POST)
-    public void recordExchange(@RequestBody ExchangeOrder exchangeOrder, Model model) throws BookExchangeInternalException {
-        exchangeService.recordExchange(exchangeOrder);
+    public @ResponseBody String recordExchange(@RequestBody ExchangeOrder exchangeOrder, Model model)  {
+        try {
+            exchangeService.recordExchange(exchangeOrder);
+        } catch (BookExchangeInternalException e) {
+            return "Failure";
+        }
+
+        return "Succes";
+    }
+
+    @RequestMapping(value = "/app/exchangeChainOrder", method = RequestMethod.POST)
+    public @ResponseBody String recordExchangeChain(@RequestBody List<String> exchangeChain, Model model){
+        List<User> usersOnChain = userService.fetchUsersForEmail(exchangeChain);
+        exchangeChainService.registerExchangeChain(usersOnChain);
+        return "Success";
     }
 
     @RequestMapping(value = "/app/exploreOptions", method = RequestMethod.POST)
     public
     @ResponseBody
-    List<String> exploreExchangeOptions(@RequestBody ExchangeOrder exchangeOrder, Model model) throws BookExchangeInternalException, InterruptedException {
+    List<User> exploreExchangeOptions(@RequestBody ExchangeOrder exchangeOrder, Model model) throws BookExchangeInternalException, InterruptedException {
         Thread.sleep(1000);
-        return exchangeService.exploreOptions(exchangeOrder);
+        return exchangePathSuggestionService.exploreOptions(exchangeOrder);
+    }
+
+
+    @RequestMapping(value = "/app/exchangeChain/userRequest", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    List<User> exploreExchangeOptions(@RequestBody User exchangeInitiator,Model model) throws BookExchangeInternalException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        return exchangeChainService.getChainDetailsForUser(userEmail, exchangeInitiator.getEmail());
     }
 
     @RequestMapping(value = "/requests", method = RequestMethod.GET)

@@ -18,6 +18,8 @@ import java.util.List;
 @Service("bookService")
 @Transactional
 public class BookService {
+    public static final String ANONYMOUS_USER = "anonymousUser";
+
     @Autowired
     private BookDao bookDao;
 
@@ -28,9 +30,13 @@ public class BookService {
         this.bookDao = bookDao;
     }
 
-    public List<Book> getAllBooksOnExchange() {
-        return bookDao.getAllBooksOnExchange();
+    public List<Book> getAllBooksOnExchange(String currentUserEmail) {
+        if(currentUserEmail.equals(ANONYMOUS_USER)){
+            return bookDao.getAllBooksOnExchange();
+        }
+        return bookDao.getAllBooksReqestedByUser(currentUserEmail);
     }
+
 
     public void postBookOnExchange(Book bookToPost) {
         bookToPost.setDatePosted(LocalDateTime.now());

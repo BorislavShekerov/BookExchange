@@ -5,7 +5,6 @@ import com.bookexchange.dto.Book;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -25,7 +24,7 @@ public class BookServiceTest {
 
     BookService testObj;
     BookDao bookDAO;
-
+    private static final String DUMMY_USER_EMAIL = "dummyEMAIL";
     @Before
     public void setUp(){
         testObj = new BookService();
@@ -36,7 +35,7 @@ public class BookServiceTest {
 
     @Test
     public void getAllBooksOnExchange(){
-        testObj.getAllBooksOnExchange();
+        testObj.getAllBooksOnExchange(DUMMY_USER_EMAIL);
 
         verify(bookDAO).getAllBooksOnExchange();
     }

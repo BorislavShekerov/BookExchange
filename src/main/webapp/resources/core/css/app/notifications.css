@@ -57,3 +57,6 @@ margin-top:0.2em;
  border-radius:4px;
  }
 
+.cursor-pointer{
+    cursor:pointer;
+}

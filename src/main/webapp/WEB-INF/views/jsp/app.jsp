@@ -87,11 +87,6 @@
 												<p class="text-left small">${userDetails.email}</p>
 											</div>
 										</div>
-										<div class="row">
-											<p class="text-left col-sm-10 col-sm-offset-1">
-												<a href="#" class="btn btn-primary btn-block btn-sm"><span class="glyphicon glyphicon-cog space-out-right-sm" ></span>Preferences</a>
-											</p>
-										</div>
 									</div>
 								</li>
 								<li class="divider"></li>
@@ -109,29 +104,26 @@
 							</ul>
 						</li>
 
-						<li class="dropdown">
-							<a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle" data-target="#">
-								<span class="glyphicon glyphicon-bell"></span>
+						<li class="dropdown" ng-controller="notificationsController">
+							<a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle" ng-click="notificationsDropdownOpened()" data-target="#">
+								<span class="glyphicon glyphicon-bell"></span><span ng-if="unseenNotifications > 0" class="badge">{{unseenNotifications}}</span>
 							</a>
 
 							<ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
 
 								<div class="notification-heading">
 									<h4 class="menu-title">Notifications</h4>
-									<h4 class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>
 								</div>
 								<li class="divider"></li>
-								<div class="notifications-wrapper">
-									<c:forEach var="notification" items="${userDetails.userNotifications}">
-										<a class="content" href="#">
+								<div class="notifications-wrapper" ng-repeat="notification in notifications">
 
-											<div class="notification-item">
-												<h4 class="item-title">${notification.message}</h4>
-												<p class="item-info">Marketing 101, Video Assignment</p>
+
+
+											<div ng-class="{'cursor-pointer': notification.notificationType == 'EXCHANGE_CHAIN_INVITATION'}" class="notification-item" ng-click="notificationClicked(notification)">
+												<p class="item-info">{{notification.message}}</p>
+
 											</div>
 
-										</a>
-									</c:forEach>
 
 								</div>
 								<li class="divider"></li>
@@ -157,7 +149,7 @@
 					<ul class="nav navbar-nav">
 						<li class="list-item-chosen"><a href="#" ng-click="sideMenuItemSelected()"><span class="glyphicon glyphicon-send"></span> Link</a></li>
 
-						<li ng-repeat="menuItem in sideMenuOptions" ng-click="menuItemSelected(menuItem.label)" ng-class="{'selected-menu-item': selectedMenuItem == menuItem.label}"><a href="{{menuItem.url}}"><span class="glyphicon {{menuItem.glyphicon}}"></span> {{menuItem.label}}</a></li>
+						<li ng-repeat="menuItem in sideMenuOptions" ng-click="menuItemSelected(menuItem.label)" ng-class="{'selected-menu-item': selectedMenuItem == menuItem.label}"><a href="{{menuItem.url}}"><span class="glyphicon {{menuItem.glyphicon}}"></span> {{menuItem.label}} <span ng-if="menuItem.eventHappened" class="badge">{{menuItem.eventSum}}</span></a></li>
 
 					</ul>
 				</div>
@@ -252,6 +244,7 @@
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-sanitize.js"></script>
 		<script src="../resources/core/js/ngToast.js "></script>
 		<script src="../resources/core/js/jquery.bootpag.js"></script>
+		<script type='text/javascript' src='../resources/core/js/infinite-scroll.js'></script>
 
 		<!-- Custom CSS -->
 		  <script src="../resources/core/js/app/app.js "></script>
@@ -260,10 +253,18 @@
 		<script src="../resources/core/js/app/controllers/exchangeHistoryController.js "></script>
 		<script src="../resources/core/js/app/controllers/firstTimeModalController.js "></script>
 		<script src="../resources/core/js/app/controllers/mainController.js "></script>
+		<script src="../resources/core/js/app/controllers/notificationsController.js "></script>
 		<script src="../resources/core/js/app/controllers/offerExchangeController.js "></script>
         <script src="../resources/core/js/app/controllers/offersController.js "></script>
         <script src="../resources/core/js/app/controllers/sideMenuController.js "></script>
-        <script src="../resources/core/js/app/app-services.js "></script>
+        <script src="../resources/core/js/app/services/dataService.js "></script>
+                <script src="../resources/core/js/app/services/eventRecordService.js "></script>
+        <script src="../resources/core/js/app/services/exchangeService.js "></script>
+         <script src="../resources/core/js/app/services/notificationsService.js "></script>
+
+        <script type='text/javascript' src='../resources/core/js/app/eventRecordService.js'></script>
+
+
 
 		<script>
 			var email = "${userDetails.email}";

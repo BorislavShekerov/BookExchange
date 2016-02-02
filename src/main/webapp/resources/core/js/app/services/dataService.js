@@ -30,6 +30,18 @@ bookApp.service("dataService", ['$http', function ($http) {
         			});
         	return postPromise;
     }
+
+    function getAllBooks(){
+         var promise = $http.get('/getAllBooks').
+                	success(function (response, status, headers, config) {
+                       return response.data;
+                	}).
+                	error(function (data, status, headers, config) {
+                		alert("Error");
+                	});
+
+          return promise;
+    }
 	var setEmail = function (userEmail) {
 		if (email == "") {
 			email = userEmail;
@@ -61,37 +73,8 @@ bookApp.service("dataService", ['$http', function ($http) {
 		getUserData: getUserData,
 		setCategories: setCategories,
 		getCategories: getCategories,
-		addUserPreferredCategories:addUserPreferredCategories
-	};
-
-}]);
-
-bookApp.service("exchangeService",['$http', function ($http) {
-	var bookToExchangeFor = {};
-
-	var setBookToExchangeFor = function (book) {
-		bookToExchangeFor = book;
-	};
-
-	var getBookToExchangeFor = function () {
-		return bookToExchangeFor;
-	};
-
-    function getUserCurrentExchanges() {
-    		var getPromise = $http.get('/app/getUserCurrentExchanges').
-    		then(function (response) {
-    			return response.data;
-    		}, function (response) {
-    			console.log(response)
-    		});
-
-    		return getPromise;
-    	}
-
-	return {
-		setBookToExchangeFor: setBookToExchangeFor,
-		getBookToExchangeFor: getBookToExchangeFor,
-		getUserCurrentExchanges: getUserCurrentExchanges
+		addUserPreferredCategories:addUserPreferredCategories,
+		getAllBooks : getAllBooks
 	};
 
 }]);

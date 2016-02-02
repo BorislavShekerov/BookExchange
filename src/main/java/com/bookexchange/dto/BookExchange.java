@@ -26,7 +26,9 @@ public class BookExchange {
     @ManyToOne
     @JoinColumn(name = "EXCHANGE_BOOK_ID")
     protected Book bookOfferedInExchange;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "EXCHANGE_CHAIN_INCLUDED_IN")
+    private BookExchangeChain exchangeChainIncludedIn;
 
     public Book getBookPostedOnExchange() {
         return bookPostedOnExchange;
@@ -42,6 +44,14 @@ public class BookExchange {
 
     public void setBookOfferedInExchange(Book bookOfferedInExchange) {
         this.bookOfferedInExchange = bookOfferedInExchange;
+    }
+
+    public BookExchangeChain getExchangeChainIncludedIn() {
+        return exchangeChainIncludedIn;
+    }
+
+    public void setExchangeChainIncludedIn(BookExchangeChain exchangeChainIncludedIn) {
+        this.exchangeChainIncludedIn = exchangeChainIncludedIn;
     }
 
     @Override

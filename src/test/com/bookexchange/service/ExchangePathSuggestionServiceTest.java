@@ -11,11 +11,11 @@ import static junit.framework.Assert.assertEquals;
 /**
  * Created by sheke on 11/18/2015.
  */
-public class ExchangeServiceTest {
+public class ExchangePathSuggestionServiceTest {
 
     public static final String EXCHANGE_INITATOR = "dummyUser1";
     public static final String USER_UNDER_OFFER = "dummyUser2";
-    ExchangeService testObj = new ExchangeService();
+    ExchangePathSuggestionService testObj = new ExchangePathSuggestionService();
 
     @Test
     public void filterRelevantComponents() {

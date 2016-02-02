@@ -43,4 +43,15 @@ public class BookDao {
     public void postBookOnExchange(Book bookToPost) {
         sessionFactory.getCurrentSession().save(bookToPost);
     }
+
+    public List<Book> getAllBooksReqestedByUser(String currentUserEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(Book.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.createAlias("postedBy", "userPosted")
+                .add(Restrictions.ne("userPosted.email", currentUserEmail));
+
+        return (List<Book>) criteria.list();
+    }
 }
