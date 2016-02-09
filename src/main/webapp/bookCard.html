@@ -1,22 +1,22 @@
 <div class="side-body" id="main-content">
-    <div ng-repeat="bookExchange in userCurrentOffers " class="col-xs-12">
+    <div ng-repeat="directBookExchange in userCurrentOffers " class="col-xs-12">
         <div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-1">
             <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
-                <img src="{{bookExchange.bookToAddToExchange.imgUrl}}" class="img-responsive full-width">
+                <img src="{{directBookExchange.bookToAddToExchange.imgUrl}}" class="img-responsive full-width">
                 <div class="panel-body">
                     <div class="media">
                         <div class="media-left ">
                             <a href="#">
-                                <img class="media-object profile-picture" src="{{bookExchange.bookToAddToExchange.ownerAvatar}}" alt="...">
+                                <img class="media-object profile-picture" src="{{directBookExchange.bookToAddToExchange.ownerAvatar}}" alt="...">
                             </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading">{{bookExchange.bookToAddToExchange.ownedBy}}</h4>
+                            <h4 class="media-heading">{{directBookExchange.bookToAddToExchange.ownedBy}}</h4>
                             <h4 class="media-heading">Exchanges for:</h4>
                         </div>
                     </div>
                     <ul class="list-inline space-out-top-sm">
-                        <li ng-repeat="category in bookExchange.bookToAddToExchange.ownerCategoriesOfInterest">
+                        <li ng-repeat="category in directBookExchange.bookToAddToExchange.ownerCategoriesOfInterest">
                             <span class="label label-default">{{category}}</span></li>
                     </ul>
                     <div class="space-out-top-sm">
@@ -32,21 +32,21 @@
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4">
             <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
-                <img src="{{bookExchange.bookOfferedInExchange.imgUrl}}" class="img-responsive full-width">
+                <img src="{{directBookExchange.bookOfferedInExchange.imgUrl}}" class="img-responsive full-width">
                 <div class="panel-body">
                     <div class="media">
                         <div class="media-left ">
                             <a href="#">
-                                <img class="media-object profile-picture" src="{{bookExchange.bookOfferedInExchange.ownerAvatar}}" alt="...">
+                                <img class="media-object profile-picture" src="{{directBookExchange.bookOfferedInExchange.ownerAvatar}}" alt="...">
                             </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading">{{bookExchange.bookOfferedInExchange.ownedBy}}</h4>
+                            <h4 class="media-heading">{{directBookExchange.bookOfferedInExchange.ownedBy}}</h4>
                             <h4 class="media-heading">Exchanges for:</h4>
                         </div>
                     </div>
                     <ul class="list-inline space-out-top-sm">
-                        <li ng-repeat="category in bookExchange.bookOfferedInExchange.ownerCategoriesOfInterest">
+                        <li ng-repeat="category in directBookExchange.bookOfferedInExchange.ownerCategoriesOfInterest">
                             <span class="label label-default">{{category}}</span></li>
                     </ul>
                     <div class="space-out-top-sm">

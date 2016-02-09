@@ -1,4 +1,4 @@
-bookApp.controller('notificationsController', ['notificationsService', 'exchangeService', '$scope', '$interval', 'dataService', function (notificationsService, exchangeService, $scope, $interval, dataService) {
+bookApp.controller('notificationsController', ['notificationsService', 'exchangeService', '$scope', '$interval', 'dataService', '$uibModal', function (notificationsService, exchangeService, $scope, $interval, dataService, $uibModal) {
 	$scope.notifications = [];
 	$scope.notificationsDropdownOpen = false;
 	$scope.unseenNotifications = 0;
@@ -26,16 +26,26 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 
 	$scope.notificationClicked = function (notification) {
 		if (notification.notificationType == 'EXCHANGE_CHAIN_INVITATION') {
-			exchangeService.getChainDetailsForUser(notification.chainInitiator).then(function (usersToExchangeWith) {
+			exchangeService.getChainDetailsForUser(notification.exchangeChainID).then(function (usersToExchangeWith) {
+
 				var promptWindow = $uibModal.open({
 					animation: true,
 					templateUrl: '/app/openChainRequestModal',
-					controller: 'FirstTimeLoginModalController',
+					controller: 'ChainRequestModalController',
+					size: 'lg',
 					resolve: {
 						 userToChooseFrom: usersToExchangeWith[0],
 							userChoosingFromYou: usersToExchangeWith[1],
+						notification : notification
 					}
 				});
+
+				promptWindow.result.then(function (result) {
+                        $scope.notifications.push(notification);
+                        $scope.unseenNotifications --;
+                			}, function () {
+                				$log.info('Modal dismissed at: ' + new Date());
+                			});
 			}, function (error) {
 				console.log(error);
 			});
@@ -50,7 +60,7 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 
 	function hideEmailFromMessage(notification) {
 		var message = notification.message;
-		notification.chainInitiator = message.substring(message.indexOf('(') + 1, message.indexOf(')'));
+		notification.exchangeChainID = message.substring(message.indexOf('(') + 1, message.indexOf(')'));
 		notification.message = message.substring(0, message.indexOf('(')) + message.substring(message.indexOf(')') + 1, message.length);
 	}
 

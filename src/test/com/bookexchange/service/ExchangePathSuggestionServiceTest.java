@@ -1,6 +1,6 @@
 package com.bookexchange.service;
 
-import com.bookexchange.dto.ExchangeOrder;
+import com.bookexchange.dto.frontend.ExchangeOrder;
 import com.bookexchange.graph.Vertex;
 import org.junit.Test;
 

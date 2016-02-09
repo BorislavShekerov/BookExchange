@@ -23,6 +23,7 @@ public class BookJSONSerializer extends JsonSerializer<Book> {
         jsonGen.writeStringField("imgUrl", book.getImgUrl());
         jsonGen.writeObjectField("datePosted", book.getDatePosted());
         jsonGen.writeStringField("category",book.getCategory().getCategoryName());
+        jsonGen.writeNumberField("id",book.getId());
 
         addOwnerData(book.getPostedBy(), jsonGen);
 

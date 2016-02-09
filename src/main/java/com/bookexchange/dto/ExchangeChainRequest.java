@@ -17,21 +17,32 @@ public class ExchangeChainRequest {
     private int id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_OFFERING_EMAIL", nullable = false)
-    private User userOffering;
+    private User userOfferingTo;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_CHOOSING_EMAIL", nullable = false)
-    private User userChoosing;
+    private User userChoosingFrom;
     @Column(name = "ACCEPTED")
     private boolean isAccepted;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CHAIN_EXCHANGE_ID", nullable = false)
-    private BookExchangeChain requestFor;
+    private BookExchangeChain parentExchangeChain;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "REQUEST_FOR", nullable = false)
+    private User requestFor;
 
     public ExchangeChainRequest() {
     }
 
     public ExchangeChainRequest(User userOffering) {
-        this.userOffering = userOffering;
+        this.userOfferingTo = userOffering;
+    }
+
+    public User getRequestFor() {
+        return requestFor;
+    }
+
+    public void setRequestFor(User requestFor) {
+        this.requestFor = requestFor;
     }
 
     public int getId() {
@@ -42,12 +53,12 @@ public class ExchangeChainRequest {
         this.id = id;
     }
 
-    public BookExchangeChain getRequestFor() {
-        return requestFor;
+    public BookExchangeChain getParentExchangeChain() {
+        return parentExchangeChain;
     }
 
-    public void setRequestFor(BookExchangeChain requestFor) {
-        this.requestFor = requestFor;
+    public void setParentExchangeChain(BookExchangeChain parentExchangeChain) {
+        this.parentExchangeChain = parentExchangeChain;
     }
 
     public boolean isAccepted() {
@@ -58,20 +69,20 @@ public class ExchangeChainRequest {
         this.isAccepted = accepted;
     }
 
-    public User getUserOffering() {
-        return userOffering;
+    public User getUserOfferingTo() {
+        return userOfferingTo;
     }
 
-    public void setUserOffering(User userOffering) {
-        this.userOffering = userOffering;
+    public void setUserOfferingTo(User userOfferingTo) {
+        this.userOfferingTo = userOfferingTo;
     }
 
-    public User getUserChoosing() {
-        return userChoosing;
+    public User getUserChoosingFrom() {
+        return userChoosingFrom;
     }
 
-    public void setUserChoosing(User userChoosing) {
-        this.userChoosing = userChoosing;
+    public void setUserChoosingFrom(User userChoosingFrom) {
+        this.userChoosingFrom = userChoosingFrom;
     }
 
     @Override
@@ -81,15 +92,44 @@ public class ExchangeChainRequest {
 
         ExchangeChainRequest that = (ExchangeChainRequest) o;
 
-        if (!userOffering.equals(that.userOffering)) return false;
-        return userChoosing.equals(that.userChoosing);
+        if (!userOfferingTo.equals(that.userOfferingTo)) return false;
+        return userChoosingFrom.equals(that.userChoosingFrom);
 
     }
 
     @Override
     public int hashCode() {
-        int result = userOffering.hashCode();
-        result = 31 * result + userChoosing.hashCode();
+        int result = userOfferingTo.hashCode();
+        result = 31 * result + userChoosingFrom.hashCode();
         return result;
+    }
+
+    public static class ExchangeChainRequestBuilder{
+        private ExchangeChainRequest exchangeChainRequest;
+
+        public ExchangeChainRequestBuilder(){
+            exchangeChainRequest = new ExchangeChainRequest();
+
+        }
+        public ExchangeChainRequestBuilder setRequestFor(User requestFor) {
+            exchangeChainRequest.setRequestFor(requestFor);
+            return this;
+        }
+
+        public ExchangeChainRequestBuilder setParentExchangeChain(BookExchangeChain parentExchangeChain) {
+           exchangeChainRequest.setParentExchangeChain(parentExchangeChain);return this;
+        }
+
+        public ExchangeChainRequestBuilder setUserOfferingTo(User userOfferingTo) {
+            exchangeChainRequest.setUserOfferingTo(userOfferingTo); return this;
+        }
+
+        public ExchangeChainRequestBuilder setUserChoosingFrom(User userChoosingFrom) {
+            exchangeChainRequest.setUserChoosingFrom(userChoosingFrom); return this;
+        }
+
+        public ExchangeChainRequest build(){
+            return exchangeChainRequest;
+        }
     }
 }

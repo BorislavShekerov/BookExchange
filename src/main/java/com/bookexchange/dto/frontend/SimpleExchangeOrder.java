@@ -1,30 +1,13 @@
-package com.bookexchange.dto;
+package com.bookexchange.dto.frontend;
+
+import com.bookexchange.dto.frontend.ExchangeOrder;
 
 /**
- * Created by sheke on 11/17/2015.
+ * Created by sheke on 1/29/2016.
  */
-public class ExchangeOrder {
-
-    private String bookUnderOffer;
-    private String bookUnderOfferOwner;
+public class SimpleExchangeOrder extends ExchangeOrder {
     private String bookOfferedInExchange;
     private String bookOfferedInExchangeOwner;
-
-    public String getBookUnderOffer() {
-        return bookUnderOffer;
-    }
-
-    public void setBookUnderOffer(String bookUnderOffer) {
-        this.bookUnderOffer = bookUnderOffer;
-    }
-
-    public String getBookUnderOfferOwner() {
-        return bookUnderOfferOwner;
-    }
-
-    public void setBookUnderOfferOwner(String bookUnderOfferOwner) {
-        this.bookUnderOfferOwner = bookUnderOfferOwner;
-    }
 
     public String getBookOfferedInExchange() {
         return bookOfferedInExchange;

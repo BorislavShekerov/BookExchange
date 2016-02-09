@@ -1,7 +1,7 @@
 package com.bookexchange.service;
 
 import com.bookexchange.dao.UserDao;
-import com.bookexchange.dto.ExchangeOrder;
+import com.bookexchange.dto.frontend.ExchangeOrder;
 import com.bookexchange.dto.User;
 import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.graph.CleverVisitor;

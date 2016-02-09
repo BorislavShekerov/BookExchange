@@ -12,13 +12,13 @@ bookApp.config(function ($routeProvider) {
     // route for the about page
     .when('/offers', {
         templateUrl: '/offers',
-        controller: 'offersController'
+        controller: 'offersMadeController'
     })
 
     // route for the contact page
     .when('/requests', {
         templateUrl: '/requests',
-        controller: 'offersController'
+        controller: 'offersReceivedController'
     })
 
     // route for the contact page

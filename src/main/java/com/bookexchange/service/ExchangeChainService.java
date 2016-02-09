@@ -1,12 +1,12 @@
 package com.bookexchange.service;
 
+import com.bookexchange.dao.BookDao;
 import com.bookexchange.dao.BookExchangeDao;
 import com.bookexchange.dao.NotificationsDao;
 import com.bookexchange.dao.UserDao;
-import com.bookexchange.dto.BookExchangeChain;
-import com.bookexchange.dto.ExchangeChainRequest;
-import com.bookexchange.dto.Notification;
-import com.bookexchange.dto.User;
+import com.bookexchange.dto.*;
+import com.bookexchange.dto.frontend.ExchangeChainAcceptance;
+import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by sheke on 1/30/2016.
@@ -29,47 +30,115 @@ public class ExchangeChainService {
     @Autowired
     private UserDao userDao;
     @Autowired
+    private BookDao bookDao;
+    @Autowired
     private NotificationsDao notificationsDao;
     @Value("${notification.new_exchange_chain_request}")
     public String newExchangeChainRequestMessage;
+    @Value("${notification.exchange_chain_rejection_participants}")
+    public String exchangeChainRejectMessageForParticipants;
+    @Value("${notification.exchange_chain_rejection_initiator}")
+    public String exchangeChainRejectMessageForInitiator;
+    @Value("${notification.exchange_chain_acceptance_initiator}")
+    public String exchangeChainAcceptanceMessageForInitiator;
+    @Value("${notification.exchange_chain_success_participants}")
+    public String exchangeChainSuccessParticipants;
+    @Value("${notification.exchange_chain_success_initiator}")
+    public String exchangeChainSuccessInitiator;
 
-    public void registerExchangeChain(List<User> usersOnChain){
-        List<ExchangeChainRequest> exchangeChainRequests = constructExchangeChainRequests(usersOnChain);
-        BookExchangeChain exchangeChain = new BookExchangeChain.BookExchangeChainBuilder().setExchangeInitiator(usersOnChain.get(0)).setExchangeChainRequests(exchangeChainRequests).buildBookExchangeChain();
 
-        updateExchangeChainRequests(exchangeChainRequests,exchangeChain);
-        bookExchangeDao.addBookExchangeChain(exchangeChain);
+    public void rejectExchangeChain(String userRejectingEmail, int exchangeChainID) throws BookExchangeInternalException {
+        BookExchangeChain exchangeChainRequest = bookExchangeDao.getExchangeChainRequest(exchangeChainID).orElseThrow(() -> new BookExchangeInternalException("No exchange chain for id"));
+        User userRejected = userDao.findUserByEmail(userRejectingEmail).get();
 
-        addExchangeChainInvitationNotification(usersOnChain);
+        exchangeChainRequest.setSuccessful(false);
+        exchangeChainRequest.setChainBreaker(userRejected);
+
+        bookExchangeDao.saveBookExchangeChain(exchangeChainRequest);
+        notifyUsersForChainFailure(exchangeChainRequest, userRejected);
     }
 
-    public List<User> getChainDetailsForUser(String requestingUserEmail, String exchangeInitiatorEmail) {
-        List<ExchangeChainRequest> exchangeRequestsWithUser = bookExchangeDao.getExchangeChainRequestsForUser(requestingUserEmail, exchangeInitiatorEmail);
+    public void registerExchangeChain(List<User> usersOnChain) {
+        List<ExchangeChainRequest> exchangeChainRequests = constructExchangeChainRequests(usersOnChain);
+        BookExchangeChain exchangeChain = new BookExchangeChain.BookExchangeChainBuilder().setExchangeInitiator(usersOnChain.get(0)).setExchangeChainRequests(exchangeChainRequests).setDateCreated(LocalDateTime.now()).buildBookExchangeChain();
+
+        updateExchangeChainRequests(exchangeChainRequests, exchangeChain);
+        bookExchangeDao.saveBookExchangeChain(exchangeChain);
+
+        addExchangeChainInvitationNotification(usersOnChain, exchangeChain);
+    }
+
+    public List<User> getChainDetailsForUser(int newExchangeChainRequestId, String userEmail) throws BookExchangeInternalException {
+        BookExchangeChain bookExchangeChain = bookExchangeDao.getExchangeChainRequest(newExchangeChainRequestId).orElseThrow(() -> new BookExchangeInternalException("No exchange chain for id"));
+        ExchangeChainRequest exchangeRequestForUser = bookExchangeChain.getExchangeChainRequestForUser(userEmail).orElseThrow(() -> new BookExchangeInternalException("User not in exchange chain"));
         List<User> usersToExchangeWith = new ArrayList<>();
 
-        if(exchangeRequestsWithUser.size() == 2){
-            usersToExchangeWith.add(exchangeRequestsWithUser.stream().filter(exchangeChainRequest -> !exchangeChainRequest.getUserOffering().getEmail().equals(requestingUserEmail))
-                    .map(exchangeChainRequest1 -> exchangeChainRequest1.getUserOffering())
-                    .findFirst().get());
-            usersToExchangeWith.add(exchangeRequestsWithUser.stream().filter(exchangeChainRequest -> !exchangeChainRequest.getUserChoosing().getEmail().equals(requestingUserEmail))
-                    .map(exchangeChainRequest1 -> exchangeChainRequest1.getUserChoosing())
-                    .findFirst().get());
-        }else{
-            usersToExchangeWith.add(exchangeRequestsWithUser.get(0).getUserOffering());
-            usersToExchangeWith.add(userDao.findUserByEmail(exchangeInitiatorEmail).get());
-        }
+        usersToExchangeWith.add(exchangeRequestForUser.getUserChoosingFrom());
+        usersToExchangeWith.add(exchangeRequestForUser.getUserOfferingTo());
 
         return usersToExchangeWith;
     }
 
-    private void updateExchangeChainRequests(List<ExchangeChainRequest> exchangeChainRequests, BookExchangeChain exchangeChain) {
-        exchangeChainRequests.stream().forEach(exchangeChainRequest -> exchangeChainRequest.setRequestFor(exchangeChain));
+    public void acceptExchangeChain(String userEmail, ExchangeChainAcceptance exchangeChainAcceptance) throws BookExchangeInternalException {
+        BookExchangeChain bookExchangeChain = bookExchangeDao.getExchangeChainRequest(exchangeChainAcceptance.getExchangeChainId()).orElseThrow(() -> new BookExchangeInternalException("No exchange chain for id"));
+        User acceptingUser = userDao.findUserByEmail(userEmail).get();
+
+        bookExchangeChain.markExchangeChainRequestAcceptedFromUser(userEmail);
+        addRequestedBookToExchangeChain(userEmail, exchangeChainAcceptance, bookExchangeChain);
+
+        raiseAcceptanceNotifications(acceptingUser,bookExchangeChain);
+        bookExchangeDao.saveBookExchangeChain(bookExchangeChain);
     }
 
-    private void addExchangeChainInvitationNotification(List<User> usersOnChain) {
+    private void raiseAcceptanceNotifications(User acceptingUser, BookExchangeChain bookExchangeChain) {
+        if(bookExchangeChain.areAllChainRequestsAccepted()){
+            bookExchangeChain.setSuccessful(true);
+            bookExchangeChain.getUsersToBeNotified().forEach(user ->  sendChainSuccessNotification(user,exchangeChainSuccessParticipants));
+            sendChainSuccessNotification(bookExchangeChain.getExchangeInitiator(),exchangeChainSuccessInitiator);
+        }else {
+            notifyExchangeInitiatorForAcceptance(acceptingUser.getFullName(),bookExchangeChain.getExchangeInitiator());
+        }
+    }
+
+    private void sendChainSuccessNotification(User exchangeInitiator, String notificationMessage) {
+        Notification acceptanceNotification = new Notification.NotificationBuilder().setUserNotified(exchangeInitiator).setMessage(notificationMessage).setNotificationType(NotificationType.EXCHANGE_CHAIN_SUCCESS).isSeen(false).setDateCreated(LocalDateTime.now()).build();
+        notificationsDao.saveNotification(acceptanceNotification);
+    }
+
+    private void notifyExchangeInitiatorForAcceptance(String userEmail, User exchangeInitiator) {
+        Notification acceptanceNotification = new Notification.NotificationBuilder().setUserNotified(exchangeInitiator).setMessage(userEmail + " " + exchangeChainAcceptanceMessageForInitiator).setNotificationType(NotificationType.EXCHANGE_CHAIN_ACCEPTANCE).isSeen(false).setDateCreated(LocalDateTime.now()).build();
+        notificationsDao.saveNotification(acceptanceNotification);
+    }
+
+    private void addRequestedBookToExchangeChain(String userEmail, ExchangeChainAcceptance exchangeChainAcceptance, BookExchangeChain bookExchangeChain) throws BookExchangeInternalException {
+        User userRequestingBook = userDao.findUserByEmail(userEmail).get();
+
+        BookRequestedInChain bookRequested = new BookRequestedInChain(bookDao.getBookForId(exchangeChainAcceptance.getBookId()).orElseThrow(() -> new BookExchangeInternalException("No book founnd for id")));
+        bookRequested.setRequestedBy(userRequestingBook);
+        bookRequested.setChainRequestedIn(bookExchangeChain);
+
+        bookExchangeChain.addRequestedBook(bookRequested);
+    }
+
+    private void notifyUsersForChainFailure(BookExchangeChain exchangeChainRequest, User userRejected) {
+        List<User> usersToBeNotified = exchangeChainRequest.getUsersToBeNotified();
+        List<Notification> notificationsToSend = usersToBeNotified.stream().filter(user -> !user.getEmail().equals(userRejected.getEmail()))
+                .map(user -> new Notification.NotificationBuilder().setUserNotified(user).setMessage(userRejected.getFullName() +" "+ exchangeChainRejectMessageForParticipants + " (" + exchangeChainRequest.getId() + ")").setNotificationType(NotificationType.EXCHANGE_CHAIN_REJECTION).setDateCreated(LocalDateTime.now()).isSeen(false).build()).collect(Collectors.toList());
+        notificationsToSend.add(new Notification.NotificationBuilder().setUserNotified(exchangeChainRequest.getExchangeInitiator()).setMessage(userRejected.getFullName()+" " + exchangeChainRejectMessageForInitiator + " (" + exchangeChainRequest.getId() + ")").setNotificationType(NotificationType.EXCHANGE_CHAIN_REJECTION).setDateCreated(LocalDateTime.now()).isSeen(false).build());
+
+        notificationsToSend.stream().forEach(notification -> notificationsDao.saveNotification(notification));
+    }
+
+
+
+    private void updateExchangeChainRequests(List<ExchangeChainRequest> exchangeChainRequests, BookExchangeChain exchangeChain) {
+        exchangeChainRequests.stream().forEach(exchangeChainRequest -> exchangeChainRequest.setParentExchangeChain(exchangeChain));
+    }
+
+    private void addExchangeChainInvitationNotification(List<User> usersOnChain, BookExchangeChain exchangeChain) {
         User initiatorUser = usersOnChain.get(0);
-        for(int i = 1;i < usersOnChain.size();i++){
-            Notification exchangeChainRequestNotification = new Notification.NotificationBuilder().setMessage(initiatorUser.getFullName() + "(" + initiatorUser.getEmail() + ") "  + newExchangeChainRequestMessage).setUserNotified(usersOnChain.get(i)).setDateCreated(LocalDateTime.now()).build();
+        for (int i = 1; i < usersOnChain.size(); i++) {
+            Notification exchangeChainRequestNotification = new Notification.NotificationBuilder().setMessage(initiatorUser.getFullName() + "(" + exchangeChain.getId() + ") " + newExchangeChainRequestMessage).setUserNotified(usersOnChain.get(i)).setDateCreated(LocalDateTime.now()).setNotificationType(NotificationType.EXCHANGE_CHAIN_INVITATION).build();
             notificationsDao.saveNotification(exchangeChainRequestNotification);
         }
     }
@@ -79,17 +148,17 @@ public class ExchangeChainService {
     }
 
     private List<ExchangeChainRequest> constructExchangeChainRequests(List<User> usersOnChain) {
-        ExchangeChainRequest requestForInitiator = new ExchangeChainRequest(usersOnChain.get(0));
+               List<ExchangeChainRequest> chainRequestsForUsers = new ArrayList<>();
+        for (int i = 1; i < usersOnChain.size(); i++) {
+            ExchangeChainRequest.ExchangeChainRequestBuilder chainRequestBuilder = new ExchangeChainRequest.ExchangeChainRequestBuilder().setRequestFor(usersOnChain.get(i)).setUserChoosingFrom(usersOnChain.get(i - 1));
 
-        List<ExchangeChainRequest> chainRequestsForUsers = new ArrayList<>(Arrays.asList(requestForInitiator));
-        for(int i = 1;i < usersOnChain.size(); i++){
-            User currentUser = usersOnChain.get(i);
-            chainRequestsForUsers.get(i-1).setUserChoosing(currentUser);
-
-            if(i < usersOnChain.size() - 1){
-                ExchangeChainRequest requestForCurrentUser = new ExchangeChainRequest(currentUser);
-                chainRequestsForUsers.add(requestForCurrentUser);
+            if(i == usersOnChain.size() -1) {
+                chainRequestBuilder.setUserOfferingTo(usersOnChain.get(0));
+            }else{
+                chainRequestBuilder.setUserOfferingTo(usersOnChain.get(i + 1));
             }
+
+            chainRequestsForUsers.add(chainRequestBuilder.build());
         }
 
         return chainRequestsForUsers;
@@ -101,5 +170,9 @@ public class ExchangeChainService {
 
     public void setNotificationsDao(NotificationsDao notificationsDao) {
         this.notificationsDao = notificationsDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 }

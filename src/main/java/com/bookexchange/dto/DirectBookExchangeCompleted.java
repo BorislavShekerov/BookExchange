@@ -1,7 +1,5 @@
 package com.bookexchange.dto;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 /**
@@ -10,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "BOOK_EXCHANGES")
 @DiscriminatorValue(value="COMPLETED")
-public class BookExchangeCompleted extends BookExchange{
+public class DirectBookExchangeCompleted extends DirectBookExchange {
     @Column(name = "EXCHANGE_SUCCESS")
     private boolean exchangeSuccess;
 

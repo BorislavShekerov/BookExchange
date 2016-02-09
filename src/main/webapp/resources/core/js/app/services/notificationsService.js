@@ -12,13 +12,15 @@ bookApp.service("notificationsService",['$http', function ($http) {
 
     function setNotificationSeen(notification){
       var csrfToken = $("meta[name='_csrf']").attr("content");
+        var notificationSeen = { id: notification.id
+        };
             var req = {
             				method: 'POST',
             				url: '/app/notifications/marAsSeen',
             				headers: {
             					'X-CSRF-TOKEN': csrfToken
             				},
-            				data: notification
+            				data: notificationSeen
             			}
 
             	var postPromise	= $http(req).then(function (response) {

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Created by sheke on 10/18/2015.
@@ -46,10 +45,10 @@ public class User {
     private Set<UserRole> userRole = new HashSet<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_EXCHANGE_CURRENT", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
-    private Set<BookExchange> currentExchanges = new HashSet<>();
+    private Set<DirectBookExchange> currentExchanges = new HashSet<>();
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_EXCHANGE_HISTORY", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
-    private Set<BookExchangeCompleted> exchangeHistory = new HashSet<>();
+    private Set<DirectBookExchangeCompleted> exchangeHistory = new HashSet<>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userNotified", cascade = {javax.persistence.CascadeType.PERSIST})
     private Set<Notification> userNotifications = new HashSet<>();
     @Column(name = "LOGIN_COUNT")
@@ -57,14 +56,14 @@ public class User {
     @Column(name = "VIP_TOKENS")
     private int vipTokens;
 
-    public void addBookExchange(BookExchange bookExchange) {
-        this.currentExchanges.add(bookExchange);
+    public void addBookExchange(DirectBookExchange directBookExchange) {
+        this.currentExchanges.add(directBookExchange);
     }
 
     public void addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn){
         this.categoriesInterestedIn.addAll(categoriesInterestedIn);
     }
-    public void completeExchange(BookExchangeCompleted bookExchange) {
+    public void completeExchange(DirectBookExchangeCompleted bookExchange) {
         this.exchangeHistory.add(bookExchange);
     }
 
@@ -139,17 +138,17 @@ public class User {
         this.userRole = userRole;
     }
 
-    public Set<BookExchange> getCurrentExchanges() {
+    public Set<DirectBookExchange> getCurrentExchanges() {
         return currentExchanges;
     }
     public String getFullName(){
         return firstName + " " + lastName;
     }
-    public void setCurrentExchanges(Set<BookExchange> currentExchanges) {
+    public void setCurrentExchanges(Set<DirectBookExchange> currentExchanges) {
         this.currentExchanges = currentExchanges;
     }
 
-    public Set<BookExchangeCompleted> getExchangeHistory() {
+    public Set<DirectBookExchangeCompleted> getExchangeHistory() {
         return exchangeHistory;
     }
 
@@ -169,7 +168,7 @@ public class User {
         this.exchageChainsInitiated = exchageChainsInitiated;
     }
 
-    public void setExchangeHistory(Set<BookExchangeCompleted> exchangeHistory) {
+    public void setExchangeHistory(Set<DirectBookExchangeCompleted> exchangeHistory) {
         this.exchangeHistory = exchangeHistory;
     }
 
@@ -267,12 +266,12 @@ public class User {
             return this;
         }
 
-        public UserBuilder setCurrentExchanges(Set<BookExchange> currentExchanges) {
+        public UserBuilder setCurrentExchanges(Set<DirectBookExchange> currentExchanges) {
             user.setCurrentExchanges(currentExchanges);
             return this;
         }
 
-        public UserBuilder setExchangeHistory(Set<BookExchangeCompleted> exchangeHistory) {
+        public UserBuilder setExchangeHistory(Set<DirectBookExchangeCompleted> exchangeHistory) {
             user.setExchangeHistory(exchangeHistory);
             return this;
         }

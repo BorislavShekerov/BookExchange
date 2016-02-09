@@ -54,4 +54,16 @@ public class BookDao {
 
         return (List<Book>) criteria.list();
     }
+
+    public Optional<Book> getBookForId(long bookId) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(Book.class);
+        criteria.createAlias("postedBy", "userPosted")
+                .add(Restrictions.eq("id", bookId));
+
+
+        Book bookForId = (Book) criteria.uniqueResult();
+        return Optional.ofNullable(bookForId);
+    }
 }

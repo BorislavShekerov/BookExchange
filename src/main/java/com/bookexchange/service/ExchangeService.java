@@ -5,6 +5,8 @@ import com.bookexchange.dao.BookExchangeDao;
 import com.bookexchange.dao.NotificationsDao;
 import com.bookexchange.dao.UserDao;
 import com.bookexchange.dto.*;
+import com.bookexchange.dto.frontend.ExchangeAccumulator;
+import com.bookexchange.dto.frontend.ExchangeOrder;
 import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +38,7 @@ public class ExchangeService {
         Book bookUnderOffer = bookDao.getBookForEmail(exchangeOrder.getBookUnderOffer(), exchangeOrder.getBookUnderOfferOwner()).orElseThrow(() -> new BookExchangeInternalException("Book under offer not found"));
         Book bookOfferedInExchange = bookDao.getBookForEmail(exchangeOrder.getBookOfferedInExchange(), exchangeOrder.getBookOfferedInExchangeOwner()).orElseThrow(() -> new BookExchangeInternalException("Book offered in exhange not found"));
 
-        BookExchange exchangeToRecord = buildBookExchange(bookUnderOffer, bookOfferedInExchange);
+        DirectBookExchange exchangeToRecord = buildBookExchange(bookUnderOffer, bookOfferedInExchange);
 
         bookExchangeDao.addBookExchange(exchangeToRecord);
         updateUserDataWithNewExchange(bookUnderOffer.getPostedBy(), bookOfferedInExchange.getPostedBy(), exchangeToRecord);
@@ -49,7 +51,7 @@ public class ExchangeService {
         notificationsDao.saveNotification(newExchangeRequestNotification);
     }
 
-    private void updateUserDataWithNewExchange(User bookUnderOfferUser, User exchangeInitiator, BookExchange exchangeToRecord) {
+    private void updateUserDataWithNewExchange(User bookUnderOfferUser, User exchangeInitiator, DirectBookExchange exchangeToRecord) {
         bookUnderOfferUser.addBookExchange(exchangeToRecord);
         exchangeInitiator.addBookExchange(exchangeToRecord);
 
@@ -57,15 +59,19 @@ public class ExchangeService {
         userDao.updateUser(exchangeInitiator);
     }
 
-    private BookExchange buildBookExchange(Book bookPostedOnExchange, Book bookOfferedInExchange) {
-        BookExchange bookExchange = new BookExchange();
-        bookExchange.setBookPostedOnExchange(bookPostedOnExchange);
-        bookExchange.setBookOfferedInExchange(bookOfferedInExchange);
+    private DirectBookExchange buildBookExchange(Book bookPostedOnExchange, Book bookOfferedInExchange) {
+        DirectBookExchange directBookExchange = new DirectBookExchange.BookExchangeBuilder().setBookPostedOnExchange(bookPostedOnExchange)
+                .setBookOfferedInExchange(bookOfferedInExchange)
+                .setDateCreated(LocalDateTime.now())
+                .buildBookExchange();
 
-        return bookExchange;
+        return directBookExchange;
     }
 
-    public List<BookExchange> getBookExchangesForUser(String userEmail){
-        return bookExchangeDao.getBookExchangesForUser(userEmail);
+    public ExchangeAccumulator getUserCurrentExchanges(String userEmail){
+        List<DirectBookExchange> directExchangesForUser = bookExchangeDao.getBookExchangesForUser(userEmail);
+        List<BookExchangeChain> exchangeChainsInitiatedByUser = bookExchangeDao.getExchangeChainsInitiatedByUser(userEmail);
+
+        return new ExchangeAccumulator(directExchangesForUser, exchangeChainsInitiatedByUser).sortByCreationDate();
     }
 }

@@ -28,6 +28,7 @@
 		<link href="../resources/core/css/app/exchange.css" rel="stylesheet">
 		<link href="../resources/core/css/app/app_side_menu.css" rel="stylesheet">
 		<link href="../resources/core/css/app/app.css" rel="stylesheet">
+		<link href="../resources/core/css/app/chain_request_modal.css" rel="stylesheet">
 		<link href="../resources/core/css/app/side_menu.css" rel="stylesheet">
 		<link href="../resources/core/css/app/notifications.css" rel="stylesheet">
 		<!-- Include Bootstrap-select CSS, JS -->
@@ -246,7 +247,7 @@
 		<script src="../resources/core/js/jquery.bootpag.js"></script>
 		<script type='text/javascript' src='../resources/core/js/infinite-scroll.js'></script>
 
-		<!-- Custom CSS -->
+		<!-- Custom JS -->
 		  <script src="../resources/core/js/app/app.js "></script>
 		<script src="../resources/core/js/app/controllers/addBookModuleController.js "></script>
 		<script src="../resources/core/js/app/controllers/exchangeController.js "></script>
@@ -254,8 +255,10 @@
 		<script src="../resources/core/js/app/controllers/firstTimeModalController.js "></script>
 		<script src="../resources/core/js/app/controllers/mainController.js "></script>
 		<script src="../resources/core/js/app/controllers/notificationsController.js "></script>
+		<script src="../resources/core/js/app/controllers/chainRequestModalController.js "></script>
 		<script src="../resources/core/js/app/controllers/offerExchangeController.js "></script>
-        <script src="../resources/core/js/app/controllers/offersController.js "></script>
+        <script src="../resources/core/js/app/controllers/offersMadeController.js "></script>
+         <script src="../resources/core/js/app/controllers/offersReceivedController.js "></script>
         <script src="../resources/core/js/app/controllers/sideMenuController.js "></script>
         <script src="../resources/core/js/app/services/dataService.js "></script>
                 <script src="../resources/core/js/app/services/eventRecordService.js "></script>

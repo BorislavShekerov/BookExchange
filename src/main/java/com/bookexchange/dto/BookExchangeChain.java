@@ -2,16 +2,16 @@ package com.bookexchange.dto;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by sheke on 1/29/2016.
@@ -27,14 +27,19 @@ public class BookExchangeChain {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "INITIATOR_EMAIL", nullable = false)
     private User exchangeInitiator;
-    @OneToMany(mappedBy = "exchangeChainIncludedIn")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Set<BookExchange> exchangesInChain = new HashSet<>();
     @Column(name = "SUCCESSFUL")
     private boolean isSuccessful;
-    @OneToMany( mappedBy = "requestFor",cascade = CascadeType.ALL)
+    @OneToMany( mappedBy = "chainRequestedIn",cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    List<BookRequestedInChain> booksRequestedInChain = new ArrayList<>();
+    @OneToMany( mappedBy = "parentExchangeChain",cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     List<ExchangeChainRequest> exchangeChainRequests = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "CHAIN_BREAKER_EMAIL", referencedColumnName = "EMAIL")
+    private User chainBreaker;
+    @Column(name = "DATE_POSTED")
+    private LocalDateTime dateCreated;
 
     public User getExchangeInitiator() {
         return exchangeInitiator;
@@ -48,16 +53,19 @@ public class BookExchangeChain {
         this.exchangeChainRequests = exchangeChainRequests;
     }
 
+    public List<BookRequestedInChain> getBooksRequestedInChain() {
+        return booksRequestedInChain;
+    }
+
+    public void setBooksRequestedInChain(List<BookRequestedInChain> booksRequestedInChain) {
+        this.booksRequestedInChain = booksRequestedInChain;
+    }
+
+    public void addRequestedBook(BookRequestedInChain bookRequestedInChain){
+        this.booksRequestedInChain.add(bookRequestedInChain);
+    }
     public void setExchangeInitiator(User exchangeInitiator) {
         this.exchangeInitiator = exchangeInitiator;
-    }
-
-    public Set<BookExchange> getExchangesInChain() {
-        return exchangesInChain;
-    }
-
-    public void setExchangesInChain(Set<BookExchange> exchangesInChain) {
-        this.exchangesInChain = exchangesInChain;
     }
 
     public boolean isSuccessful() {
@@ -66,6 +74,30 @@ public class BookExchangeChain {
 
     public void setSuccessful(boolean successful) {
         isSuccessful = successful;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public User getChainBreaker() {
+        return chainBreaker;
+    }
+
+    public void setChainBreaker(User chainBreaker) {
+        this.chainBreaker = chainBreaker;
     }
 
     @Override
@@ -77,8 +109,7 @@ public class BookExchangeChain {
 
         if (isSuccessful != that.isSuccessful) return false;
         if (!exchangeInitiator.equals(that.exchangeInitiator)) return false;
-        if (exchangesInChain != null ? !exchangesInChain.equals(that.exchangesInChain) : that.exchangesInChain != null)
-            return false;
+
         return exchangeChainRequests.equals(that.exchangeChainRequests);
 
     }
@@ -86,11 +117,27 @@ public class BookExchangeChain {
     @Override
     public int hashCode() {
         int result = exchangeInitiator.hashCode();
-        result = 31 * result + (exchangesInChain != null ? exchangesInChain.hashCode() : 0);
         result = 31 * result + (isSuccessful ? 1 : 0);
         result = 31 * result + exchangeChainRequests.hashCode();
         return result;
     }
+
+    public Optional<ExchangeChainRequest> getExchangeChainRequestForUser(String userEmail){
+        return this.exchangeChainRequests.stream().filter(exchangeChainRequest -> exchangeChainRequest.getRequestFor().getEmail().equals(userEmail)).findFirst();
+    }
+
+    public void markExchangeChainRequestAcceptedFromUser(String userEmail) {
+        getExchangeChainRequestForUser(userEmail).get().setAccepted(true);
+    }
+
+    public boolean areAllChainRequestsAccepted() {
+        return this.exchangeChainRequests.stream().filter(exchangeChainRequest -> !exchangeChainRequest.isAccepted()).count() == 0;
+    }
+
+    public List<User> getUsersToBeNotified() {
+        return this.getExchangeChainRequests().stream().map(exchangeChainRequest1 -> exchangeChainRequest1.getRequestFor()).collect(Collectors.toList());
+    }
+
 
     public static class BookExchangeChainBuilder{
         private BookExchangeChain bookExchangeChain;
@@ -108,8 +155,9 @@ public class BookExchangeChain {
             bookExchangeChain.setExchangeChainRequests(exchangeChainRequests); return this;
         }
 
-        public BookExchangeChainBuilder setExchangesInChain(Set<BookExchange> exchangesInChain) {
-            bookExchangeChain.setExchangesInChain(exchangesInChain); return this;
+        public BookExchangeChainBuilder setDateCreated(LocalDateTime dateCreated){
+            bookExchangeChain.setDateCreated(dateCreated);
+            return this;
         }
 
         public BookExchangeChain buildBookExchangeChain(){

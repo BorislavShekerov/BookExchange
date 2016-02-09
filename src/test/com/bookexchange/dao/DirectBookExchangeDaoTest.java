@@ -19,7 +19,7 @@ import static junit.framework.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring-main.xml")
 @Transactional
-public class BookExchangeDaoTest {
+public class DirectBookExchangeDaoTest {
 
     public static final String DUMMY_EMAIL_1 = "FirstEmail";
     public static final String DUMMY_EMAIL_2 = "SecondEmail";
@@ -72,12 +72,12 @@ public class BookExchangeDaoTest {
         bookDao.postBookOnExchange(user1Book1);
         bookDao.postBookOnExchange(user2Book);
 
-        BookExchange bookExchange = new BookExchange();
-        bookExchange.setBookPostedOnExchange(user1Book1);
-        bookExchange.setBookPostedOnExchange(user2Book);
+        DirectBookExchange directBookExchange = new DirectBookExchange();
+        directBookExchange.setBookPostedOnExchange(user1Book1);
+        directBookExchange.setBookPostedOnExchange(user2Book);
 
-       user1.addBookExchange(bookExchange);
-        user2.addBookExchange(bookExchange);
+       user1.addBookExchange(directBookExchange);
+        user2.addBookExchange(directBookExchange);
 
         userDao.updateUser(user1);
         userDao.updateUser(user2);
@@ -85,8 +85,8 @@ public class BookExchangeDaoTest {
         user1 = userDao.findUserByEmail(DUMMY_EMAIL_1).get();
         user2 = userDao.findUserByEmail(DUMMY_EMAIL_2).get();
 
-        assertEquals("Exchange Added To User 1", bookExchange, user1.getCurrentExchanges().iterator().next());
-        assertEquals("Exchange Added To User 2", bookExchange, user2.getCurrentExchanges().iterator().next());
+        assertEquals("Exchange Added To User 1", directBookExchange, user1.getCurrentExchanges().iterator().next());
+        assertEquals("Exchange Added To User 2", directBookExchange, user2.getCurrentExchanges().iterator().next());
     }
 
     @Test
@@ -104,18 +104,18 @@ public class BookExchangeDaoTest {
 
         persistData(Arrays.asList(user1,user2), Arrays.asList(category1,category2), Arrays.asList(user1Book1, user1Book2, user2Book1, user2Book2));
 
-        BookExchange bookExchange1 = new BookExchange();
-        bookExchange1.setBookPostedOnExchange(user1Book1);
-        bookExchange1.setBookPostedOnExchange(user2Book1);
+        DirectBookExchange directBookExchange1 = new DirectBookExchange();
+        directBookExchange1.setBookPostedOnExchange(user1Book1);
+        directBookExchange1.setBookPostedOnExchange(user2Book1);
 
-        BookExchange bookExchange2 = new BookExchange();
-        bookExchange1.setBookPostedOnExchange(user2Book2);
-        bookExchange1.setBookPostedOnExchange(user1Book2);
+        DirectBookExchange directBookExchange2 = new DirectBookExchange();
+        directBookExchange1.setBookPostedOnExchange(user2Book2);
+        directBookExchange1.setBookPostedOnExchange(user1Book2);
 
-        bookExchangeDao.addBookExchange(bookExchange1);
-        bookExchangeDao.addBookExchange(bookExchange2);
+        bookExchangeDao.addBookExchange(directBookExchange1);
+        bookExchangeDao.addBookExchange(directBookExchange2);
 
-        List<BookExchange> result = bookExchangeDao.getBookExchangesForUser("DUMMY_EMAIL_1");
+        List<DirectBookExchange> result = bookExchangeDao.getBookExchangesForUser("DUMMY_EMAIL_1");
 
         assertEquals("There must be 2 exchanges for user1",2,result.size());
     }
@@ -139,18 +139,18 @@ public class BookExchangeDaoTest {
         bookExchangeChain.setExchangeInitiator(user1);
 
         ExchangeChainRequest exchangeChainRequest1 = new ExchangeChainRequest();
-        exchangeChainRequest1.setUserOffering(user1);
-        exchangeChainRequest1.setUserChoosing(user2);
+        exchangeChainRequest1.setUserOfferingTo(user1);
+        exchangeChainRequest1.setUserChoosingFrom(user2);
 
         ExchangeChainRequest exchangeChainRequest2 = new ExchangeChainRequest();
-        exchangeChainRequest2.setUserOffering(user2);
-        exchangeChainRequest2.setUserChoosing(user3);
+        exchangeChainRequest2.setUserOfferingTo(user2);
+        exchangeChainRequest2.setUserChoosingFrom(user3);
 
         bookExchangeChain.setExchangeChainRequests(Arrays.asList(exchangeChainRequest1, exchangeChainRequest2));
 
         bookExchangeDao.addBookExchangeChainRequest(exchangeChainRequest1);
         bookExchangeDao.addBookExchangeChainRequest(exchangeChainRequest2);
-        bookExchangeDao.addBookExchangeChain(bookExchangeChain);
+        bookExchangeDao.saveBookExchangeChain(bookExchangeChain);
 
         List<BookExchangeChain> result = bookExchangeDao.getExchangeChainsInitiatedByUser(user1.getEmail());
 

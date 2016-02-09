@@ -3,6 +3,7 @@ package com.bookexchange.dto;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * Created by sheke on 11/13/2015.
@@ -15,7 +16,7 @@ import javax.persistence.*;
         discriminatorType=DiscriminatorType.STRING
 )
 @DiscriminatorValue(value="CURRENT")
-public class BookExchange {
+public class DirectBookExchange {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -26,9 +27,8 @@ public class BookExchange {
     @ManyToOne
     @JoinColumn(name = "EXCHANGE_BOOK_ID")
     protected Book bookOfferedInExchange;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "EXCHANGE_CHAIN_INCLUDED_IN")
-    private BookExchangeChain exchangeChainIncludedIn;
+    @Column(name = "DATE_POSTED")
+    private LocalDateTime dateCreated;
 
     public Book getBookPostedOnExchange() {
         return bookPostedOnExchange;
@@ -46,20 +46,20 @@ public class BookExchange {
         this.bookOfferedInExchange = bookOfferedInExchange;
     }
 
-    public BookExchangeChain getExchangeChainIncludedIn() {
-        return exchangeChainIncludedIn;
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
     }
 
-    public void setExchangeChainIncludedIn(BookExchangeChain exchangeChainIncludedIn) {
-        this.exchangeChainIncludedIn = exchangeChainIncludedIn;
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BookExchange)) return false;
+        if (!(o instanceof DirectBookExchange)) return false;
 
-        BookExchange that = (BookExchange) o;
+        DirectBookExchange that = (DirectBookExchange) o;
 
         if (getBookPostedOnExchange() != null ? !getBookPostedOnExchange().equals(that.getBookPostedOnExchange()) : that.getBookPostedOnExchange() != null)
             return false;
@@ -73,4 +73,32 @@ public class BookExchange {
         result = 31 * result + (getBookOfferedInExchange() != null ? getBookOfferedInExchange().hashCode() : 0);
         return result;
     }
+
+
+    public static class BookExchangeBuilder{
+        private DirectBookExchange directBookExchange;
+
+        public BookExchangeBuilder(){
+            directBookExchange = new DirectBookExchange();
+        }
+
+        public BookExchangeBuilder setBookPostedOnExchange(Book bookPostedOnExchange) {
+            directBookExchange.setBookPostedOnExchange(bookPostedOnExchange); return this;
+        }
+
+
+        public BookExchangeBuilder setBookOfferedInExchange(Book bookOfferedInExchange) {
+            directBookExchange.setBookOfferedInExchange(bookOfferedInExchange); return this;
+        }
+
+        public BookExchangeBuilder setDateCreated(LocalDateTime dateCreated) {
+            directBookExchange.setDateCreated(dateCreated); return this;
+        }
+
+
+        public DirectBookExchange buildBookExchange(){
+            return directBookExchange;
+        }
+    }
+
 }
