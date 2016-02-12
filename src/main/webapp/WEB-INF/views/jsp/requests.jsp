@@ -1,67 +1,78 @@
 <div class="side-body" id="main-content">
+	<div class="row">
+		<div ng-repeat="exchangeRequest in userRequestsReceived" class="media">
+			<div class="row" ng-if="exchangeRequest.isChain">>
+				<div class="col-md-8">
+					<a class="pull-left" href="#">
+						<h3 class="text-center"> Chain Creator </h3>
+						<img class="media-object" src="../{{exchangeRequest.exchangeInitiator.avatarUrl}}" alt="profile">
+						<h4 class="text-center"> {{exchangeRequest.exchangeInitiator.fullName}} </h4>
+					</a>
+					<div class="media-body">
+						<div class="well well-lg">
+							<h4 class="media-heading text-uppercase reviews">Book Requested From You</h4>
+							<ul class="media-date text-uppercase reviews list-inline">
+								<li class="dd">{{exchangeRequest.dateCreated.dayOfMonth}}</li>
+								<li class="mm">{{exchangeRequest.dateCreated.monthValue}}</li>
+								<li class="aaaa">{{exchangeRequest.dateCreated.year}}</li>
+							</ul>
+							<div>
+								<img src="{{exchangeRequest.bookRequested.imgUrl}}">
+							</div>
+							<button class="btn btn-info btn-circle text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</button>
+							<button class="btn btn-info btn-circle text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</button>
 
-    <div ng-repeat="bookExchange in userCurrentOffersReceived " class="col-xs-12">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="col-md-3">
 
-             <div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-1">
-                       <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
-                           <img src="{{bookExchange.bookPostedOnExchange.imgUrl}}" class="img-responsive full-width">
-                           <div class="panel-body">
-                               <div class="media">
-                                   <div class="media-left ">
-                                       <a href="#">
-                                           <img class="media-object profile-picture" src="{{bookExchange.bookPostedOnExchange.ownerAvatar}}" alt="...">
-                                       </a>
-                                   </div>
-                                   <div class="media-body">
-                                       <h4 class="media-heading">{{bookExchange.bookPostedOnExchange.ownedBy}}</h4>
-                                       <h4 class="media-heading">Exchanges for:</h4>
-                                   </div>
-                               </div>
-                               <ul class="list-inline space-out-top-sm">
-                                   <li ng-repeat="category in bookExchange.bookPostedOnExchange.ownerCategoriesOfInterest">
-                                       <span class="label label-default">{{category}}</span></li>
-                               </ul>
-                               <div class="space-out-top-sm">
-                                   <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
-                               </div>
-
-                           </div>
-                       </div>
-                   </div>
-
-              <div class="col-xs-12 col-sm-2 col-md-2">
-              <div id="arrow-right-container" class="text-center">
-                        <i class="fa fa-arrow-left fa-4x"></i>
-                        </div>
-               </div>
+						<span class="glyphicon glyphicon-resize-horizontal"></span>
+					</div>
+					<div class="col-md-9">
+						<h4 class="text-center"> Your Choice </h4>
+						<img ng-click="openDetailsModal(exchangeRequest)" src="{{exchangeRequest.userChoice.imgUrl}}" />
+					</div>
+				</div>
 
 
-                   <div class="col-xs-12 col-sm-4 col-md-4 col-md-offset-0">
-                            <div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
-                                <img src="{{bookExchange.bookOfferedInExchange.imgUrl}}" class="img-responsive full-width">
-                                <div class="panel-body">
-                                    <div class="media">
-                                        <div class="media-left ">
-                                            <a href="#">
-                                                <img class="media-object profile-picture" src="{{bookExchange.bookOfferedInExchange.ownerAvatar}}" alt="...">
-                                            </a>
-                                        </div>
-                                        <div class="media-body">
-                                            <h4 class="media-heading">{{bookExchange.bookOfferedInExchange.ownedBy}}</h4>
-                                            <h4 class="media-heading">Exchanges for:</h4>
-                                        </div>
-                                    </div>
-                                    <ul class="list-inline space-out-top-sm">
-                                        <li ng-repeat="category in bookExchange.bookOfferedInExchange.ownerCategoriesOfInterest">
-                                            <span class="label label-default">{{category}}</span></li>
-                                    </ul>
-                                    <div class="space-out-top-sm">
-                                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
-                                    </div>
+			</div>
+			<div class="row" ng-if="!exchangeRequest.isChain">
+				<div ng-class="{'col-md-8': exchangeRequest.over && exchangeRequest.successful , 'col-md-12': !exchangeRequest.over || !exchangeRequest.successful}">
+					<a class="pull-left" href="#">
+						<img class="media-object" src="{{exchangeRequest.bookRequested.imgUrl}}" alt="profile">
+					</a>
+					<div class="media-body">
+						<div class="well well-lg">
+							<h4 class="media-heading text-uppercase reviews">Request Initiator:{{" "+exchangeRequest.bookOfferedInExchange.ownerFirstname + " " + exchangeRequest.bookOfferedInExchange.ownerLastname}}</h4>
+							<ul class="media-date text-uppercase reviews list-inline">
+								<li class="dd">{{exchangeRequest.dateCreated.dayOfMonth}}</li>
+								<li class="mm">{{exchangeRequest.dateCreated.monthValue}}</li>
+								<li class="aaaa">{{exchangeRequest.dateCreated.year}}</li>
+							</ul>
+                        <div ng-if="!exchangeCreated.over"class="media-comment">
 
-                                </div>
-                            </div>
-                        </div>
+                        				</div>
 
-    </div>
+							<button class="btn btn-info btn-circle text-uppercase" ng-if="!exchangeRequest.over" ng-click="cancelRequest(exchangeRequest)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</button>
+							<button class="btn btn-info btn-circle text-uppercase" ng-if="!exchangeRequest.over"  ng-click="viewDetails(exchangeRequest)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</button>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4" ng-if="exchangeRequest.over && exchangeRequest.successful">
+					<div class="col-md-3">
+
+						<span class="glyphicon glyphicon-resize-horizontal"></span>
+					</div>
+					<div class="col-md-9">
+						<h4 class="text-center"> Your Choice </h4>
+						<img src="{{exchangeRequest.bookOfferedInExchange.imgUrl}}" />
+					</div>
+				</div>
+			</div>
+			<hr/>
+		</div>
+	</div>
 </div>

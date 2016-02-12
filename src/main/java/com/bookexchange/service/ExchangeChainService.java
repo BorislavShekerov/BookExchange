@@ -5,7 +5,7 @@ import com.bookexchange.dao.BookExchangeDao;
 import com.bookexchange.dao.NotificationsDao;
 import com.bookexchange.dao.UserDao;
 import com.bookexchange.dto.*;
-import com.bookexchange.dto.frontend.ExchangeChainAcceptance;
+import com.bookexchange.dto.frontend.ExchangeAcceptance;
 import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,16 +51,19 @@ public class ExchangeChainService {
         User userRejected = userDao.findUserByEmail(userRejectingEmail).get();
 
         exchangeChainRequest.setSuccessful(false);
+        exchangeChainRequest.setOver(true);
         exchangeChainRequest.setChainBreaker(userRejected);
 
         bookExchangeDao.saveBookExchangeChain(exchangeChainRequest);
         notifyUsersForChainFailure(exchangeChainRequest, userRejected);
     }
 
-    public void registerExchangeChain(List<User> usersOnChain) {
+    public void registerExchangeChain(List<User> usersOnChain,String bookRequestedTitle) throws BookExchangeInternalException {
         List<ExchangeChainRequest> exchangeChainRequests = constructExchangeChainRequests(usersOnChain);
+        Book bookRequested = usersOnChain.get(usersOnChain.size() - 1).getBookPostedByUser(bookRequestedTitle).orElseThrow(() -> new BookExchangeInternalException("No such book posted by user"));
         BookExchangeChain exchangeChain = new BookExchangeChain.BookExchangeChainBuilder().setExchangeInitiator(usersOnChain.get(0)).setExchangeChainRequests(exchangeChainRequests).setDateCreated(LocalDateTime.now()).buildBookExchangeChain();
 
+        exchangeChain.addRequestedBook(new BookRequestedInChain.BookRequestedInChainBuilder().setChainRequestedIn(exchangeChain).setRequestedBook(bookRequested).setRequestedBy(usersOnChain.get(0)).buildBookExchangeChain());
         updateExchangeChainRequests(exchangeChainRequests, exchangeChain);
         bookExchangeDao.saveBookExchangeChain(exchangeChain);
 
@@ -79,8 +81,8 @@ public class ExchangeChainService {
         return usersToExchangeWith;
     }
 
-    public void acceptExchangeChain(String userEmail, ExchangeChainAcceptance exchangeChainAcceptance) throws BookExchangeInternalException {
-        BookExchangeChain bookExchangeChain = bookExchangeDao.getExchangeChainRequest(exchangeChainAcceptance.getExchangeChainId()).orElseThrow(() -> new BookExchangeInternalException("No exchange chain for id"));
+    public void acceptExchangeChain(String userEmail, ExchangeAcceptance exchangeChainAcceptance) throws BookExchangeInternalException {
+        BookExchangeChain bookExchangeChain = bookExchangeDao.getExchangeChainRequest(exchangeChainAcceptance.getExchangeId()).orElseThrow(() -> new BookExchangeInternalException("No exchange chain for id"));
         User acceptingUser = userDao.findUserByEmail(userEmail).get();
 
         bookExchangeChain.markExchangeChainRequestAcceptedFromUser(userEmail);
@@ -93,6 +95,7 @@ public class ExchangeChainService {
     private void raiseAcceptanceNotifications(User acceptingUser, BookExchangeChain bookExchangeChain) {
         if(bookExchangeChain.areAllChainRequestsAccepted()){
             bookExchangeChain.setSuccessful(true);
+            bookExchangeChain.setOver(true);
             bookExchangeChain.getUsersToBeNotified().forEach(user ->  sendChainSuccessNotification(user,exchangeChainSuccessParticipants));
             sendChainSuccessNotification(bookExchangeChain.getExchangeInitiator(),exchangeChainSuccessInitiator);
         }else {
@@ -110,7 +113,7 @@ public class ExchangeChainService {
         notificationsDao.saveNotification(acceptanceNotification);
     }
 
-    private void addRequestedBookToExchangeChain(String userEmail, ExchangeChainAcceptance exchangeChainAcceptance, BookExchangeChain bookExchangeChain) throws BookExchangeInternalException {
+    private void addRequestedBookToExchangeChain(String userEmail, ExchangeAcceptance exchangeChainAcceptance, BookExchangeChain bookExchangeChain) throws BookExchangeInternalException {
         User userRequestingBook = userDao.findUserByEmail(userEmail).get();
 
         BookRequestedInChain bookRequested = new BookRequestedInChain(bookDao.getBookForId(exchangeChainAcceptance.getBookId()).orElseThrow(() -> new BookExchangeInternalException("No book founnd for id")));

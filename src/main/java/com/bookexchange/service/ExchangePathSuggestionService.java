@@ -27,17 +27,17 @@ public class ExchangePathSuggestionService {
     @Autowired
     UserDao userDao;
 
-    public List<User> exploreOptions(ExchangeOrder exchangeOrder) throws BookExchangeInternalException {
+    public List<User> exploreOptions(String userTriggeredSearch,ExchangeOrder exchangeOrder) throws BookExchangeInternalException {
         List<User> allUsers = userDao.getAllUsers();
 
         Graph<String> userGraph = new GraphConstructor(allUsers).constructGraph();
         Set<Set<Vertex<String>>> stronglyConnectedComponentsInGraph = userGraph.findStronglyConnectedComponents();
-        Optional<Set<Vertex<String>>> relevantStronglyConnectedComponent = filterRelevantComponents(stronglyConnectedComponentsInGraph, exchangeOrder);
+        Optional<Set<Vertex<String>>> relevantStronglyConnectedComponent = filterRelevantComponents(stronglyConnectedComponentsInGraph, exchangeOrder,userTriggeredSearch);
 
         if (!relevantStronglyConnectedComponent.isPresent()){
             return new ArrayList<>();
         }
-        List<String> orderedRelevantComponent = orderPathsFromInitiatorToGoal(relevantStronglyConnectedComponent.get(),exchangeOrder);
+        List<String> orderedRelevantComponent = orderPathsFromInitiatorToGoal(relevantStronglyConnectedComponent.get(),exchangeOrder,userTriggeredSearch);
         List<User> orderedUserDetails = orderUsersOnPath(allUsers,orderedRelevantComponent,exchangeOrder.getBookUnderOfferOwner());
         return orderedUserDetails;
     }
@@ -49,13 +49,13 @@ public class ExchangePathSuggestionService {
         return orderedUsers;
     }
 
-    private List<String> orderPathsFromInitiatorToGoal(Set<Vertex<String>> relevantComponents,ExchangeOrder exchangeOrder) throws BookExchangeInternalException {
+    private List<String> orderPathsFromInitiatorToGoal(Set<Vertex<String>> relevantComponents,ExchangeOrder exchangeOrder,String userTriggeredSearch) throws BookExchangeInternalException {
         List<String> orderedPath = new ArrayList<>();
 
         Graph graph = new Graph<String>();
         String bookUnderOfferOwner = exchangeOrder.getBookUnderOfferOwner();
         //Breadth First From Exchange Initiator
-        Vertex<String> exchangeInitiatorVertex = relevantComponents.stream().filter(userVertex -> userVertex.getName().equals(exchangeOrder.getBookOfferedInExchangeOwner())).findFirst().get();
+        Vertex<String> exchangeInitiatorVertex = relevantComponents.stream().filter(userVertex -> userVertex.getName().equals(userTriggeredSearch)).findFirst().get();
         try {
             graph.breadthFirstSearch(exchangeInitiatorVertex,new CleverVisitor<String>());
 
@@ -67,10 +67,10 @@ public class ExchangePathSuggestionService {
 
     }
 
-    Optional<Set<Vertex<String>>> filterRelevantComponents(Set<Set<Vertex<String>>> stronglyConnectedComponentsInGraph, ExchangeOrder exchangeOrder) {
+    Optional<Set<Vertex<String>>> filterRelevantComponents(Set<Set<Vertex<String>>> stronglyConnectedComponentsInGraph, ExchangeOrder exchangeOrder,String userTriggeredSearch) {
         Optional<Set<Vertex<String>>> relevantStronglyConnectedComponent = stronglyConnectedComponentsInGraph.stream().filter(set -> {
             Set<String> usersInStronglyConnectedComponent = set.stream().map(vertex -> vertex.getName()).collect(Collectors.toSet());
-            if (usersInStronglyConnectedComponent.contains(exchangeOrder.getBookOfferedInExchangeOwner()) &&
+            if (usersInStronglyConnectedComponent.contains(userTriggeredSearch) &&
                     usersInStronglyConnectedComponent.contains(exchangeOrder.getBookUnderOfferOwner())) {
                 return true;
             }

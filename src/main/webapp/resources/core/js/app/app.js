@@ -41,3 +41,9 @@ bookApp.config(function ($routeProvider) {
 
 
 });
+
+bookApp.run(['dataService', function(dataService) {
+    dataService.setEmail(email);
+
+
+}]);

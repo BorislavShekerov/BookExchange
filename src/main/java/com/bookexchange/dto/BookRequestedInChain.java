@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by sheke on 2/5/2016.
@@ -66,5 +68,31 @@ public class BookRequestedInChain{
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public static class BookRequestedInChainBuilder{
+        private BookRequestedInChain bookRequestedInChain;
+
+        public BookRequestedInChainBuilder(){
+            bookRequestedInChain = new BookRequestedInChain();
+        }
+
+        public BookRequestedInChainBuilder setRequestedBy(User initiator) {
+            bookRequestedInChain.setRequestedBy(initiator); return this;
+        }
+
+
+        public BookRequestedInChainBuilder setRequestedBook(Book bookRequested) {
+            bookRequestedInChain.setRequestedBook(bookRequested); return this;
+        }
+
+        public BookRequestedInChainBuilder setChainRequestedIn(BookExchangeChain bookExchangeChain){
+            bookRequestedInChain.setChainRequestedIn(bookExchangeChain);
+            return this;
+        }
+
+        public BookRequestedInChain buildBookExchangeChain(){
+            return bookRequestedInChain;
+        }
     }
 }

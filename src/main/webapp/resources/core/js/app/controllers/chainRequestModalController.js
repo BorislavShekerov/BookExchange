@@ -1,4 +1,4 @@
-bookApp.controller('ChainRequestModalController', ['exchangeService','notificationsService','$scope', 'userToChooseFrom', 'userChoosingFromYou','$uibModalInstance', 'notification', function (exchangeService, notificationsService, $scope, userToChooseFrom, userChoosingFromYou, $uibModalInstance, notification) {
+bookApp.controller('ChainRequestModalController', ['exchangeService','notificationsService','$scope', 'userToChooseFrom', 'userChoosingFromYou','$uibModalInstance','exchangeChain', function (exchangeService, notificationsService, $scope, userToChooseFrom, userChoosingFromYou, $uibModalInstance, exchangeChain) {
     $scope.userToChooseFrom = userToChooseFrom;
     $scope.userChoosingFromYou = userChoosingFromYou;
     $scope.chosenBook = {};
@@ -12,14 +12,12 @@ bookApp.controller('ChainRequestModalController', ['exchangeService','notificati
     }
 
     $scope.rejectExchangeChainRequest = function(){
-        exchangeService.rejectExchangeChainRequest(notification.exchangeChainID);
-        notificationsService.setNotificationSeen(notification);
+        exchangeService.rejectExchangeChainRequest(exchangeChain.id);
         $uibModalInstance.close();
     }
 
      $scope.acceptExchangeChainRequest = function(){
-            exchangeService.acceptExchangeChainRequest( $scope.chosenBook.id,notification.exchangeChainID);
-                    notificationsService.setNotificationSeen(notification);
-                    $uibModalInstance.close();
+            exchangeService.acceptExchangeChainRequest( $scope.chosenBook.id,exchangeChain.id);
+                    $uibModalInstance.close($scope.chosenBook);
         }
            }]);

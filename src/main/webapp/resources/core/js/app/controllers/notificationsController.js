@@ -27,7 +27,7 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 	$scope.notificationClicked = function (notification) {
 		if (notification.notificationType == 'EXCHANGE_CHAIN_INVITATION') {
 			exchangeService.getChainDetailsForUser(notification.exchangeChainID).then(function (usersToExchangeWith) {
-
+                var exchangeChain = {id:notification.exchangeChainID};
 				var promptWindow = $uibModal.open({
 					animation: true,
 					templateUrl: '/app/openChainRequestModal',
@@ -36,7 +36,7 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 					resolve: {
 						 userToChooseFrom: usersToExchangeWith[0],
 							userChoosingFromYou: usersToExchangeWith[1],
-						notification : notification
+						exchangeChain : exchangeChain
 					}
 				});
 

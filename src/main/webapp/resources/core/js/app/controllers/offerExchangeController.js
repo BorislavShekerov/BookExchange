@@ -1,7 +1,7 @@
 bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', '$uibModalInstance', 'eventRecordService', function ($scope, $http, $location, dataService, exchangeService, $uibModalInstance, eventRecordService) {
 	$scope.userDetails = dataService.getUserData();
 	$scope.bookToExchangeFor = exchangeService.getBookToExchangeFor();
-	$scope.selectedBook = "Select a book";
+	$scope.selectedBook = 'Select Book';
 	$scope.exchangeOptionExists = false;
 	$scope.exchangeOptionPath = [];
 
@@ -17,17 +17,24 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 	}
 
     $scope.initiateExchangeChain = function(){
-            var userEmails = [];
+            var dataToPost = {};
+
+                var userEmails = [];
+
             angular.forEach($scope.exchangeOptionPath,function(value,index){
                 userEmails.push(value.email);
             });
+
+            dataToPost.userChain = userEmails;
+            dataToPost.bookRequestedTitle = $scope.bookToExchangeFor.title;
+
         	var req = {
         			method: 'POST',
         			url: '/app/exchangeChainOrder',
         			headers: {
         				'X-CSRF-TOKEN': csrfToken
         			},
-        			data: userEmails
+        			data: dataToPost
         		}
 
         		$http(req).then(function (response) {
@@ -67,8 +74,6 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 		var exchangeOrder = {};
 		exchangeOrder.bookUnderOffer = $scope.bookToExchangeFor.title;
 		exchangeOrder.bookUnderOfferOwner = $scope.bookToExchangeFor.ownerEmail;
-		exchangeOrder.bookOfferedInExchange = $scope.selectedBook;
-		exchangeOrder.bookOfferedInExchangeOwner = $scope.userDetails.email;
 
 		return exchangeOrder;
 
@@ -92,5 +97,9 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 		}, function (response) {
 			alert("error");
 		});
+	}
+
+	$scope.bookChosen = function(selectedBook){
+	    $scope.selectedBook = selectedBook;
 	}
 }]);

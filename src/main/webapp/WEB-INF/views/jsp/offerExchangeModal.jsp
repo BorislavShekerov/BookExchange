@@ -73,10 +73,17 @@
 			<div id="offerExchangeForm" class="form-group col-md-4">
 				<div class="alert alert-warning" role="alert" ng-hide="userHasBooksOfInterest()"><strong>Warning!</strong> You have no books that match {{bookToExchangeFor.ownedBy}}''s interests</div>
 				<label class="control-label">Pick A Book</label>
-				<div class="selectContainer">
-					<select name="language" class="form-control" ng-model="selectedBook">
-						<option ng-repeat="book in userDetails.booksPostedOnExchange" value="{{book.title}}">{{book.title}}</option>
-					</select>
+				<div id="selectContainer">
+				    <!-- Single button -->
+                    <div class="btn-group" uib-dropdown is-open="status.isopen">
+                      <button id="single-button" type="button" class="btn" uib-dropdown-toggle ng-disabled="disabled">
+                        {{selectedBook}}<span class="caret"></span>
+                      </button>
+                      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                        <li ng-repeat="book in userDetails.booksPostedOnExchange" role="menuitem" ng-click="bookChosen(book.title)">{{book.title}}</li>
+                      </ul>
+                    </div>
+
 				</div>
 			</div>
 

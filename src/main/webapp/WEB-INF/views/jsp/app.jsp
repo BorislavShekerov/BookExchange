@@ -31,12 +31,13 @@
 		<link href="../resources/core/css/app/chain_request_modal.css" rel="stylesheet">
 		<link href="../resources/core/css/app/side_menu.css" rel="stylesheet">
 		<link href="../resources/core/css/app/notifications.css" rel="stylesheet">
+				<link href="../resources/core/css/app/offers.css" rel="stylesheet">
 		<!-- Include Bootstrap-select CSS, JS -->
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css" />
 
 	</head>
 
-	<body ng-app="myApp">
+	<body ng-app="myApp" ng-cloak>
 
 		<c:url value="/j_spring_security_logout" var="logoutUrl" />
 
@@ -105,9 +106,9 @@
 							</ul>
 						</li>
 
-						<li class="dropdown" ng-controller="notificationsController">
+						<li class="dropdown" ng-controller="notificationsController" >
 							<a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle" ng-click="notificationsDropdownOpened()" data-target="#">
-								<span class="glyphicon glyphicon-bell"></span><span ng-if="unseenNotifications > 0" class="badge">{{unseenNotifications}}</span>
+								<span class="glyphicon glyphicon-bell"></span><span ng-if="unseenNotifications > 0" class="badge" ng-bind="unseenNotifications"></span>
 							</a>
 
 							<ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
@@ -150,7 +151,7 @@
 					<ul class="nav navbar-nav">
 						<li class="list-item-chosen"><a href="#" ng-click="sideMenuItemSelected()"><span class="glyphicon glyphicon-send"></span> Link</a></li>
 
-						<li ng-repeat="menuItem in sideMenuOptions" ng-click="menuItemSelected(menuItem.label)" ng-class="{'selected-menu-item': selectedMenuItem == menuItem.label}"><a href="{{menuItem.url}}"><span class="glyphicon {{menuItem.glyphicon}}"></span> {{menuItem.label}} <span ng-if="menuItem.eventHappened" class="badge">{{menuItem.eventSum}}</span></a></li>
+						<li ng-repeat="menuItem in sideMenuOptions" ng-click="menuItemSelected(menuItem.label)" ng-class="{'selected-menu-item': selectedMenuItem == menuItem.label}"><a href="{{menuItem.url}}"><span class="glyphicon {{menuItem.glyphicon}}"></span><span ng-bind="menuItem.label"> </span> <span ng-if="menuItem.eventHappened" class="badge" ng-bind="menuItem.eventSum"></span></a></li>
 
 					</ul>
 				</div>
@@ -260,6 +261,7 @@
         <script src="../resources/core/js/app/controllers/offersMadeController.js "></script>
          <script src="../resources/core/js/app/controllers/offersReceivedController.js "></script>
         <script src="../resources/core/js/app/controllers/sideMenuController.js "></script>
+         <script src="../resources/core/js/app/controllers/directRequestModalController.js"></script>
         <script src="../resources/core/js/app/services/dataService.js "></script>
                 <script src="../resources/core/js/app/services/eventRecordService.js "></script>
         <script src="../resources/core/js/app/services/exchangeService.js "></script>

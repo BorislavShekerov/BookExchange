@@ -5,10 +5,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by sheke on 10/18/2015.
@@ -22,9 +19,6 @@ public class User {
     private String email;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "postedBy")
     List<Book> booksPostedOnExchange = new ArrayList<>();
-    @OneToMany(mappedBy = "exchangeInitiator")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    Set<BookExchangeChain> exchageChainsInitiated = new HashSet<>();
     @Transient
     Book bookToAddToExchange;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -35,6 +29,7 @@ public class User {
     @Column(name = "LAST_NAME")
     private String lastName;
     @Column(name = "PASSWORD")
+    @JsonIgnore
     private String password;
     @Column(name = "AVATAR_URL")
     private String avatarUrl;
@@ -46,9 +41,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_EXCHANGE_CURRENT", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
     private Set<DirectBookExchange> currentExchanges = new HashSet<>();
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "USER_EXCHANGE_HISTORY", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
-    private Set<DirectBookExchangeCompleted> exchangeHistory = new HashSet<>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userNotified", cascade = {javax.persistence.CascadeType.PERSIST})
     private Set<Notification> userNotifications = new HashSet<>();
     @Column(name = "LOGIN_COUNT")
@@ -62,9 +54,6 @@ public class User {
 
     public void addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn){
         this.categoriesInterestedIn.addAll(categoriesInterestedIn);
-    }
-    public void completeExchange(DirectBookExchangeCompleted bookExchange) {
-        this.exchangeHistory.add(bookExchange);
     }
 
     public String getFirstName() {
@@ -148,28 +137,12 @@ public class User {
         this.currentExchanges = currentExchanges;
     }
 
-    public Set<DirectBookExchangeCompleted> getExchangeHistory() {
-        return exchangeHistory;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public Set<BookExchangeChain> getExchageChainsInitiated() {
-        return exchageChainsInitiated;
-    }
-
-    public void setExchageChainsInitiated(Set<BookExchangeChain> exchageChainsInitiated) {
-        this.exchageChainsInitiated = exchageChainsInitiated;
-    }
-
-    public void setExchangeHistory(Set<DirectBookExchangeCompleted> exchangeHistory) {
-        this.exchangeHistory = exchangeHistory;
     }
 
     public void addNotification(Notification newNotification){
@@ -214,6 +187,11 @@ public class User {
     public void increaseLoginCount(){
         loginCount++;
     }
+
+    public Optional<Book> getBookPostedByUser(String bookRequestedTitle) {
+        return booksPostedOnExchange.stream().filter(book -> book.getTitle().equals(bookRequestedTitle)).findFirst();
+    }
+
     public static class UserBuilder {
 
         private User user;
@@ -268,11 +246,6 @@ public class User {
 
         public UserBuilder setCurrentExchanges(Set<DirectBookExchange> currentExchanges) {
             user.setCurrentExchanges(currentExchanges);
-            return this;
-        }
-
-        public UserBuilder setExchangeHistory(Set<DirectBookExchangeCompleted> exchangeHistory) {
-            user.setExchangeHistory(exchangeHistory);
             return this;
         }
 

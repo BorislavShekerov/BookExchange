@@ -1,9 +1,9 @@
 package com.bookexchange.web;
 
-import com.bookexchange.dto.DirectBookExchange;
 import com.bookexchange.dto.BookExchangeChain;
 import com.bookexchange.dto.frontend.ExchangeAccumulator;
-import com.bookexchange.dto.frontend.ExchangeChainAcceptance;
+import com.bookexchange.dto.frontend.ExchangeAcceptance;
+import com.bookexchange.dto.frontend.ExchangeChainOrder;
 import com.bookexchange.dto.frontend.ExchangeOrder;
 import com.bookexchange.dto.User;
 import com.bookexchange.exception.BookExchangeInternalException;
@@ -58,14 +58,30 @@ public class ExchangeController {
 
     }
 
-    @RequestMapping(value = "/app/exchangeChainRequests/initiated", method = RequestMethod.GET)
+    @RequestMapping(value = "/app/openDirectRequestModal", method = RequestMethod.GET)
+    public String openDirectRequestModal(ModelMap model) {
+        return "directRequestModal";
+
+    }
+
+    @RequestMapping(value = "/app/exchangeRequests/initiated", method = RequestMethod.GET)
     public
     @ResponseBody
     ExchangeAccumulator getUserCurrentExchanges(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
 
-        return exchangeService.getUserCurrentExchanges(userEmail);
+        return exchangeService.getExchangesInitiatedByUser(userEmail);
+    }
+
+    @RequestMapping(value = "/app/exchangeRequests/received", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    ExchangeAccumulator getUserCurrentExchangeRequestsReceived(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        return exchangeService.getExchangeRequestsReceivedByUser(userEmail);
     }
 
     @RequestMapping(value = "/offerExchange", method = RequestMethod.GET)
@@ -75,8 +91,11 @@ public class ExchangeController {
 
     @RequestMapping(value = "/app/exchangeOrder", method = RequestMethod.POST)
     public @ResponseBody String recordExchange(@RequestBody ExchangeOrder exchangeOrder, Model model)  {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
         try {
-            exchangeService.recordExchange(exchangeOrder);
+            exchangeService.recordExchange(userEmail,exchangeOrder);
         } catch (BookExchangeInternalException e) {
             return "Failure";
         }
@@ -85,9 +104,10 @@ public class ExchangeController {
     }
 
     @RequestMapping(value = "/app/exchangeChainOrder", method = RequestMethod.POST)
-    public @ResponseBody String recordExchangeChain(@RequestBody List<String> exchangeChain, Model model){
-        List<User> usersOnChain = userService.fetchUsersForEmail(exchangeChain);
-        exchangeChainService.registerExchangeChain(usersOnChain);
+    public @ResponseBody String recordExchangeChain(@RequestBody ExchangeChainOrder exchangeChainOrder, Model model) throws BookExchangeInternalException {
+        List<User> usersOnChain = userService.fetchUsersForEmail(exchangeChainOrder.getUserChain());
+        exchangeChainService.registerExchangeChain(usersOnChain, exchangeChainOrder.getBookRequestedTitle());
+
         return "Success";
     }
 
@@ -96,7 +116,10 @@ public class ExchangeController {
     @ResponseBody
     List<User> exploreExchangeOptions(@RequestBody ExchangeOrder exchangeOrder, Model model) throws BookExchangeInternalException, InterruptedException {
         Thread.sleep(1000);
-        return exchangePathSuggestionService.exploreOptions(exchangeOrder);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        return exchangePathSuggestionService.exploreOptions(userEmail,exchangeOrder);
     }
 
 
@@ -121,14 +144,37 @@ public class ExchangeController {
         return "Success";
     }
 
+
+    @RequestMapping(value = "/app/directExchange/reject", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    String rejectDirectExchange(@RequestBody BookExchangeChain bookExchangeChain,Model model) throws BookExchangeInternalException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        exchangeService.rejecDirecttExchange(userEmail,bookExchangeChain.getId());
+        return "Success";
+    }
+
     @RequestMapping(value = "/app/exchangeChain/accept", method = RequestMethod.POST)
     public
     @ResponseBody
-    String acceptExchangeChain(@RequestBody ExchangeChainAcceptance exchangeChainAcceptance, Model model) throws BookExchangeInternalException, InterruptedException {
+    String acceptExchangeChain(@RequestBody ExchangeAcceptance exchangeChainAcceptance, Model model) throws BookExchangeInternalException, InterruptedException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
 
         exchangeChainService.acceptExchangeChain(userEmail,exchangeChainAcceptance);
+        return "Success";
+    }
+
+    @RequestMapping(value = "/app/directExchange/accept", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    String acceptDirectExchange(@RequestBody ExchangeAcceptance exchangeChainAcceptance, Model model) throws BookExchangeInternalException, InterruptedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        exchangeService.acceptDirectExchange(userEmail,exchangeChainAcceptance.getBookId(),exchangeChainAcceptance.getExchangeId());
         return "Success";
     }
 

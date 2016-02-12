@@ -1,6 +1,7 @@
 package com.bookexchange.utils;
 
 import com.bookexchange.dto.Book;
+import com.bookexchange.dto.DirectBookExchange;
 import com.bookexchange.dto.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -14,7 +15,7 @@ public class CustomObjectMapper extends ObjectMapper {
     public CustomObjectMapper() {
         SimpleModule module = new SimpleModule("ObjectIdmodule");
         module.addSerializer(Book.class, new BookJSONSerializer());
-
+        module.addSerializer(DirectBookExchange.class,new DirectBookExchangeJSONSerializer());
         this.registerModule(module);
         this.registerModule(new JodaModule());
     }

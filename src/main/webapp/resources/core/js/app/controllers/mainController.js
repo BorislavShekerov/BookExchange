@@ -1,6 +1,7 @@
 bookApp.controller('mainController', ['dataService', '$uibModal', 'ngToast' ,'notificationsService', function (dataService, $uibModal, ngToast, notificationsService) {
 	dataService.setEmail(email);
 
+
 	function init() {
 		if (userLoginCount == 1) {
 			var promptWindow = $uibModal.open({

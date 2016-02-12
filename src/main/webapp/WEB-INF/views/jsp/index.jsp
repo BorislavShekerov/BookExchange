@@ -24,7 +24,7 @@
     <link href="resources/core/css/app/sign_in_popup.css" rel="stylesheet">
 </head>
 
-<body ng-app="myApp" id="welcomeController" ng-controller="welcomeController">
+<body ng-app="myApp" id="welcomeController" ng-controller="welcomeController" ng-cloak>
 
     <!-- Fixed navbar -->
 

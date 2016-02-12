@@ -10,7 +10,7 @@ bookApp.service("exchangeService",['$http', function ($http) {
 	};
 
     function getExchangeRequestsInitiatedByUser() {
-    		var getPromise = $http.get('/app/exchangeChainRequests/initiated').
+    		var getPromise = $http.get('/app/exchangeRequests/initiated').
     		then(function (response) {
     			return response.data;
     		}, function (response) {
@@ -40,20 +40,60 @@ bookApp.service("exchangeService",['$http', function ($http) {
                                     				return response.status;
                                     			});
 
+    	}
+
+    	function rejectDirectExchange(requestId){
+    	      var csrfToken = $("meta[name='_csrf']").attr("content");
+                                     var exchangeChain= {
+                                     id: requestId};
+
+                                                var req = {
+                                                				method: 'POST',
+                                                				url: '/app/directExchange/reject',
+                                                				headers: {
+                                                					'X-CSRF-TOKEN': csrfToken
+                                                				},
+                                                				data: exchangeChain
+                                                			}
+
+                                                	 $http(req).then(function (response) {
+                                                				return response.data;
+                                                			}, function (response) {
+                                                				return response.status;
+                                                			});
 
     	}
 
-    function getChainDetailsForUser(chainId){
+    	function acceptDirectExchange(bookRequested,exchangeId){
+    	      var csrfToken = $("meta[name='_csrf']").attr("content");
+                var dataToSend = {bookId:bookRequested,exchangeId:exchangeId};
+                                    var req = {
+                                    				method: 'POST',
+                                    				url: '/app/directExchange/accept',
+                                    				headers: {
+                                    					'X-CSRF-TOKEN': csrfToken
+                                    				},
+                                    				data: dataToSend
+                                    			}
+
+                                    	var postPromise	= $http(req).then(function (response) {
+                                    				return response.data;
+                                    			}, function (response) {
+                                    				return response.status;
+                                    			});
+
+                                    			return postPromise;
+    	}
+
+    function getChainDetailsForUser(){
              var csrfToken = $("meta[name='_csrf']").attr("content");
-             var chainDetials = {
-             id: chainId};
+
                         var req = {
                         				method: 'POST',
                         				url: '/app/exchangeChain/userRequest',
                         				headers: {
                         					'X-CSRF-TOKEN': csrfToken
-                        				},
-                        				data: chainDetials
+                        				}
                         			}
 
                         	var postPromise	= $http(req).then(function (response) {
@@ -67,15 +107,13 @@ bookApp.service("exchangeService",['$http', function ($http) {
 
         function getExchangeRequestsReceivedByUser(){
         var csrfToken = $("meta[name='_csrf']").attr("content");
-                   var chainDetials = {
-                   id: chainId};
+
                               var req = {
                               				method: 'GET',
-                              				url: '/app/exchangeChainRequests/received',
+                              				url: '/app/exchangeRequests/received',
                               				headers: {
                               					'X-CSRF-TOKEN': csrfToken
-                              				},
-                              				data: chainDetials
+                              				}
                               			}
 
                               	var postPromise	= $http(req).then(function (response) {
@@ -115,7 +153,9 @@ bookApp.service("exchangeService",['$http', function ($http) {
 		getExchangeRequestsInitiatedByUser: getExchangeRequestsInitiatedByUser,
 		getChainDetailsForUser: getChainDetailsForUser,
 		rejectExchangeChainRequest: rejectExchangeChainRequest,
+		rejectDirectExchange : rejectDirectExchange,
 		acceptExchangeChainRequest : acceptExchangeChainRequest,
+		acceptDirectExchange: acceptDirectExchange,
 		getExchangeRequestsReceivedByUser:getExchangeRequestsReceivedByUser
 	};
 

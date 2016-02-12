@@ -73,8 +73,8 @@ public class DirectBookExchangeDaoTest {
         bookDao.postBookOnExchange(user2Book);
 
         DirectBookExchange directBookExchange = new DirectBookExchange();
-        directBookExchange.setBookPostedOnExchange(user1Book1);
-        directBookExchange.setBookPostedOnExchange(user2Book);
+        directBookExchange.setBookRequested(user1Book1);
+        directBookExchange.setBookRequested(user2Book);
 
        user1.addBookExchange(directBookExchange);
         user2.addBookExchange(directBookExchange);
@@ -105,17 +105,17 @@ public class DirectBookExchangeDaoTest {
         persistData(Arrays.asList(user1,user2), Arrays.asList(category1,category2), Arrays.asList(user1Book1, user1Book2, user2Book1, user2Book2));
 
         DirectBookExchange directBookExchange1 = new DirectBookExchange();
-        directBookExchange1.setBookPostedOnExchange(user1Book1);
-        directBookExchange1.setBookPostedOnExchange(user2Book1);
+        directBookExchange1.setBookRequested(user1Book1);
+        directBookExchange1.setBookRequested(user2Book1);
 
         DirectBookExchange directBookExchange2 = new DirectBookExchange();
-        directBookExchange1.setBookPostedOnExchange(user2Book2);
-        directBookExchange1.setBookPostedOnExchange(user1Book2);
+        directBookExchange1.setBookRequested(user2Book2);
+        directBookExchange1.setBookRequested(user1Book2);
 
-        bookExchangeDao.addBookExchange(directBookExchange1);
-        bookExchangeDao.addBookExchange(directBookExchange2);
+        bookExchangeDao.saveBookExchange(directBookExchange1);
+        bookExchangeDao.saveBookExchange(directBookExchange2);
 
-        List<DirectBookExchange> result = bookExchangeDao.getBookExchangesForUser("DUMMY_EMAIL_1");
+        List<DirectBookExchange> result = bookExchangeDao.getDirectExchangesInitiatedByUser("DUMMY_EMAIL_1");
 
         assertEquals("There must be 2 exchanges for user1",2,result.size());
     }

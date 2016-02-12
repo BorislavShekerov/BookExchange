@@ -7,8 +7,6 @@ public class ExchangeOrder {
 
     private String bookUnderOffer;
     private String bookUnderOfferOwner;
-    private String bookOfferedInExchange;
-    private String bookOfferedInExchangeOwner;
 
     public String getBookUnderOffer() {
         return bookUnderOffer;
@@ -26,19 +24,4 @@ public class ExchangeOrder {
         this.bookUnderOfferOwner = bookUnderOfferOwner;
     }
 
-    public String getBookOfferedInExchange() {
-        return bookOfferedInExchange;
-    }
-
-    public void setBookOfferedInExchange(String bookOfferedInExchange) {
-        this.bookOfferedInExchange = bookOfferedInExchange;
-    }
-
-    public String getBookOfferedInExchangeOwner() {
-        return bookOfferedInExchangeOwner;
-    }
-
-    public void setBookOfferedInExchangeOwner(String bookOfferedInExchangeOwner) {
-        this.bookOfferedInExchangeOwner = bookOfferedInExchangeOwner;
-    }
 }

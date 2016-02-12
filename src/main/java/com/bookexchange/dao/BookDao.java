@@ -1,6 +1,7 @@
 package com.bookexchange.dao;
 
 import com.bookexchange.dto.Book;
+import com.bookexchange.dto.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +29,7 @@ public class BookDao {
         return booksOnExchange;
     }
 
-    public Optional<Book> getBookForEmail(String bookTitle, String email) {
+    public Optional<Book> getBookPostedByUser(String bookTitle, String email) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(Book.class);

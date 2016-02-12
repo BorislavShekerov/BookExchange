@@ -68,7 +68,7 @@ public class BookDaoTest {
 
     @Test
     public void getBookForUsername(){
-        Optional<Book> bookForUser = bookDao.getBookForEmail(DUMMY_BOOK_TITLE, DUMMY_EMAIL);
+        Optional<Book> bookForUser = bookDao.getBookPostedByUser(DUMMY_BOOK_TITLE, DUMMY_EMAIL);
 
        assertNotNull(bookForUser.get());
     }

@@ -1,6 +1,8 @@
 package com.bookexchange.web;
 
 import com.bookexchange.dto.User;
+import com.bookexchange.dto.frontend.ExchangeOrder;
+import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,6 +43,15 @@ public class UserController {
             return "redirect:app/";
         }
     }
+
+    @RequestMapping(value = "/app/getDetailsForUser", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    User getDetailsForUser(@RequestBody User userData, Model model, HttpServletRequest request) throws BookExchangeInternalException {
+        return userService.findUserByEmail(userData.getEmail());
+    }
+
+
 
     private void authenticateUserAndSetSession(User user, HttpServletRequest request) {
         String email = user.getEmail();

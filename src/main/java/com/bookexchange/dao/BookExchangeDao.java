@@ -21,8 +21,8 @@ public class BookExchangeDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void addBookExchange(DirectBookExchange directBookExchange) {
-        sessionFactory.getCurrentSession().save(directBookExchange);
+    public void saveBookExchange(DirectBookExchange directBookExchange) {
+        sessionFactory.getCurrentSession().saveOrUpdate(directBookExchange);
     }
 
     public void saveBookExchangeChain(BookExchangeChain bookExchangeChain){
@@ -33,22 +33,6 @@ public class BookExchangeDao {
         sessionFactory.getCurrentSession().saveOrUpdate(exchangeChainRequest);
     }
 
-    public List<ExchangeChainRequest> getExchangeChainRequestsForUser(String userRequestingEmail,String chainInitiator){
-        Session currentSession = sessionFactory.getCurrentSession();
-
-        Criteria criteria = currentSession.createCriteria(ExchangeChainRequest.class)
-                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-                .createAlias("userOffering", "offeringUser")
-                .createAlias("userChoosing", "choosingUser")
-                .createAlias("requestFor","parentBookExchangeChain")
-                .createAlias("parentBookExchangeChain.exchangeInitiator","exchangeChainInitiator")
-                .add(Restrictions.eq("exchangeChainInitiator.email", chainInitiator ))
-                .add(Restrictions.or(Restrictions.eq("offeringUser.email", userRequestingEmail),Restrictions.eq("choosingUser.email", userRequestingEmail)));
-
-        List<ExchangeChainRequest> exchangeChainRequests = criteria.list();
-
-        return exchangeChainRequests;
-    }
     public List<BookExchangeChain> getExchangeChainsInitiatedByUser(String userEmail){
         Session currentSession = sessionFactory.getCurrentSession();
 
@@ -60,15 +44,39 @@ public class BookExchangeDao {
 
         return bookExchangeChain;
     }
-    public List<DirectBookExchange> getBookExchangesForUser(String userEmail) {
+
+    public List<ExchangeChainRequest> getExchangeChainsUserInvitedIn(String userEmail){
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(ExchangeChainRequest.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .createAlias("requestFor", "userRequestFor")
+                .add(Restrictions.eq("userRequestFor.email", userEmail ));
+
+        return (List<ExchangeChainRequest>) criteria.list();
+    }
+
+    public List<DirectBookExchange> getDirectExchangesInitiatedByUser(String userEmail) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
-                .createAlias("bookPostedOnExchange", "bookPosted")
-                .createAlias("bookPosted.postedBy", "bookPostedUserPosted")
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
                 .createAlias("bookOfferedInExchange", "bookOffered")
                 .createAlias("bookOffered.postedBy", "bookOfferedUserPosted")
-                .add(Restrictions.or(Restrictions.eq("bookPostedUserPosted.email", userEmail),Restrictions.eq("bookOfferedUserPosted.email", userEmail)));
+                .add(Restrictions.eq("bookOfferedUserPosted.email", userEmail));
+        List<DirectBookExchange> booksOnExchange = criteria.list();
+
+        return booksOnExchange;
+    }
+
+    public List<DirectBookExchange> getDirectExchangesOfferedToUser(String userEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .createAlias("bookRequested", "requestedBook")
+                .createAlias("requestedBook.postedBy", "bookRequestedUserPosted")
+                .add(Restrictions.eq("bookRequestedUserPosted.email", userEmail));
         List<DirectBookExchange> booksOnExchange = criteria.list();
 
         return booksOnExchange;
@@ -78,9 +86,18 @@ public class BookExchangeDao {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(BookExchangeChain.class)
-                .createAlias("exchangeInitiator", "initiator")
                 .add(Restrictions.eq("id", newExchangeChainRequestId));
 
         return Optional.ofNullable((BookExchangeChain) criteria.uniqueResult());
     }
+
+    public Optional<DirectBookExchange> getDirectBookExchange(int directBookExchangeId) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
+                .add(Restrictions.eq("id", directBookExchangeId));
+
+        return Optional.ofNullable((DirectBookExchange) criteria.uniqueResult());
+    }
+
 }

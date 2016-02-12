@@ -3,9 +3,9 @@ package com.bookexchange.dto.frontend;
 /**
  * Created by sheke on 2/5/2016.
  */
-public class ExchangeChainAcceptance {
+public class ExchangeAcceptance {
     private int bookId;
-    private int exchangeChainId;
+    private int exchangeId;
 
     public int getBookId() {
         return bookId;
@@ -15,11 +15,11 @@ public class ExchangeChainAcceptance {
         this.bookId = bookId;
     }
 
-    public int getExchangeChainId() {
-        return exchangeChainId;
+    public int getExchangeId() {
+        return exchangeId;
     }
 
-    public void setExchangeChainId(int exchangeChainId) {
-        this.exchangeChainId = exchangeChainId;
+    public void setExchangeId(int exchangeId) {
+        this.exchangeId = exchangeId;
     }
 }

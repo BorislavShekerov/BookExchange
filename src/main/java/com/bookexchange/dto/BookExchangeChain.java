@@ -29,6 +29,8 @@ public class BookExchangeChain {
     private User exchangeInitiator;
     @Column(name = "SUCCESSFUL")
     private boolean isSuccessful;
+    @Column(name = "IS_OVER")
+    private boolean isOver;
     @OneToMany( mappedBy = "chainRequestedIn",cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     List<BookRequestedInChain> booksRequestedInChain = new ArrayList<>();
@@ -98,6 +100,14 @@ public class BookExchangeChain {
 
     public void setChainBreaker(User chainBreaker) {
         this.chainBreaker = chainBreaker;
+    }
+
+    public boolean isOver() {
+        return isOver;
+    }
+
+    public void setOver(boolean over) {
+        isOver = over;
     }
 
     @Override
