@@ -56,6 +56,17 @@ public class BookDao {
         return (List<Book>) criteria.list();
     }
 
+    public List<Book> getAllBooksPostedByUser(String currentUserEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(Book.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.createAlias("postedBy", "userPosted")
+                .add(Restrictions.eq("userPosted.email", currentUserEmail));
+
+        return (List<Book>) criteria.list();
+    }
+
     public Optional<Book> getBookForId(long bookId) {
         Session currentSession = sessionFactory.getCurrentSession();
 
@@ -67,4 +78,12 @@ public class BookDao {
         Book bookForId = (Book) criteria.uniqueResult();
         return Optional.ofNullable(bookForId);
     }
+
+    public void deleteBook(Book bookToDelete) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        currentSession.delete(bookToDelete);
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package com.bookexchange.web;
 
 import com.bookexchange.dto.Book;
-import com.bookexchange.dto.User;
 import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +32,27 @@ public class BookController {
         return allBooks;
     }
 
-    @RequestMapping(value="/app/addBook", method=RequestMethod.POST)
-    public @ResponseBody String addBookToExchange(@RequestBody User userData, Model model) throws BookExchangeInternalException {
-        Book bookToAdd = userData.getBookToAddToExchange();
-        bookToAdd.getPostedBy().setFirstName(userData.getEmail());
+    @RequestMapping(value = "/app/openAddBookModal", method = RequestMethod.GET)
+    public String openAddBookModal(ModelMap model) {
+        return "addBookModal";
+    }
 
-        bookService.addBookToExchange(bookToAdd);
+    @RequestMapping(value="/app/book/add", method=RequestMethod.POST)
+    public @ResponseBody
+    List<Book> addBookToExchange(@RequestBody Book bookToAdd, Model model) throws BookExchangeInternalException {
+        Authentication authentication = getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
 
-        return "Success";
+        return bookService.addBookToExchange(currentUserEmail,bookToAdd);
+    }
+
+    @RequestMapping(value="/app/book/remove", method=RequestMethod.POST)
+    public @ResponseBody
+    List<Book> removeBookToExchange(@RequestBody Book bookToRemove, Model model) throws BookExchangeInternalException {
+        Authentication authentication = getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        return  bookService.removeBook(currentUserEmail,bookToRemove.getTitle());
     }
 
 }

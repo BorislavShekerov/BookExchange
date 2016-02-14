@@ -21,13 +21,6 @@ bookApp.controller('sideMenuController', ['$scope', 'eventRecordService','$inter
 			eventHappened: false,
 			eventSum: 0
                      }, {
-			url: '#history',
-			glyphicon: 'glyphicon-retweet',
-			label: "Exchange History",
-			selected: false,
-			eventHappened: false,
-			eventSum: 0
-                                           }, {
 			url: '#account',
 			glyphicon: 'glyphicon-user',
 			label: "Account",

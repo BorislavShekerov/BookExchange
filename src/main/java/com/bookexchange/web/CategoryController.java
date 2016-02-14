@@ -1,8 +1,6 @@
 package com.bookexchange.web;
 
-import com.bookexchange.dto.Book;
 import com.bookexchange.dto.BookCategory;
-import com.bookexchange.dto.User;
 import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.service.CategoryService;
 import com.bookexchange.service.UserService;
@@ -39,15 +37,30 @@ public class CategoryController {
         return categoryService.getAllCategories();
     }
 
-    @RequestMapping(value="/app/addPrefferedCategeories", method=RequestMethod.POST)
-    public @ResponseBody String addPrefferedCategeories(@RequestBody List<BookCategory> categoriesInterestedIn, Model model) throws BookExchangeInternalException {
+    @RequestMapping(value = "/app/category/openAddPreferredCategoryModal", method = RequestMethod.GET)
+    public String openAddCategoryModal(ModelMap model) {
+        return "addPreferredCategoriesModal";
+    }
+
+    @RequestMapping(value="/app/category/add", method=RequestMethod.POST)
+    public @ResponseBody
+    Set<BookCategory> addPrefferedCategeories(@RequestBody List<BookCategory> categoriesInterestedIn, Model model) throws BookExchangeInternalException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
 
-        userService.addCategoriesInterestedIn(categoriesInterestedIn, userEmail);
-
-        return "Success";
+        return  userService.addCategoriesInterestedIn(categoriesInterestedIn, userEmail);
     }
+
+    @RequestMapping(value="/app/category/remove", method=RequestMethod.POST)
+    public @ResponseBody
+    Set<BookCategory> removePrefferedCategeory(@RequestBody BookCategory categoriesToRemove, Model model) throws BookExchangeInternalException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        return  userService.removeCategoryInterestedIn(categoriesToRemove.getCategoryName(), userEmail);
+    }
+
+
 
 
 }

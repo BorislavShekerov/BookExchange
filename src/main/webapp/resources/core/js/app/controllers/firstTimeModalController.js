@@ -1,4 +1,4 @@
-bookApp.controller('FirstTimeLoginModalController', ['$scope', 'dataService', '$http', '$uibModalInstance', function ($scope, dataService, $http, $uibModalInstance) {
+bookApp.controller('AddPreferredCategoriesModalController', ['$scope', 'categoryService', '$http', '$uibModalInstance', function ($scope, categoryService, $http, $uibModalInstance) {
 	$scope.loading = true;
 	var allCategories = [];
 	$scope.categoriesInterestedIn = [];
@@ -13,73 +13,27 @@ bookApp.controller('FirstTimeLoginModalController', ['$scope', 'dataService', '$
 	});
 
 	function constructCategoriesList(data) {
-		$('#categories-wanted-select').multiselect({
-			buttonText: function (options, select) {
-				return 'Pick Categories Interested In';
-			},
-			buttonTitle: function (options, select) {
-				var labels = [];
-				options.each(function () {
-					labels.push($(this).text());
-				});
-				return labels.join(' - ');
-			},
-			onChange: function (option, checked, select) {
-				$scope.addCategoryInterestedIn($(option).val());
-			}
-		});
+	$scope.allCategories = data;
 
-		var options = [];
-		$.each(data, function (index, value) {
-
-			var option = {};
-			option.label = value.categoryName;
-			option.title = value.categoryName;
-			option.value = value.categoryName;
-			option.selected = false;
-
-			options.push(option);
-
-			var category = {
-				categoryName: value.categoryName,
-				id: value.id
-			};
-			allCategories.push(category);
-		});
-
-		$('#categories-wanted-select').multiselect('dataprovider', options);
 	}
 
 	$scope.addCategoryInterestedIn = function (category) {
 		$scope.categoriesInterestedIn.push(category);
-
-		$('option[value=' + category + ']', $('#categories-select')).prop('selected', true);
-
-		$('#categories-wanted-select').multiselect('refresh');
-		$scope.$apply();
 	}
-	$scope.removeCategory = function (category) {
-		$scope.categoriesInterestedIn.splice($.inArray(category, $scope.categoriesInterestedIn), 1);
 
-		$('option[value=' + category + ']', $('#categories-wanted-select')).prop('selected', false);
-
-		$('#categories-wanted-select').multiselect('refresh');
-	};
-
-	$scope.close = function () {
+	$scope.closeModal = function () {
 		$uibModalInstance.dismiss('cancel');
 	};
 
-	$scope.addPreferedGenres = function () {
-		var preferredCategories = [];
-		$.each($scope.categoriesInterestedIn, function (index, categoryInterestedIn) {
-			$.each(allCategories, function (index, value) {
-				if (categoryInterestedIn == value.categoryName) {
-					preferredCategories.push(value);
-				}
-			});
-
+	$scope.addPreferredGenres = function () {
+	    $scope.loading =true;
+		categoryService.addCategoryInterestedIn($scope.categoriesInterestedIn).then(function(result){
+		    $scope.categoriesInterestedIn = result;
+		    $uibModalInstance.close($scope.categoriesInterestedIn);
+		},function(err){
+		   $uibModalInstance.dismiss();
 		});
-		$uibModalInstance.close(preferredCategories);
+
+
 	}
 }]);

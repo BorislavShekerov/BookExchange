@@ -20,12 +20,8 @@ public class UserDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void addUser(User user) {
-        sessionFactory.getCurrentSession().save(user);
-    }
-
-    public void updateUser(User user) {
-        sessionFactory.getCurrentSession().update(user);
+    public void saveUser(User user) {
+        sessionFactory.getCurrentSession().saveOrUpdate(user);
     }
 
     public Optional<User> findUserByEmail(String email) {

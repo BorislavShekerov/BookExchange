@@ -19,37 +19,45 @@
 			<button id="filterButton" type="button" class="btn btn-primary" ng-click="filterExpanded =! filterExpanded"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</button>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" >
 		<div ng-class="{'col-sm-6 col-md-8': filterExpanded, 'col-sm-12': !filterExpanded}">
-			<div ng-repeat="bookOnExchange in booksDisplayed" ng-class="{'col-md-4': filterExpanded, 'col-sm-6 col-md-3': !filterExpanded}"  ng-if="!filteringResults">
-				<div class="panel panel-default" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
-					<img src="{{bookOnExchange.imgUrl}}" alt="{{bookOnExchange.title}}" class="img-responsive full-width" id="bookCoverImg">
-					<div class="panel-body">
-						<div class="row">
-							<div class="media">
-								<div class="media-left">
-									<a href="#">
-										<img class="media-object profile-picture" src="../{{bookOnExchange.ownerAvatar}}" alt="...">
-									</a>
-								</div>
-								<div class="media-body">
-									<a class="media-heading"><ul><li>{{bookOnExchange.ownerFirstname}}</li><li>{{ bookOnExchange.ownerLastname}}</li></ul></a>
-								</div>
-							</div>
-						</div>
-						<div><span> Interested in: </span>
-							<ul class="list-inline space-out-top-sm">
-								<li ng-repeat="category in bookOnExchange.ownerCategoriesOfInterest">
-									<span class="label label-default">{{category}}</span></li>
-							</ul>
-						</div>
-						<div class="space-out-top-sm">
-							<button type="button" class="btn btn-primary text-center" ng-click="initiateExchange(bookOnExchange.title,bookOnExchange.ownedBy)"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
-						</div>
+		        <div id="library" ng-class="{'col-md-4': filterExpanded, 'col-sm-6 col-md-3': !filterExpanded}"  ng-if="!filteringResults" ng-repeat="bookOnExchange in booksDisplayed">
+                				<div id="outer-box">
+                					<img class="img-responsive" src="{{bookOnExchange.imgUrl}}">
+                					<div id="inner-box" class="text-center">
+                					     <h4>Title:{{ " " + bookOnExchange.title}} </h4>
+                						<h4>Author:{{ " " + bookOnExchange.author}} </h4>
+                						<h4>Posted By</h4>
+                						<div class="row">
+                							<div class="media col-sm-8 col-sm-offset-2">
+                                        					<div class="media-left">
+                                        						<a href="#">
+                                        							<img class="media-object profile-picture" src="../{{bookOnExchange.ownerAvatar}}" alt="...">
+                                        						</a>
+                                        					</div>
+                                        					<div class="media-body">
 
-					</div>
-				</div>
-			</div>
+                                        							<h4>{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}} </h4>
+
+                                        					</div>
+                                        				</div>
+                                        				</div>
+                                        				<div class="row">
+                                        				<h4> Interested in:</h4>
+                                                        				<ul class="list-inline space-out-top-sm">
+                                                        					<li ng-repeat="category in bookOnExchange.ownerCategoriesOfInterest">
+                                                        						<span class="label label-default">{{category}}</span></li>
+                                                        				</ul>
+                                                        			</div>
+
+                						<div class="space-out-top-sm">
+                                        	<button type="button" class="btn btn-primary text-center" ng-click="initiateExchange(bookOnExchange.title,bookOnExchange.ownedBy)"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Offer Exchange</button>
+                                        </div>
+                					</div>
+                				</div>
+                			</div>
+
+
 			<div class="row"   ng-if="filteringResults || loadingResults">
 			<h4  class="pagination-centered text-center" ng-if="loadingResults">Fetching More Books</h4>
 			<h4 class="pagination-centered text-center"  ng-if="filteringResults">Filtering Data</h4>

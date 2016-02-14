@@ -31,4 +31,10 @@ public class CategoryDao {
         Criteria criteria = currentSession.createCriteria(BookCategory.class);
         return criteria.list();
     }
+
+    public void removeCategory(BookCategory categoryToRemove) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        currentSession.delete(categoryToRemove);
+    }
 }

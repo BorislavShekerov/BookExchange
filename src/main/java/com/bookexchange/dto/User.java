@@ -1,5 +1,6 @@
 package com.bookexchange.dto;
 
+import com.bookexchange.exception.BookExchangeInternalException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -17,11 +18,12 @@ public class User {
     @Id
     @Column(name = "EMAIL")
     private String email;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "postedBy")
-    List<Book> booksPostedOnExchange = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "postedBy",cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    Set<Book> booksPostedOnExchange = new HashSet<>();
     @Transient
     Book bookToAddToExchange;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "USER_CATEGORIES_INTERESTED", joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID")})
     Set<BookCategory> categoriesInterestedIn = new HashSet<>();
     @Column(name = "FIRST_NAME")
@@ -88,11 +90,11 @@ public class User {
         this.avatarUrl = avatarUrl;
     }
 
-    public List<Book> getBooksPostedOnExchange() {
+    public Set<Book> getBooksPostedOnExchange() {
         return booksPostedOnExchange;
     }
 
-    public void setBooksPostedOnExchange(List<Book> booksPostedOnExchange) {
+    public void setBooksPostedOnExchange(Set<Book> booksPostedOnExchange) {
         this.booksPostedOnExchange = booksPostedOnExchange;
     }
 
@@ -192,6 +194,18 @@ public class User {
         return booksPostedOnExchange.stream().filter(book -> book.getTitle().equals(bookRequestedTitle)).findFirst();
     }
 
+    public void removeBookPosted(Book bookToRemove) throws BookExchangeInternalException {
+        booksPostedOnExchange.remove(bookToRemove);
+    }
+
+    public void removeCateoryInterestedIn(BookCategory categoriesToRemove) {
+        categoriesInterestedIn.remove(categoriesToRemove);
+    }
+
+    public Optional<BookCategory> getCategoryInterestedIn(String categoryToRemove) {
+        return categoriesInterestedIn.stream().filter(bookCategory -> bookCategory.getCategoryName().equals(categoryToRemove)).findFirst();
+    }
+
     public static class UserBuilder {
 
         private User user;
@@ -220,7 +234,7 @@ public class User {
             return this;
         }
 
-        public UserBuilder setBooksPostedOnExchange(List<Book> booksPostedOnExchange) {
+        public UserBuilder setBooksPostedOnExchange(Set<Book> booksPostedOnExchange) {
             user.setBooksPostedOnExchange(booksPostedOnExchange);
             return this;
         }

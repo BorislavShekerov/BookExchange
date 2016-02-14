@@ -51,7 +51,7 @@ public class BookDaoTest {
 
         b.setCategory(category);
 
-        userDao.addUser(user);
+        userDao.saveUser(user);
         categoryDao.addCategory(category);
         bookDao.postBookOnExchange(b);
 

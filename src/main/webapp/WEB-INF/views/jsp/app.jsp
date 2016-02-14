@@ -31,7 +31,8 @@
 		<link href="../resources/core/css/app/chain_request_modal.css" rel="stylesheet">
 		<link href="../resources/core/css/app/side_menu.css" rel="stylesheet">
 		<link href="../resources/core/css/app/notifications.css" rel="stylesheet">
-				<link href="../resources/core/css/app/offers.css" rel="stylesheet">
+		<link href="../resources/core/css/app/offers.css" rel="stylesheet">
+		<link href="../resources/core/css/app/account.css" rel="stylesheet">
 		<!-- Include Bootstrap-select CSS, JS -->
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css" />
 
@@ -59,14 +60,20 @@
 					</button>
 					<a class="navbar-brand" href="#"><img src="../resources/core/img/logo.png"></a>
 				</div>
-				<div id="navbar" class="navbar-collapse collapse">
+				<div id="navbar" class="navbar-collapse collapse" >
 					<ul class="nav navbar-nav">
 						<li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
 					</ul>
-					<ul class="nav navbar-nav navbar-right">
+					<form class="navbar-form navbar-left" role="search" ng-controller="NavBarSearchController">
+                            <div class="form-group" ng-show="searchBarVisible">
+                              <input type="text" class="form-control" placeholder="Search" ng-model="searchPhrase">
+                            </div>
+                          </form>
 
-						<li>
-							<a role="button" data-toggle="modal" data-target="#addBookModal">
+					<ul class="nav navbar-nav navbar-right" >
+
+						<li ng-controller="AddBookController">
+							<a role="button" ng-click="openAddBookModal()">
 								<span class="glyphicon glyphicon-plus"></span>Add Book
 							</a>
 						</li>
@@ -165,75 +172,6 @@
 
 		</div>
 
-		<!-- Add Book Modal -->
-		<div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-controller="addBookModuleController">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title" id="myModalLabel">Adding a new Book</h4>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-md-10 col-md-offset-1">
-								<form class="form-horizontal" role="form">
-									<fieldset>
-
-										<!-- Form Name -->
-										<legend>Book Details</legend>
-
-										<!-- Text input-->
-										<div class="form-group">
-											<label class="col-sm-2 control-label" for="textinput">Title</label>
-											<div class="col-sm-10">
-												<input type="text" placeholder="Book Title" class="form-control" ng-model="bookTitle">
-											</div>
-										</div>
-
-										<!-- Text input-->
-										<div class="form-group">
-											<label class="col-sm-2 control-label" for="textinput">Author</label>
-											<div class="col-sm-10">
-												<input type="text" placeholder="Book Author" class="form-control" ng-model="bookAuthor">
-											</div>
-										</div>
-
-										<!-- Text input-->
-										<div class="form-group">
-											<label class="col-sm-2 control-label" for="textinput">Genre</label>
-											<div class="col-sm-10">
-												<input type="text" placeholder="Book Genre" class="form-control" ng-model="bookCategory">
-											</div>
-										</div>
-
-
-										<!-- Text input-->
-										<div class="form-group">
-											<label class="col-sm-2 control-label" for="textinput">Cover</label>
-											<div class="row" ng-show="showBookCoverImage">
-												<img src="{{imgUrl}}" alt="Book Cover" id="bookCoverImage">
-											</div>
-											<div class="col-sm-10" ng-class="{'col-sm-offset-2':showBookCoverImage}">
-												<input type="text" placeholder="Book Genre" class="form-control" ng-model="imgUrl" ng-change="textChanged()">
-											</div>
-										</div>
-
-
-
-									</fieldset>
-								</form>
-							</div>
-							<!-- /.col-lg-12 -->
-						</div>
-						<!-- /.row -->
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary" ng-click="addBook()">Add Book</button>
-					</div>
-				</div>
-			</div>
-		</div>
 		<!-- Bootstrap core JavaScript
     ================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
@@ -247,8 +185,9 @@
 		<script src="../resources/core/js/ngToast.js "></script>
 		<script src="../resources/core/js/jquery.bootpag.js"></script>
 		<script type='text/javascript' src='../resources/core/js/infinite-scroll.js'></script>
+		<script src="https://ucarecdn.com/widget/2.6.0/uploadcare/uploadcare.min.js" charset="utf-8"></script>
 
-		<!-- Custom JS -->
+		<!-- Custom Controller JS -->
 		  <script src="../resources/core/js/app/app.js "></script>
 		<script src="../resources/core/js/app/controllers/addBookModuleController.js "></script>
 		<script src="../resources/core/js/app/controllers/exchangeController.js "></script>
@@ -262,16 +201,24 @@
          <script src="../resources/core/js/app/controllers/offersReceivedController.js "></script>
         <script src="../resources/core/js/app/controllers/sideMenuController.js "></script>
          <script src="../resources/core/js/app/controllers/directRequestModalController.js"></script>
+         <script src="../resources/core/js/app/controllers/accountController.js"></script>
+          <script src="../resources/core/js/app/controllers/addBookController.js"></script>
+          <script src="../resources/core/js/app/controllers/navBarSearchController.js"></script>
+         <!-- Custom Services JS -->
         <script src="../resources/core/js/app/services/dataService.js "></script>
-                <script src="../resources/core/js/app/services/eventRecordService.js "></script>
+         <script src="../resources/core/js/app/services/eventRecordService.js "></script>
         <script src="../resources/core/js/app/services/exchangeService.js "></script>
+         <script src="../resources/core/js/app/services/bookService.js "></script>
          <script src="../resources/core/js/app/services/notificationsService.js "></script>
+           <script src="../resources/core/js/app/services/categoryService.js "></script>
+           <script src="../resources/core/js/app/services/searchService.js "></script>
 
         <script type='text/javascript' src='../resources/core/js/app/eventRecordService.js'></script>
 
 
 
-		<script>
+		<script type="text/javascript">
+        	UPLOADCARE_PUBLIC_KEY = '76aa760fad5093c9dcc0';
 			var email = "${userDetails.email}";
             var userLoginCount = "${userDetails.loginCount}";
 

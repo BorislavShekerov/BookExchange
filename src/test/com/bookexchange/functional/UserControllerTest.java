@@ -5,7 +5,6 @@ import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
 import com.bookexchange.dto.UserRole;
 import com.bookexchange.web.UserController;
-import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,7 @@ public class UserControllerTest {
         User user1 = new User.UserBuilder().setEmail(EMAIL1).buildUser();
         User user2 = new User.UserBuilder().setEmail(EMAIL1).buildUser();
 
-        userDao.addUser(user1);
+        userDao.saveUser(user1);
 
         String result = testObj.registerUser(user2, null,null);
 
@@ -58,7 +57,7 @@ public class UserControllerTest {
 
         User user2 = new User.UserBuilder().setEmail(EMAIL2).setFirstName(user2FirstName).setCategoriesInterestedIn(new HashSet<>(Arrays.asList(scienceFiction))).buildUser();
 
-        userDao.addUser(user1);
+        userDao.saveUser(user1);
 
         String result = testObj.registerUser(user2, null,null);
 

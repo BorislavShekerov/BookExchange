@@ -30,7 +30,7 @@ bookApp.config(function ($routeProvider) {
     // route for the contact page
     .when('/account', {
         templateUrl: '/account',
-        controller: 'contactController'
+        controller: 'AccountController'
     })
 
       .when('/offerExchange', {

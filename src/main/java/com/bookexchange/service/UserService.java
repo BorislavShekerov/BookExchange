@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +47,7 @@ public class UserService {
         userData.setEnabled(true);
         userData.setLoginCount(0);
         userData.setVipTokens(INITIAL_VIP_TOKENS);
-        userDao.addUser(userData);
+        userDao.saveUser(userData);
 
         addUserRole(userData);
         addNewUserNotificationToUserData(userData);
@@ -72,17 +73,29 @@ public class UserService {
     public void updateUserLoginCount(User userDetails) {
         userDetails.increaseLoginCount();
 
-        userDao.updateUser(userDetails);
+        userDao.saveUser(userDetails);
     }
 
     public List<User> fetchUsersForEmail(List<String> userEmails){
         return userEmails.stream().map(userEmail -> userDao.findUserByEmail(userEmail).get()).collect(Collectors.toList());
     }
 
-    public void addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn,String userEmail) throws BookExchangeInternalException {
+    public Set<BookCategory> addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn, String userEmail) throws BookExchangeInternalException {
         Optional<User> userForEmail = userDao.findUserByEmail(userEmail);
         User userDetails = userForEmail.orElseThrow(() -> new BookExchangeInternalException("UNKNOWN USERNAME"));
 
-        userDao.updateUser(userDetails);
+        userDetails.addCategoriesInterestedIn(categoriesInterestedIn);
+        userDao.saveUser(userDetails);
+        return userDao.findUserByEmail(userEmail).get().getCategoriesInterestedIn();
+    }
+
+    public Set<BookCategory> removeCategoryInterestedIn(String categoryToRemoveName, String userEmail) throws BookExchangeInternalException {
+        User userDetails = userDao.findUserByEmail(userEmail).orElseThrow(() -> new BookExchangeInternalException("UNKNOWN USERNAME"));
+        BookCategory categoryToRemove = userDetails.getCategoryInterestedIn(categoryToRemoveName).orElseThrow(() -> new BookExchangeInternalException("User not interested in category"));
+        userDetails.removeCateoryInterestedIn(categoryToRemove);
+
+        bookCategoryDao.removeCategory(categoryToRemove);
+        userDao.saveUser(userDetails);
+        return userDao.findUserByEmail(userEmail).get().getCategoriesInterestedIn();
     }
 }

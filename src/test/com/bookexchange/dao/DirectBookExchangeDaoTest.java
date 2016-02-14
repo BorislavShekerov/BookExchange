@@ -65,8 +65,8 @@ public class DirectBookExchangeDaoTest {
         user1Book1.setCategory(category1);
         user2Book.setCategory(category2);
 
-        userDao.addUser(user1);
-        userDao.addUser(user2);
+        userDao.saveUser(user1);
+        userDao.saveUser(user2);
         categoryDao.addCategory(category1);
         categoryDao.addCategory(category2);
         bookDao.postBookOnExchange(user1Book1);
@@ -163,7 +163,7 @@ public class DirectBookExchangeDaoTest {
     }
 
     private void persistData(List<User> users, List<BookCategory> bookCategories, List<Book> books) {
-        users.stream().forEach(user -> userDao.addUser(user));
+        users.stream().forEach(user -> userDao.saveUser(user));
         bookCategories.stream().forEach(bookCategory -> categoryDao.addCategory(bookCategory));
         books.stream().forEach(book -> bookDao.postBookOnExchange(book));
     }

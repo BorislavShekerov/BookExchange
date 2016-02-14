@@ -1,4 +1,4 @@
-bookApp.controller('exchangeController', ['$scope', '$location', 'dataService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window', function ($scope, $location, dataService, exchangeService, $http, $uibModal, ngToast, $document, $window, eventRecordService, $interval) {
+bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService) {
 	dataService.setEmail(email);
 
 	$scope.searchFor = '';
@@ -16,8 +16,19 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService', 
 
     	$scope.currentBatch = 1;
 
+    angular.element($document).bind("scroll", function() {
+                if($document[0].body.scrollTop > document.getElementById("custom-search-input").scrollHeight +  document.getElementById("custom-search-input").clientHeight) {
+                    searchService.setSearchNavBarVisible(true);
+                    searchService.setSearchPhrase($scope.searchFor);
+                }else{
+                searchService.setSearchNavBarVisible(false);
+                }
+
+        	});
+
+
 	function init() {
-		var allBooksPromise = dataService.getAllBooks();
+		var allBooksPromise = bookService.getAllBooks();
 		allBooksPromise.then(function (response) {
 			sortBooksInPages(response.data);
 			$scope.loadingResults = false;

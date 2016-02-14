@@ -12,24 +12,19 @@ bookApp.service("dataService", ['$http', function ($http) {
 		});
 
 	}
-    function addUserPreferredCategories(categoriesInterestedIn){
-    var csrfToken = $("meta[name='_csrf']").attr("content");
-        var req = {
-        				method: 'POST',
-        				url: '/app/addPrefferedCategeories',
-        				headers: {
-        					'X-CSRF-TOKEN': csrfToken
-        				},
-        				data: categoriesInterestedIn
-        			}
 
-        	var postPromise	= $http(req).then(function (response) {
-        				return response.data;
-        			}, function (response) {
-        				return response.status;
-        			});
-        	return postPromise;
-    }
+	function getAllCategories() {
+    		var postPromise = $http.get('/getAllCategories').
+    		success(function (data, status, headers, config) {
+    			userDetails = data;
+    		}).
+    		error(function (data, status, headers, config) {
+    			alert("Error");
+    		});
+
+        return postPromise;
+    	}
+
 
    function getDetailsForUser(userEmail){
      var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -51,23 +46,12 @@ bookApp.service("dataService", ['$http', function ($http) {
             	return postPromise;
    }
 
-    function getAllBooks(){
-         var promise = $http.get('/getAllBooks').
-                	success(function (response, status, headers, config) {
-                       return response.data;
-                	}).
-                	error(function (data, status, headers, config) {
-                		alert("Error");
-                	});
-
-          return promise;
-    }
-	var setEmail = function (userEmail) {
+	function setEmail(userEmail) {
 		if (email == "") {
 			email = userEmail;
 			fetchUserDetails();
 		}
-	};
+	}
 
 	var setCategories = function (categs) {
 		if (categories.length == 0) {
@@ -93,8 +77,7 @@ bookApp.service("dataService", ['$http', function ($http) {
 		getUserData: getUserData,
 		setCategories: setCategories,
 		getCategories: getCategories,
-		addUserPreferredCategories:addUserPreferredCategories,
-		getAllBooks : getAllBooks,
+		getAllCategories: getAllCategories,
 		getDetailsForUser : getDetailsForUser
 	};
 

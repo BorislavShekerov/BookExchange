@@ -175,3 +175,14 @@ margin-top: 10em;
 #processing-modal{
     overflow-y:hidden;
 }
+
+#bookAddModal img{
+    max-width:300px;
+    min-width:300px;
+    max-height:300px;
+    min-height:300px;
+}
+
+.space-out-right-sm{
+    margin-right: 0.3em;
+}

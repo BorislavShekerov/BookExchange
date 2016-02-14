@@ -44,14 +44,25 @@ public class BookService {
         bookDao.postBookOnExchange(bookToPost);
     }
 
-    public void addBookToExchange(Book bookToAdd) throws BookExchangeInternalException {
-        User userDetails = userDao.findUserByEmail(bookToAdd.getPostedBy().getEmail()).orElseThrow(()-> new BookExchangeInternalException("UNKNOWN USERNAME"));
-        bookToAdd.setPostedBy(userDetails);
-
-        bookDao.postBookOnExchange(bookToAdd);
-
+    public List<Book> addBookToExchange(String currentUserEmail, Book bookToAdd) throws BookExchangeInternalException {
+        User userDetails = userDao.findUserByEmail(currentUserEmail).orElseThrow(()-> new BookExchangeInternalException("UNKNOWN USERNAME"));
         userDetails.addBookToExchange(bookToAdd);
 
-        userDao.updateUser(userDetails);
+        bookToAdd.setPostedBy(userDetails);
+        bookToAdd.setDatePosted(LocalDateTime.now());
+
+        userDao.saveUser(userDetails);
+        return bookDao.getAllBooksPostedByUser(currentUserEmail);
     }
+
+    public List<Book> removeBook(String currentUserEmail, String title) throws BookExchangeInternalException {
+        Book bookToRemove = bookDao.getBookPostedByUser(title, currentUserEmail).orElseThrow(()-> new BookExchangeInternalException("book not found"));
+        User userPosted = bookToRemove.getPostedBy();
+        userPosted.removeBookPosted(bookToRemove);
+
+        bookDao.deleteBook(bookToRemove);
+        userDao.saveUser(userPosted);
+        return bookDao.getAllBooksPostedByUser(currentUserEmail);
+    }
+
 }

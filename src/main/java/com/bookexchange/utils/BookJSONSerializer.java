@@ -20,6 +20,7 @@ public class BookJSONSerializer extends JsonSerializer<Book> {
                           SerializerProvider provider) throws IOException {
         jsonGen.writeStartObject();
         jsonGen.writeStringField("title", book.getTitle());
+        jsonGen.writeStringField("author", book.getAuthor());
         jsonGen.writeStringField("imgUrl", book.getImgUrl());
         jsonGen.writeObjectField("datePosted", book.getDatePosted());
         jsonGen.writeStringField("category",book.getCategory().getCategoryName());

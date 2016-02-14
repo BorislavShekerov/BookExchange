@@ -60,7 +60,7 @@ public class ExchangeService {
     private void updateUserDataWithNewExchange(User exchangeInitiator, DirectBookExchange exchangeToRecord) {
         exchangeInitiator.addBookExchange(exchangeToRecord);
 
-        userDao.updateUser(exchangeInitiator);
+        userDao.saveUser(exchangeInitiator);
     }
 
     private DirectBookExchange buildBookExchange(Book bookPostedOnExchange, User exchangeInitiator) {

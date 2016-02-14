@@ -32,7 +32,7 @@ public class UserDaoTest {
         user.setPassword(PASSWORD);
         user.setEmail(EMAIL);
 
-        userDao.addUser(user);
+        userDao.saveUser(user);
         User userForUsername = userDao.findUserByEmail(EMAIL).get();
 
         assertNotNull(userForUsername);

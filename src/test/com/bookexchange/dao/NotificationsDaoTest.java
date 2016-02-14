@@ -35,7 +35,7 @@ public class NotificationsDaoTest {
     public void getExchangeChainRequestNotificationsForUser(){
         User user1 = new User.UserBuilder().setEmail(EMAIL_1).buildUser();
 
-        userDao.addUser(user1);
+        userDao.saveUser(user1);
         Notification notification = new Notification.NotificationBuilder().setUserNotified(user1).setNotificationType(NotificationType.EXCHANGE_CHAIN_INVITATION).isSeen(false).setMessage(DUMMY_NOTIFICAITON_MESSAGE).build();
 
         notificationsDao.saveNotification(notification);
