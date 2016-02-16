@@ -9,13 +9,9 @@
 			<div class="col-md-10 col-md-offset-1">
 				<form name="addBookForm" class="form-horizontal" role="form" ng-submit="submitForm(addBookForm.$valid)" novalidate>
 					<fieldset>
-
-						<!-- Form Name -->
-						<legend>Book Details</legend>
-
 						<!-- Text input-->
 
-						<div class="col-sm-10 col-sm-offset-1">
+						<div class="col-sm-10 col-sm-offset-1 separate-bottom">
 							<label class="col-sm-2 control-label" for="bookTitle">Title</label>
 							<div class="col-sm-8">
 								<input id="bookTitle" name="bookTitle" type="text" placeholder="Book Title" class="form-control" ng-model="bookTitle" required>
@@ -26,7 +22,7 @@
 
 						<!-- Text input-->
 
-						<div class="col-sm-10 col-sm-offset-1">
+						<div class="col-sm-10 col-sm-offset-1 separate-bottom">
 							<label class="col-sm-2 control-label" for="bookAuthor">Author</label>
 							<div class="col-sm-8">
 								<input type="text" name="bookAuthor" placeholder="Book Author" class="form-control" ng-model="bookAuthor" required>
@@ -36,17 +32,17 @@
 
 
 						<!-- Text input-->
-						<div class="col-sm-10 col-sm-offset-1">
+						<div class="col-sm-10 col-sm-offset-1 separate-bottom" id="categorySelector">
 							<h4>Pick Book Category</h4>
 							<div>
-								<a class="btn btn-primary" ng-click="addCategory(category)" ng-repeat="category in allCategories">{{category.categoryName}}</a>
+								<a ng-class="{'category-button-activated' :category.selected}"class="ghost-button offers-received-button" ng-click="addCategory(category)" ng-repeat="category in allCategories">{{category.categoryName}}</a>
 							</div>
-							<p ng-show="formSubmitted && !categorySelected" class="help-block">Book Author is required.</p>
+							<p ng-show="formSubmitted && !categorySelected" class="help-block">Book Category is required.</p>
 						</div>
 
 
 						<!-- Text input-->
-						<div class="col-sm-10 col-sm-offset-1">
+						<div class="col-sm-10 col-sm-offset-1 separate-bottom">
 							<label class="col-sm-3 control-label" for="textinput">Cover Image</label>
 
 							<div class="col-sm-9" ng-class="{'col-sm-offset-2':showBookCoverImage}">
@@ -58,7 +54,7 @@
 							</div>
 						</div>
 
-						<button type="submit" class="btn btn-primary">Add Book</button>
+						<button type="submit" class="ghost-button submit-button pull-right">Add Book</button>
 				</form>
 			</div>
 			<!-- /.col-lg-12 -->

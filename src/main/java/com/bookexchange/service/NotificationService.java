@@ -26,4 +26,8 @@ public class NotificationService {
 
         notificationsDao.saveNotification(notificationToUpdate);
     }
+
+    public List<Notification> getAllNotificationsForUser(String userEmail) {
+        return notificationsDao.getAllNotificationsForUser(userEmail);
+    }
 }

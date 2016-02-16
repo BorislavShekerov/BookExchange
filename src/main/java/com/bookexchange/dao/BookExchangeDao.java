@@ -61,9 +61,8 @@ public class BookExchangeDao {
 
         Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-                .createAlias("bookOfferedInExchange", "bookOffered")
-                .createAlias("bookOffered.postedBy", "bookOfferedUserPosted")
-                .add(Restrictions.eq("bookOfferedUserPosted.email", userEmail));
+                .createAlias("exchangeInitiator", "initiator")
+                .add(Restrictions.eq("initiator.email", userEmail));
         List<DirectBookExchange> booksOnExchange = criteria.list();
 
         return booksOnExchange;

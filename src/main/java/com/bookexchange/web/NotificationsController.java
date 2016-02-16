@@ -23,14 +23,24 @@ public class NotificationsController {
     @Autowired
     NotificationService notificationService;
 
-    @RequestMapping(value = "/app/notifications/newNotificationsCheck", method = RequestMethod.GET)
+    @RequestMapping(value = "/app/notifications/new", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<Notification> checkForNewChainRequests(Model model){
+    List<Notification> checkForNewNotifications(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
 
         return notificationService.getAllNewNotificationsForUser(userEmail);
+    }
+
+    @RequestMapping(value = "/app/notifications/all", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<Notification> getAllNotificationsForUser(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = auth.getName();
+
+        return notificationService.getAllNotificationsForUser(userEmail);
     }
 
     @RequestMapping(value = "/app/notifications/marAsSeen", method = RequestMethod.POST)

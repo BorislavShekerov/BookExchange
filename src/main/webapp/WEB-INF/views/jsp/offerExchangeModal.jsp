@@ -6,7 +6,8 @@
 		<div class="row" ng-if="exchangeOptionExists">
 
 			<div class="row">
-				<button type="button" class="btn btn-primary text-center" ng-click="exchangeOptionExists = false"><span class="glyphicon glyphicon-arrow-left margin-right-small"></span>Back</button>
+			                <a ng-click="exchangeOptionExists = false"><span class="glyphicon glyphicon-arrow-left margin-right-small"></span>Back </a>
+
 			</div>
 			<div class="row">
 				    <div class="timeline">
@@ -62,7 +63,7 @@
 
                     </div>
                     <div class="row">
-                         				<button type="button" class="btn btn-primary text-center" ng-click="initiateExchangeChain()"><span class="glyphicon glyphicon-flash margin-right-small"></span> Initiate Exchange Chain</button>
+                    			                <a ng-click="initiateExchangeChain()"><span class="glyphicon glyphicon-flash margin-right-small"></span> Initiate Exchange Chain </a>
                     </div>
 			</div>
 		</div>
@@ -70,66 +71,40 @@
 
 		<div class="row" ng-if="!exchangeOptionExists">
 
-			<div id="offerExchangeForm" class="form-group col-md-4">
-				<div class="alert alert-warning" role="alert" ng-hide="userHasBooksOfInterest()"><strong>Warning!</strong> You have no books that match {{bookToExchangeFor.ownedBy}}''s interests</div>
-				<label class="control-label">Pick A Book</label>
-				<div id="selectContainer">
-				    <!-- Single button -->
-                    <div class="btn-group" uib-dropdown is-open="status.isopen">
-                      <button id="single-button" type="button" class="btn" uib-dropdown-toggle ng-disabled="disabled">
-                        {{selectedBook}}<span class="caret"></span>
-                      </button>
-                      <ul uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                        <li ng-repeat="book in userDetails.booksPostedOnExchange" role="menuitem" ng-click="bookChosen(book.title)">{{book.title}}</li>
-                      </ul>
-                    </div>
-
-				</div>
+            <div class="row">
+			<div id="offerExchangeForm">
+				<div class="alert alert-warning" role="alert" ng-hide="userHasBooksOfInterest()"><strong>Warning!</strong> You have no books that match {{bookToExchangeFor.ownerFirstname + " " + bookToExchangeFor.lastName+ "'"}}s interests</div>
 			</div>
+            </div>
 
-			<div class="col-xs-12 col-sm-2 col-md-4 " id="middle-button-container">
-				<div id="arrow-right-container" class="text-center">
-					<i class="fa fa-arrow-right fa-4x"></i>
-				</div>
-			</div>
-
-
-
-			<div class="col-md-4">
-				<div class="panel panel-default col-xs-12" ng-class="{cardHover: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false">
+            <fiv class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="panel panel-default col-xs-12">
 					<img src="{{bookToExchangeFor.imgUrl}}" class="img-responsive full-width">
 					<div class="panel-body">
-						<div class="media">
-							<div class="media-left ">
-								<a href="#">
-									<img class="media-object profile-picture" src="../{{bookToExchangeFor.ownerAvatar}}" alt="...">
-								</a>
-							</div>
-							<div class="media-body">
-								<h4 class="media-heading">{{bookToExchangeFor.ownedBy}}</h4>
-								<h4 class="media-heading">Exchanges for:</h4>
-							</div>
+						<div class="row">
+						    <h4 class="col-md-4">Posted By</h4>
+						    <div class="col-md-3">
+						    <img class="media-object profile-picture" src="../{{bookToExchangeFor.ownerAvatar}}" alt="...">
+						    </div>
+						    <h4 class="col-md-3">{{bookToExchangeFor.ownerFirstname + " " + bookToExchangeFor.lastName}}</h4>
 						</div>
-						<ul class="list-inline space-out-top-sm">
-							<li ng-repeat="category in bookToExchangeFor.ownerCategoriesOfInterest">
-								<span class="label label-default">{{category}}</span></li>
-						</ul>
 					</div>
 				</div>
 			</div>
+			</div>
 
 		</div>
-		<div class="row" ng-if="!exchangeOptionExists">
+		<div id="actions" class="row" ng-if="!exchangeOptionExists">
 			<div class="row text-center">
-				<button type="button" class="btn btn-warning text-center" ng-click="initiateOffer()"><span class="glyphicon glyphicon-refresh margin-right-small"></span>Make Offer</button>
+                <a ng-click="initiateOffer()" ><span class="glyphicon glyphicon-refresh margin-right-small"></span>Make Offer</a>
 				<div class="row omb_loginOr">
 					<div class="">
 						<hr class="omb_hrOr">
 						<span class="omb_spanOr">or</span>
 					</div>
 				</div>
-
-				<button type="button" class="btn btn-primary text-center" ng-click="exploreOtherOptions()" data-toggle="modal" data-target="#processing-modal"><span class="glyphicon glyphicon-flash margin-right-small"></span> Explore Other Options</button>
+                <a ng-click="exploreOtherOptions()" data-toggle="modal" data-target="#processing-modal"><span class="glyphicon glyphicon-flash margin-right-small"></span> Explore Other Options </a>
 			</div>
 
 		</div>

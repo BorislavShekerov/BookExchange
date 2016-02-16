@@ -6,19 +6,25 @@ bookApp.controller('AddPreferredCategoriesModalController', ['$scope', 'category
 	$http.get('/getAllCategories').
 	success(function (data, status, headers, config) {
 		$scope.loading = false;
-		constructCategoriesList(data);
+		angular.forEach(data,function(category,index){
+            category.selected = false;
+		});
+		$scope.allCategories = data;
 	}).
 	error(function (data, status, headers, config) {
 		alert("Error");
 	});
 
-	function constructCategoriesList(data) {
-	$scope.allCategories = data;
-
-	}
 
 	$scope.addCategoryInterestedIn = function (category) {
-		$scope.categoriesInterestedIn.push(category);
+	    if (!category.selected){
+	        $scope.categoriesInterestedIn.push(category);
+	        category.selected = true;
+	    }else{
+	         $scope.categoriesInterestedIn.splice($scope.categoriesInterestedIn.indexOf(category), 1);
+            	        category.selected = false;
+	    }
+
 	}
 
 	$scope.closeModal = function () {

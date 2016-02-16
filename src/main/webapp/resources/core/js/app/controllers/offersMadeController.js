@@ -50,7 +50,14 @@ bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeSe
 		function init() {
 			exchangeService.getExchangeRequestsInitiatedByUser().then(function (currentExchanges) {
 			    addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
-				$scope.userExchangesCreated = $scope.userExchangesCreated.concat(currentExchanges.directExchanges);
+
+
+				 angular.forEach(currentExchanges.directExchanges, function (directExchange, index) {
+				    directExchange.isCollapsed = true;
+				 });
+
+				 	$scope.userExchangesCreated = $scope.userExchangesCreated.concat(currentExchanges.directExchanges);
+
 
 			},function (err){
 			console.log(err);

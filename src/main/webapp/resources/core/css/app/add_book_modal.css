@@ -1,0 +1,25 @@
+#bookAddModal #categorySelector{
+    padding-left:4.0em;
+}
+
+.separate-bottom{
+    margin-bottom:1.0em;
+}
+
+.category-button-activated{
+      background-color: #fff;
+                 color: #5383d3;
+                  border: 1px solid #5383d3;
+}
+
+.submit-button{
+   background-color: #fff;
+                   color: #5383d3;
+                    border: 1px solid #5383d3;
+
+}
+
+.submit-button:hover{
+     background-color: #5383d3;
+                       color: #fff;
+}

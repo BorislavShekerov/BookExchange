@@ -48,7 +48,7 @@ public class ExchangeService {
 
         bookExchangeDao.saveBookExchange(exchangeToRecord);
         updateUserDataWithNewExchange(bookUnderOffer.getPostedBy(), exchangeToRecord);
-        addNewExchangeRequestNotification(bookUnderOffer.getPostedBy(),exchangeOrder.getBookUnderOfferOwner());
+        addNewExchangeRequestNotification(bookUnderOffer.getPostedBy(),exchangeInitiator.getEmail());
     }
 
     private void addNewExchangeRequestNotification(User postedBy,String exchangeInitiator) {

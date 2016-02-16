@@ -5,10 +5,24 @@ bookApp.controller('DirectRequestModalController', ['exchangeService','$scope', 
 
     $scope.imageHoveredOver = false;
 
+    function init(){
+        angular.forEach($scope.userToChooseFrom.booksPostedOnExchange,function(book,index){
+         book.selected = false;
+        });
+    }
+
+    init();
     $scope.chooseBook = function(chosenBook){
         $scope.chosenBook = chosenBook;
+        chosenBook.selected = true;
         $scope.bookChosen = true;
     }
+
+     $scope.deselectBook = function(chosenBook){
+            $scope.chosenBook = {};
+            chosenBook.selected = false;
+            $scope.bookChosen = false;
+        }
 
     $scope.rejectExchangeRequest = function(){
         var result = {accepted:false}

@@ -1,6 +1,6 @@
 bookApp.service("notificationsService",['$http', function ($http) {
     function getNewNotificationsForUser() {
-    		var getPromise = $http.get('/app/notifications/newNotificationsCheck').
+    		var getPromise = $http.get('/app/notifications/new').
     		then(function (response) {
     			return response.data;
     		}, function (response) {
@@ -9,6 +9,17 @@ bookApp.service("notificationsService",['$http', function ($http) {
 
     		return getPromise;
     	}
+
+      function getAllNotificationsForUser() {
+        		var getPromise = $http.get('/app/notifications/all').
+        		then(function (response) {
+        			return response.data;
+        		}, function (response) {
+        			console.log(response)
+        		});
+
+        		return getPromise;
+        	}
 
     function setNotificationSeen(notification){
       var csrfToken = $("meta[name='_csrf']").attr("content");
@@ -35,7 +46,8 @@ bookApp.service("notificationsService",['$http', function ($http) {
 
 	return {
 		getNewNotificationsForUser: getNewNotificationsForUser,
-		setNotificationSeen: setNotificationSeen
+		setNotificationSeen: setNotificationSeen,
+		getAllNotificationsForUser:getAllNotificationsForUser
 	};
 
 }]);

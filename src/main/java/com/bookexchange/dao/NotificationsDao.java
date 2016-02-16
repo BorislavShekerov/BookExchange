@@ -47,4 +47,17 @@ public class NotificationsDao {
 
         return Optional.ofNullable((Notification) criteria.uniqueResult());
     }
+
+    public List<Notification> getAllNotificationsForUser(String userEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(Notification.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.createAlias("userNotified", "user")
+                .add(Restrictions.eq("user.email", userEmail));
+
+
+        List<Notification> newNotifications = (List<Notification>) criteria.list();
+        return newNotifications;
+    }
 }

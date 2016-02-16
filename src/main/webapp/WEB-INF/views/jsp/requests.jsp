@@ -19,8 +19,8 @@
 							<div>
 								<img src="{{exchangeRequest.bookRequested.imgUrl}}">
 							</div>
-							<button class="btn btn-info btn-circle text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</button>
-							<button class="btn btn-info btn-circle text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</button>
+							<a class="ghost-button  reject-offer-button text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</a>
+							<a class="ghost-button  offers-received-button text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
 
 						</div>
 					</div>
@@ -55,8 +55,8 @@
 
                         				</div>
 
-							<button class="btn btn-info btn-circle text-uppercase" ng-if="!exchangeRequest.over" ng-click="cancelRequest(exchangeRequest)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</button>
-							<button class="btn btn-info btn-circle text-uppercase" ng-if="!exchangeRequest.over"  ng-click="viewDetails(exchangeRequest)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</button>
+							<a class="ghost-button  reject-offer-button text-uppercase" ng-if="!exchangeRequest.over" ng-click="cancelRequest(exchangeRequest)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</a>
+							<a class="ghost-button  offers-received-button text-uppercase" ng-if="!exchangeRequest.over"  ng-click="viewDetails(exchangeRequest)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
 
 						</div>
 					</div>

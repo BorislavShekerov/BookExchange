@@ -19,6 +19,7 @@
 		<!-- Bootstrap core CSS -->
 		<link href="../resources/core/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../resources/core/css/bootstrap-multiselect.css" rel="stylesheet">
+		<link href="../resources/core/css/animate.css" rel="stylesheet">
 		<link href="../resources/core/css/ngToast.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
 
@@ -33,6 +34,8 @@
 		<link href="../resources/core/css/app/notifications.css" rel="stylesheet">
 		<link href="../resources/core/css/app/offers.css" rel="stylesheet">
 		<link href="../resources/core/css/app/account.css" rel="stylesheet">
+		<link href="../resources/core/css/app/add_book_modal.css" rel="stylesheet">
+		<link href="../resources/core/css/app/offer_exchange_modal.css" rel="stylesheet">
 		<!-- Include Bootstrap-select CSS, JS -->
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.2/css/bootstrap-select.min.css" />
 
@@ -103,9 +106,9 @@
 									<div class="navbar-login navbar-login-session">
 										<div class="row">
 											<div class="col-sm-10 col-sm-10-offset-1">
-												<p class="col-sm-10 col-sm-10-offset-1">
-													<a href="javascript:formSubmit()" class="btn btn-danger btn-block">Log Out</a>
-												</p>
+
+												    <a href="javascript:formSubmit()" class="logout-ghost-button">Log Out</a>
+
 											</div>
 										</div>
 									</div>

@@ -1,4 +1,4 @@
-bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService) {
+bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', '$interval', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService, $interval) {
 	dataService.setEmail(email);
 
 	$scope.searchFor = '';
@@ -13,18 +13,26 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 
 	$scope.loadingResults = true;
     $scope.filteringResults = false;
-
+    $scope.shouldFixCategoriesFilter = false;
     	$scope.currentBatch = 1;
 
     angular.element($document).bind("scroll", function() {
                 if($document[0].body.scrollTop > document.getElementById("custom-search-input").scrollHeight +  document.getElementById("custom-search-input").clientHeight) {
                     searchService.setSearchNavBarVisible(true);
                     searchService.setSearchPhrase($scope.searchFor);
+                    $scope.shouldFixCategoriesFilter = true;
                 }else{
                 searchService.setSearchNavBarVisible(false);
+                $scope.shouldFixCategoriesFilter = false;
                 }
 
         	});
+
+    $interval(function(){
+                if(searchService.getSearchNavBarVisible()){
+                    $scope.searchFor = searchService.getSearchPhrase();
+                }
+        },100);
 
 
 	function init() {
@@ -74,7 +82,7 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 
 	$scope.initiateExchange = function (title, ownedBy) {
 		angular.forEach($scope.booksDisplayed, function (value, index) {
-			if (value.title == title && value.ownedBy == ownedBy) {
+			if (value.title == title && value.ownerEmail == ownedBy) {
 				exchangeService.setBookToExchangeFor(value);
 				openExchangeModal();
 			}
@@ -91,6 +99,17 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 
 	$scope.adjustCategoryFilter = function (categoryName) {
 	$scope.filteringResults = true;
+
+    $scope.mouseEntered = function(bookHoveredOver){
+        bookHoveredOver.mouseEntered = true;
+         bookHoveredOver.mouseLeft = false;
+    }
+
+     $scope.mouseLeft = function(bookHoveredOutOf){
+            bookHoveredOutOf.mouseEntered = false;
+             bookHoveredOutOf.mouseLeft = true;
+        }
+
 
 	setTimeout(function () {
     			$scope.currentBatch = 1;

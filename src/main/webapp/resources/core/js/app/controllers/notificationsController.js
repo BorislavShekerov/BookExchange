@@ -9,20 +9,27 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 		if ($scope.notificationsDropdownOpen) {
 
 			angular.forEach($scope.notifications, function (notification, index) {
-				if (notification.notificationType == "NEW_USER" && !notification.isSeen) {
+
 
 					notificationsService.setNotificationSeen(notification).then(function (response) {
 						$scope.unseenNotifications--;
 					}, function (error) {
 						console.log(error);
 					});;
-				}
-			});
+							});
 		}
 
 	}
 
+    function init(){
+        notificationsService.getAllNotificationsForUser().then(function (response) {
+        			$scope.notifications = response;
+        		}, function (error) {
+        			console.log(error);
+        		});
+    }
 
+    init();
 
 	$scope.notificationClicked = function (notification) {
 		if (notification.notificationType == 'EXCHANGE_CHAIN_INVITATION') {

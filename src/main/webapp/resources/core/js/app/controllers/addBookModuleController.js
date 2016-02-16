@@ -51,13 +51,36 @@ bookApp.controller('AddBookModalController', ['$scope', '$http', 'dataService','
 		}
 
 		$scope.addCategory = function(category){
-            $scope.selectedCategory =category;
-            $scope.selectedCategoryName = category.categoryName;
-            $scope.categorySelected = true;
+		if(!category.selected ){
+		    disableCategoriesPreviouslyChecked();
+		     $scope.selectedCategory =category;
+             $scope.selectedCategoryName = category.categoryName;
+                        category.selected =true;
+                        $scope.categorySelected = true;
+		} else{
+		     $scope.selectedCategory ={};
+                                    $scope.selectedCategoryName = category.categoryName;
+                                     category.selected =false;
+                                                            $scope.categorySelected = false;
 		}
+
+
+		}
+
+        function disableCategoriesPreviouslyChecked(){
+             angular.forEach($scope.allCategories,function(category,index){
+             if( category.selected){
+             category.selected = false;
+             }
+
+             });
+        }
 
         function init(){
             dataService.getAllCategories().then(function(result){
+            angular.forEach(result.data,function(category,index){
+                category.selected = false;
+            });
              $scope.allCategories = result.data;
             },function(err){
                 console.log(err);

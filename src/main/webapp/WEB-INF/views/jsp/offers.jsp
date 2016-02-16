@@ -19,10 +19,12 @@
 				<div ng-if="!exchangeCreated.over"class="media-comment">
 
 				</div>
-				<button class="btn btn-info btn-circle text-uppercase" ng-if="!exchangeCreated.over" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Cancel Request</button>
-				<button class="btn btn-info btn-circle text-uppercase" ng-if="exchangeCreated.isChain" ng-click="exchangeCreated.isCollapsed = !exchangeCreated.isCollapsed" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Check Progress</button>
-				<button class="btn btn-info btn-circle text-uppercase" ng-if="exchangeCreated.over && exchangeCreated.successful" ng-click="" id="reply"><span class="glyphicon glyphicon glyphicon-random"></span> Initiate Dispatching</button>
-				<a class="btn btn-warning btn-circle text-uppercase" ng-if="exchangeCreated.isSuccessful"><span class="glyphicon glyphicon-comment"></span> Mark Dispatched</a>
+
+				<a class="ghost-button  reject-offer-button text-uppercase" ng-if="!exchangeCreated.over" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-remove"></span> Cancel Request</a>
+				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeCreated.isChain" ng-click="exchangeCreated.isCollapsed = !exchangeCreated.isCollapsed" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Check Progress</a>
+				<button class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeCreated.over && exchangeCreated.successful" ng-click="" id="reply"><span class="glyphicon glyphicon glyphicon-random"></span> Initiate Dispatching</button>
+				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeCreated.isSuccessful"><span class="glyphicon glyphicon-comment"></span> Mark Dispatched</a>
+
 				<div id="collapsedChainDetails" uib-collapse="exchangeCreated.isCollapsed">
 					<div class="well well-lg">
 						<div class="row">

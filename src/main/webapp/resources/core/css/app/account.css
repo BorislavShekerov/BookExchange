@@ -211,16 +211,9 @@ background-color: #F1F1F1;
     margin-top: 0px;
 }
 
-#outer-box #inner-box div button{
-  position: absolute;
-     bottom: 5px;
-     right:22%;
-
-}
-
 #outer-box #inner-box button {
   color: #fff;
- margin-top:40%;
+ margin-top:50%;
   font-family: 'arial';
   text-align: center;
 }

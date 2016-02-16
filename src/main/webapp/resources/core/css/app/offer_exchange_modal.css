@@ -1,0 +1,33 @@
+#exchange-offer-modal  a{
+
+
+            display: inline-block;
+                  width: 200px;
+                  padding: 8px;
+                  color: #5383d3;
+                  border: 1px solid #5383d3;
+                  text-align: center;
+                  outline: none;
+                  text-decoration: none;
+
+}
+
+#exchange-offer-modal  a:hover, #exchange-offer-modal #actions a:active{
+
+
+             background-color: #5383d3;
+                     color: #fff;
+
+}
+
+#actions a:last-of-type {
+    margin-bottom:1.0em;
+}
+
+ #exchange-offer-modal a:hover > span{
+        color : #fff;`
+        }
+
+        #exchange-offer-modal a > span{
+            color: #5383d3;
+        }
