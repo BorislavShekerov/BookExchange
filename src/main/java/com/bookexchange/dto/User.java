@@ -35,6 +35,8 @@ public class User {
     private String password;
     @Column(name = "AVATAR_URL")
     private String avatarUrl;
+    @Column(name = "THEME_IMAGE_URL")
+    private String themeImg;
     @Column(name = "ENABLED")
     private boolean enabled;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersForUserRole", cascade = {javax.persistence.CascadeType.PERSIST})
@@ -188,6 +190,14 @@ public class User {
 
     public void increaseLoginCount(){
         loginCount++;
+    }
+
+    public String getThemeImg() {
+        return themeImg;
+    }
+
+    public void setThemeImg(String themeImg) {
+        this.themeImg = themeImg;
     }
 
     public Optional<Book> getBookPostedByUser(String bookRequestedTitle) {

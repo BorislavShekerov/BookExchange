@@ -1,4 +1,7 @@
 <div class="side-body" id="main-content">
+       <div class="row text-center well well-lg" ng-if="userRequestsReceived.length == 0">
+        		        <h2 class="animated fadeIn text-center"><i class="fa fa-frown-o"></i>No offers received</h2>
+      </div>
 	<div class="row">
 		<div ng-repeat="exchangeRequest in userRequestsReceived" class="media">
 			<div class="row" ng-if="exchangeRequest.isChain">>

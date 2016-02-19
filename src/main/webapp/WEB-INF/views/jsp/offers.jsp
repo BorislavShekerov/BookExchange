@@ -1,10 +1,13 @@
 <div class="side-body" id="main-content">
-
+     <div class="row text-center well well-lg" ng-if="userExchangesCreated.length == 0">
+    		        <h2 class="animated fadeIn text-center"><i class="fa fa-frown-o"></i>No offers made</h2>
+    		    </div>
 	<div ng-repeat="exchangeCreated in userExchangesCreated" class="media">
 		<a class="pull-left" href="#">
 			<img class="media-object" src="{{exchangeCreated.bookRequested.imgUrl}}" alt="profile">
 		</a>
 		<div class="media-body">
+
 			<div class="well well-lg">
 			    <div ng-if="exchangeCreated.over">
 			        <h4 ng-show="exchangeCreated.successful" class="successful-exchange">Exchange Successful <span class="glyphicon glyphicon-ok"></span></h4>

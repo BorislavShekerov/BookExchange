@@ -2,6 +2,10 @@
     Image credits:
     uifaces.com (http://uifaces.com/authorized)
 */
+#main-content > div > h2 > i {
+    margin-right:1.0em;
+    font-size:1.2em;
+}
 
 #login { display: none; }
 .login,
@@ -238,3 +242,4 @@ input[type="file"]{
           .offers-received-button:hover > span {
            color:#5383d3;
           }
+

@@ -1,10 +1,13 @@
 package com.bookexchange.dao;
 
 import com.bookexchange.dto.Book;
+import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -85,5 +88,32 @@ public class BookDao {
         currentSession.delete(bookToDelete);
     }
 
+    public List<Book> getBooksForTitle(String title){
+        Session currentSession = sessionFactory.getCurrentSession();
 
+        Criteria criteria = currentSession.createCriteria(Book.class)
+                .add(Restrictions.like("title", title, MatchMode.ANYWHERE))
+        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+        List<Book> bookForUsername = (List<Book>) criteria.list();
+        return bookForUsername;
+    }
+
+
+    public List<Book> getBooksForCategories(List<String> categoriesFiltered) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(Book.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .createAlias("category","bookCategory");
+
+        Disjunction unifier = Restrictions.or();
+
+        categoriesFiltered.stream().map(bookCategory -> Restrictions.eq("bookCategory.categoryName",bookCategory)).forEach(restriction -> unifier.add(restriction));
+
+        criteria.add(unifier);
+
+        List<Book> bookForUsername = (List<Book>) criteria.list();
+        return bookForUsername;
+    }
 }

@@ -1,4 +1,8 @@
 /* Credit to bootsnipp.com for the css for the color graph */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 .main {
   margin-top:6.0em;
 }
@@ -111,6 +115,11 @@
     border: 3px solid #337ab7;
 }
 
-.space-out-top-sm {
-    margin-top: 0.5em;
+.space-out-top-md {
+    margin-top: 1.5em;
+}
+
+button.sign-up-button > span{
+    margin-right: 0.5em;
+    font-size:1.2em;
 }

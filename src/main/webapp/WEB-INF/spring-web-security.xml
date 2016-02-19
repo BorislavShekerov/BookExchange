@@ -30,7 +30,13 @@
     </http>
 
     <authentication-manager  alias="authenticationManager">
-        <authentication-provider user-service-ref="loginService" />
+        <authentication-provider user-service-ref="loginService">
+            <password-encoder ref="encoder" />
+         </authentication-provider>
     </authentication-manager>
+
+    <beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <beans:constructor-arg name="strength" value="10" />
+    </beans:bean>
 
 </beans:beans>

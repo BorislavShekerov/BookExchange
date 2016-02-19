@@ -1,0 +1,75 @@
+    .offer-exchange-button{
+        position:absolute;
+        top:0.8em;
+         right:0.5em;
+         z-index:5;
+         font-size:1.5em;
+         opacity:1.0;
+         cursor:pointer;
+         color:#fff;
+
+    }
+
+
+    .triangle-topright {
+    width: 0;
+    height: 0;
+    border-top: 100px solid #7981d5;
+    border-left: 100px solid transparent;
+    position:absolute;
+    right: 1.1em;
+    opacity:0.9;
+    z-index : 3;
+    }
+
+
+    .book-owner-details-wrap{
+         position:absolute;
+         height:60px;
+         opacity:0.9;
+         bottom:0;
+         background-color: #7981d5;
+         right: 1.0em;
+         left:1.0em;
+          z-index : 3;
+
+    }
+
+      .book-owner-details{
+            z-index:5;
+            bottom:0;
+            position:absolute;
+               right: 1.0em;
+                     left:1.0em;
+                     color: #fff;
+                -vendor-animation-duration: 5s;
+        }
+        .book-owner-details img{
+            max-height:60px;
+            min-height:60px;
+            min-width:60px;
+            max-width:60px;
+            margin-top: 0.7em;
+        }
+
+    /* line 9, ../sass/style.scss */
+    #outer-box img {
+       min-height:400px;
+       max-height:400px;
+      min-width:100%;
+      max-width:100%;
+    }
+
+    #exchange{
+        margin-bottom:2.0em;
+    }
+
+     #userPostedDetails a{
+            color:#fff;
+            font-size:1.4em;
+        }
+
+        #userPostedDetails div:last-of-type{
+            vertical-align:middle;
+            margin-top:1.0em;
+        }

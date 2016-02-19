@@ -60,6 +60,12 @@ public class MainController {
         return userDetails;
     }
 
+
+    @RequestMapping(value = "/signInModal", method = RequestMethod.GET)
+    public String getSignUpSignInModal(ModelMap model) {
+        return "signInModal";
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView userLogin(@RequestParam(value = "error", required = false) String error,
                                   @RequestParam(value = "logout", required = false) String logout) {

@@ -33,6 +33,9 @@ bookApp.controller('AddPreferredCategoriesModalController', ['$scope', 'category
 
 	$scope.addPreferredGenres = function () {
 	    $scope.loading =true;
+	    angular.forEach($scope.categoriesInterestedIn,function(categoryInterestedIn, index){
+            delete categoryInterestedIn.selected;
+	    });
 		categoryService.addCategoryInterestedIn($scope.categoriesInterestedIn).then(function(result){
 		    $scope.categoriesInterestedIn = result;
 		    $uibModalInstance.close($scope.categoriesInterestedIn);

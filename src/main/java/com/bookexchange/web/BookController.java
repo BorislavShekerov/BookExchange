@@ -1,6 +1,7 @@
 package com.bookexchange.web;
 
 import com.bookexchange.dto.Book;
+import com.bookexchange.dto.frontend.BookSearchCriteria;
 import com.bookexchange.exception.BookExchangeInternalException;
 import com.bookexchange.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,4 +56,12 @@ public class BookController {
         return  bookService.removeBook(currentUserEmail,bookToRemove.getTitle());
     }
 
+    @RequestMapping(value = "/searchForBooks", method = RequestMethod.POST)
+    public @ResponseBody List<Book> getAllBooks(@RequestBody BookSearchCriteria searchCriteria, ModelMap model) {
+
+        Authentication authentication = getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        return bookService.getBooksForTitle(searchCriteria);
+    }
 }

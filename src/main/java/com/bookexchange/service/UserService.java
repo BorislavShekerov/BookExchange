@@ -10,6 +10,8 @@ import com.bookexchange.dto.UserRole;
 import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,10 +28,10 @@ public class UserService {
     private static final int INITIAL_VIP_TOKENS = 5;
     @Autowired
     private UserDao userDao;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private CategoryDao bookCategoryDao;
-
     @Value("${notification.new_user}")
     private String welcomeMessage;
     @Autowired
@@ -40,17 +42,22 @@ public class UserService {
     }
 
     public boolean userAlreadyExists(User userData) {
-        return userDao.findUserByEmail(userData.getEmail()) != null;
+        return (userDao.findUserByEmail(userData.getEmail())).isPresent();
     }
 
     public void registerUser(User userData) {
+        encryptUserData(userData);
         userData.setEnabled(true);
         userData.setLoginCount(0);
         userData.setVipTokens(INITIAL_VIP_TOKENS);
-        userDao.saveUser(userData);
 
+        userDao.saveUser(userData);
         addUserRole(userData);
         addNewUserNotificationToUserData(userData);
+    }
+
+    private void encryptUserData(User userData) {
+        userData.setPassword(passwordEncoder.encode(userData.getPassword()));
     }
 
     private void addUserRole(User userData) {

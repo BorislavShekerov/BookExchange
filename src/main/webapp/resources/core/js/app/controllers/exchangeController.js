@@ -11,8 +11,10 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 	$scope.booksSplitInBatches = [];
 	$scope.booksDisplayed = [];
 
-	$scope.loadingResults = true;
-    $scope.filteringResults = false;
+		$scope.searching = true;
+    	$scope.loadingMoreResults = false;
+
+
     $scope.shouldFixCategoriesFilter = false;
     	$scope.currentBatch = 1;
 
@@ -39,7 +41,7 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 		var allBooksPromise = bookService.getAllBooks();
 		allBooksPromise.then(function (response) {
 			sortBooksInPages(response.data);
-			$scope.loadingResults = false;
+			$scope.searching = false;
 		}, function (error) {
 			console.log(error);
 		});
@@ -97,42 +99,53 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
         			});
 	}
 
-	$scope.adjustCategoryFilter = function (categoryName) {
-	$scope.filteringResults = true;
-
-    $scope.mouseEntered = function(bookHoveredOver){
-        bookHoveredOver.mouseEntered = true;
-         bookHoveredOver.mouseLeft = false;
-    }
-
-     $scope.mouseLeft = function(bookHoveredOutOf){
-            bookHoveredOutOf.mouseEntered = false;
-             bookHoveredOutOf.mouseLeft = true;
+     $scope.mouseEntered = function(bookHoveredOver){
+            bookHoveredOver.mouseEntered = true;
+             bookHoveredOver.mouseLeft = false;
         }
 
+         $scope.mouseLeft = function(bookHoveredOutOf){
+                bookHoveredOutOf.mouseEntered = false;
+                 bookHoveredOutOf.mouseLeft = true;
+            }
 
-	setTimeout(function () {
-    			$scope.currentBatch = 1;
-                		if (wasCategoryRemoved(categoryName)) {
-                			removeCategoryFromFilter(categoryName);
-                			if ($scope.categoryFilter.length == 0) {
-                				$scope.booksSplitInBatches = $scope.allBooks;
-                				$scope.booksDisplayed = $scope.allBooks[0];
-                			} else {
-                				removeBooksFromCategoryFromView(categoryName);
-                			}
-                		} else {
-                			addBooksFromCategoryToPagination(categoryName);
+	$scope.adjustCategoryFilter = function (category) {
+			$scope.searching = true;
 
-                			$scope.categoryFilter.push(categoryName);
-                		}
-                		$scope.filteringResults = false;
-                		$scope.$apply();
-    		}, 1000);
+    		if (wasCategoryRemoved(category.categoryName)) {
+    			category.selected = false;
+    			removeCategoryFromFilter(category.categoryName);
+    			if ($scope.categoryFilter.length == 0) {
+    				if ($scope.searchFor == "") {
+    					$scope.searching = false;
+    					$scope.booksSplitInBatches = $scope.allBooks;
+    					$scope.booksDisplayed = $scope.allBooks[0];
+    				} else {
+    					 fetchBooksForCurrentSearchCriteria();
+    				}
+    			} else {
 
+    				 fetchBooksForCurrentSearchCriteria();
+    			}
+    		} else {
+    			category.selected = true;
+    			$scope.categoryFilter.push(category.categoryName);
 
-
+                fetchBooksForCurrentSearchCriteria();
+    		}
 	}
+
+        function fetchBooksForCurrentSearchCriteria(){
+            bookService.getBooksForCriteria($scope.searchFor, $scope.categoryFilter).then(function (result) {
+
+            				sortBooksInPages(result);
+            				$scope.searching = false;
+            			}, function (error) {
+
+            				$scope.searching = false;
+            				console.log(error);
+            			});
+        }
 
 	function wasCategoryRemoved(categoryName) {
 		if ($scope.categoryFilter.indexOf(categoryName) > -1) {
@@ -145,74 +158,8 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 		$scope.categoryFilter.splice($.inArray(categoryName, $scope.categoryFilter), 1);
 	}
 
-	function removeBooksFromCategoryFromView(categoryName) {
-		var areBooksFiltered = false;
-		angular.forEach($scope.booksSplitInBatches, function (booksArray, index) {
-			var filteredBooksArray = [];
-			angular.forEach(booksArray, function (book, index) {
-				if (book.category != categoryName) {
-					filteredBooksArray.push(book);
-				} else {
-					areBooksFiltered = true;
-				}
-			});
-
-			$scope.booksSplitInBatches[index] = filteredBooksArray;
-		});
-
-		if (areBooksFiltered) {
-			rearrangeBooksInView();
-		}
-	}
-
-	function rearrangeBooksInView() {
-		var allFilteredBooks = [];
-		angular.forEach($scope.booksSplitInBatches, function (booksArray, index) {
-			angular.forEach(booksArray, function (book, index) {
-				allFilteredBooks.push(book);
-			});
-		});
-
-		sortBooksInPages(allFilteredBooks);
-	}
-
-	function addBooksFromCategoryToPagination(categoryName) {
-		if ($scope.categoryFilter.length == 0) {
-			$scope.booksSplitInBatches = [];
-		}
-		angular.forEach($scope.allBooks, function (booksArray, index) {
-			angular.forEach(booksArray, function (book, index) {
-				if (book.category == categoryName) {
-					addBookToPagination(book);
-				}
-			});
-		});
-        if($scope.booksSplitInBatches[0]){
-        $scope.booksDisplayed = $scope.booksSplitInBatches[0];
-        } else {
-        $scope.booksDisplayed = [] ;
-        }
-
-	}
-
-	function addBookToPagination(bookToAdd) {
-		if ($scope.booksSplitInBatches.length == 0) {
-			var newLastPage = [bookToAdd];
-			$scope.booksSplitInBatches.push(newLastPage);
-		} else {
-			var lastPage = $scope.booksSplitInBatches[$scope.booksSplitInBatches.length - 1];
-			if (lastPage.length > 0 && lastPage.length % 40 == 0) {
-				var newLastPage = [bookToAdd];
-				$scope.booksSplitInBatches.push(newLastPage);
-			} else {
-				lastPage.push(bookToAdd);
-			}
-		}
-
-	}
-
 	$scope.$watch('searchFor', function (newValue, oldValue) {
-		if (newValue.length > 2) {
+		if (newValue.length >= 1) {
 			initiateSearch(newValue);
 		}
 		if (newValue < oldValue && newValue.length < 3) {
@@ -221,34 +168,14 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 	});
 
 	function initiateSearch(newValue) {
-	    $scope.filteringResults = true;
-
-		setTimeout(function () {
-    			angular.forEach($scope.booksSplitInBatches, function (booksArray, index) {
-                			var filteredBooksArray = [];
-                			angular.forEach(booksArray, function (book, index) {
-                				if (book.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1 && isBookCategoryInCategoryFilter(book.category)) {
-                					filteredBooksArray.push(book);
-                				}
-                			});
-
-                			$scope.booksSplitInBatches[index] = filteredBooksArray;
-                		});
-
-                		rearrangeBooksInView();
-
-                		$scope.filteringResults = false;
-                		$scope.$apply();
-    		}, 1000);
-
-	}
-
-	function isBookCategoryInCategoryFilter(category) {
-		if ($scope.categoryFilter.length == 0) {
-			return true;
-		} else {
-			return $scope.categoryFilter.indexOf(category) > -1;
-		}
+    $scope.searching = true;
+    		bookService.getBooksForCriteria(newValue, $scope.categoryFilter).then(function (result) {
+    			sortBooksInPages(result);
+    			$scope.searching = false;
+    		}, function (error) {
+    			$scope.searching = false;
+    			console.log(error);
+    		});
 	}
 
 	function removeSearchFilter() {
@@ -256,36 +183,31 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 			$scope.booksSplitInBatches = $scope.allBooks;
 			$scope.booksDisplayed = $scope.booksSplitInBatches[0];
 		} else {
-			addCategoryFilteredBooksToView();
+			getAllBooksForFiltersNoSearch();
 		}
 	}
 
-	function addCategoryFilteredBooksToView() {
-		angular.forEach($scope.allBooks, function (booksArray, index) {
-			var filteredBooksArray = [];
-			angular.forEach(booksArray, function (book, index) {
-				if (isBookCategoryInCategoryFilter(book.category)) {
-					filteredBooksArray.push(book);
-				}
-			});
-
-			$scope.booksSplitInBatches[index] = filteredBooksArray;
-		});
-
-		rearrangeBooksInView();
-	}
+    function getAllBooksForFiltersNoSearch() {
+    		bookService.getBooksForCriteria($scope.searchFor, $scope.categoryFilter).then(function (result) {
+    			sortBooksInPages(result);
+    			$scope.searching = false;
+    		}, function (error) {
+    			$scope.searching = false;
+    			console.log(error);
+    		});
+    	}
 
 	function loadNextBatch() {
 		setTimeout(function () {
 			$scope.booksDisplayed = $scope.booksDisplayed.concat($scope.booksSplitInBatches[$scope.currentBatch - 1]);
-			$scope.loadingResults = false;
+			$scope.loadingMoreResults = false;
 			$scope.$apply();
 		}, 1500);
 	}
 
 	angular.element($document).bind("scroll", function () {
 		$scope.$apply(function () {
-			if (!$scope.loadingResults) {
+			if (!$scope.searching) {
 				loadMoreResults();
 			}
 		});
@@ -294,9 +216,9 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 	function loadMoreResults() {
 
 		var footer = document.getElementsByTagName('footer')[0].getBoundingClientRect();
-		if (footer.top - $window.innerHeight < $window.innerHeight / 3 && moreResultsToLoad() && !$scope.loadingResults) {
+		if (footer.top - $window.innerHeight < $window.innerHeight / 3 && moreResultsToLoad() && !$scope.searching) {
 
-			$scope.loadingResults = true;
+			$scope.loadingMoreResults = true;
 			$scope.currentBatch++;
 			loadNextBatch();
 		}

@@ -45,16 +45,16 @@
 		<div id="categoriesFilter" ng-if="filterExpanded" class="col-sm-6 col-md-4" ng-class="{'position-fixed':shouldFixCategoriesFilter}">
 
 			<div class="row">
-				<a class="filter-exchange-ghost-button col-sm-5" ng-repeat="category in allCategories" ng-click="adjustCategoryFilter(category.categoryName)">{{category.categoryName}}</a>
+				<a class="filter-exchange-ghost-button col-sm-5" ng-class="{'filterChosen':category.selected}" ng-repeat="category in allCategories" ng-click="adjustCategoryFilter(category)">{{category.categoryName}}</a>
 			</div>
 		</div>
 	</div>
-	<div class="row" ng-if="filteringResults || loadingResults">
-		<h4 class="pagination-centered text-center" ng-if="loadingResults">Fetching More Books</h4>
-		<h4 class="pagination-centered text-center" ng-if="filteringResults">Filtering Data</h4>
+	<div class="row" ng-if="searching || loadingMoreResults">
+		<h4 class="pagination-centered text-center" ng-if="searching">Searching</h4>
+		<h4 class="pagination-centered text-center" ng-if="loadingMoreResults">Loading More Books</h4>
 		<div class="pagination-centered text-center"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
 	</div>
-	<h3 class="pagination-centered text-center" ng-if="!(filteringResults || loadingResults) && booksDisplayed.length == 0">No Results Found</h3>
+	<h3 class="pagination-centered text-center" ng-if="!(searching || loadingMoreResults) && booksDisplayed.length == 0">No Results Found</h3>
 
 
 

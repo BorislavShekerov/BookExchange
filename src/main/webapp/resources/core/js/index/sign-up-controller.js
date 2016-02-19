@@ -1,27 +1,19 @@
-bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $http) {
+bookApp.controller('signUpController', ['$scope', function ($scope) {
     $scope.user = {
         firstName : "",
         lastName : "",
         email : "",
         password : "",
-        avatarUrl:"",
-        categoriesInterestedIn:[]
+        avatarUrl:""
     }
 
-    $scope.avatarImages = ['resources/core/img/avatar5.jpg',
-                            'resources/core/img/avatar1.jpg',
-                            'resources/core/img/avatar2.jpg',
-                            'resources/core/img/avatar3.jpg',
-                            'resources/core/img/avatar4.jpg',
-                            'resources/core/img/avatar6.jpg',
-                            'resources/core/img/avatar7.jpg'];
     $scope.passwordRepeat = "";
     $scope.emailRepeat = "";
     $scope.categoriesInterestedIn = [];
     $scope.emailAlreadyInUse = false;
-     var invalidInputCount = 0;
+    var invalidInputCount = 0;
     var previouslySelectedAvatarImg;
-    var allCategories = [];
+
     $scope.submitted = false;
 
     $scope.emailsDifferent = false;
@@ -60,21 +52,12 @@ bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $ht
         checkConditions();
 
 
-        if(invalidInputCount == 0 && isFormValid && $scope.userAvatarSet &&  $scope.categoriesInterestedIn.length>0){
+        if(invalidInputCount == 0 && isFormValid && $scope.userAvatarSet){
             $('#avatarUrl').val($scope.user.avatarUrl);
 
             $('#userRegisterForm').submit();
         }
     };
-
-
-    $http.get('/getAllCategories').
-    success(function (data, status, headers, config) {
-        constructCategoriesList(data);
-    }).
-    error(function (data, status, headers, config) {
-        alert("Error");
-    });
 
     var updateUserAvatar = function(newVal){
         $scope.userAvatarSet = newVal;
@@ -99,6 +82,12 @@ bookApp.controller('signUpController', ['$scope', '$http', function ($scope, $ht
 
     }
 
+    $scope.shouldShowFirstNameErrorMessage = function(){
+        return $scope.submitted && $scope.user.firstName == "";
+    }
 
+    $scope.shouldShowLastNameErrorMessage = function(){
+        return $scope.submitted && $scope.user.lastName == "";
+    }
     }]);
 

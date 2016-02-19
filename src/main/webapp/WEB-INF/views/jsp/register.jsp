@@ -24,11 +24,12 @@
 		<!-- Custom styles for register page-->
 		<link href="resources/core/css/app/sign_up.css" rel="stylesheet">
 		<link href="resources/core/css/app/nav_bar.css" rel="stylesheet">
+		<link href="resources/core/css/app/buttons.css" rel="stylesheet">
 		<link href="resources/core/css/app/footer.css" rel="stylesheet">
 
 	</head>
 
-	<body ng-app="myApp" id="signUpController" ng-controller="signUpController">
+	<body ng-app="myApp" id="signUpController" ng-controller="signUpController" >
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
@@ -38,7 +39,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#"><img src="resources/core/img/logo.png"></a>
+					<a class="navbar-brand" href="/"><img src="resources/core/img/logo.png"></a>
 				</div>
 			</div>
 		</nav>
@@ -52,33 +53,33 @@
 
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-md-6">
-								<div class="form-group" ng-class="{ 'has-error' : userForm.first_name.$invalid && !userForm.first_name.$pristine && submitted || (submitted && userForm.first_name.$pristine)}">
-									<form:input path="firstName" type="text" name="first_name" id="first_name" class="form-control input-lg" placeholder="First Name" tabindex="1" autocomplete="off" ng-model="user.firstName"/>
-									<p ng-show="submitted && (userForm.first_name.$pristine || (userForm.first_name.$invalid && !userForm.first_name.$pristine))" class="help-block">You first name is required.</p>
+								<div class="form-group" ng-class="{ 'has-error' : shouldShowFirstNameErrorMessage()}">
+									<form:input path="firstName" type="text" name="firstName" id="firstName" class="form-control input-lg" placeholder="First Name" tabindex="1" autocomplete="off" ng-model="user.firstName" />
+									<p ng-show="shouldShowFirstNameErrorMessage()" class="help-block" ng-cloak>You first name is required.</p>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
-								<div class="form-group" ng-class="{ 'has-error' : userForm.last_name.$invalid && !userForm.last_name.$pristine && submitted || (submitted && userForm.last_name.$pristine)}">
+								<div class="form-group" ng-class="{ 'has-error' : shouldShowLastNameErrorMessage()}">
 									<form:input path="lastName" type="text" name="last_name" id="last_name" class="form-control input-lg" placeholder="Last Name" tabindex="2" autocomplete="off" ng-model="user.lastName"/>
-									<p ng-show="submitted && (userForm.last_name.$pristine || (userForm.last_name.$invalid && !userForm.last_name.$pristine)) " class="help-block">You last name is required.</p>
+									<p ng-show="shouldShowLastNameErrorMessage()" class="help-block" ng-cloak>You last name is required.</p>
 								</div>
 							</div>
 						</div>
 						<div class="form-group" ng-class="{ 'has-error' : emailAlreadyInUse || ((userForm.email.$invalid && !userForm.email.$pristine) || emailsDifferent) && submitted || (submitted && userForm.email.$pristine)}">
 							<form:input path="email" type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" tabindex="4" autocomplete="off" ng-model="user.email" />
-							<p ng-show="submitted && (userForm.email.$pristine || (userForm.email.$invalid && !userForm.email.$pristine)) " class="help-block">Enter a valid email.</p>
-							<p ng-show="emailAlreadyInUse" class="help-block">Enter a valid email.</p>
+							<p ng-show="submitted && (userForm.email.$pristine || (userForm.email.$invalid && !userForm.email.$pristine)) " class="help-block" ng-cloak>Enter a valid email.</p>
+							<p ng-show="emailAlreadyInUse" class="help-block" ng-cloak >Enter a valid email.</p>
 						</div>
 						<div class="form-group" ng-class="{ 'has-error' : ((userForm.email.$invalid && !userForm.email.$pristine) || emailsDifferent) && submitted || (submitted && userForm.email_confirmation.$pristine)}">
 							<input type="email" name="email_confirmation" id="email_confirmation" class="form-control input-lg" placeholder="Confirm Email Address" autocomplete="off" tabindex="5" ng-model="emailRepeat"/>
-							<p ng-show="submitted && emailsDifferent" class="help-block">Emails must be the same.</p>
+							<p ng-show="submitted && emailsDifferent" class="help-block" ng-cloak>Emails must be the same.</p>
 						</div>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="form-group" ng-class="{ 'has-error' : ((userForm.password.$error.minlength && !userForm.email.$pristine)|| passwordsDifferent) && submitted || (submitted && userForm.password.$pristine)}">
 									<form:input path="password" type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" tabindex="6" autocomplete="off" ng-minlength="8" ng-model="user.password" />
-									<p ng-show="submitted && (userForm.password.$pristine || userForm.password.$error.minlength)" class="help-block">Password must be at least 8 characters long.</p>
-									<p ng-show="submitted && passwordsDifferent" class="help-block">Passwords must be the same.</p>
+									<p ng-show="submitted && (userForm.password.$pristine || userForm.password.$error.minlength)" class="help-block" ng-cloak>Password must be at least 8 characters long.</p>
+									<p ng-show="submitted && passwordsDifferent" class="help-block" ng-cloak>Passwords must be the same.</p>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
@@ -87,55 +88,21 @@
 								</div>
 							</div>
 						</div>
-						<div id="categoriesInterestedPicker" class="row">
-							<h2> Choose Favourite Genres </h2>
-							<div class="col-xs-12 col-md-6">
-								<select id="categories-wanted-select" multiple="multiple" class="space-out-top-sm">
-								</select>
-							</div>
-							<div class="col-xs-12 col-md-6">
-								<div ng-repeat="category in categoriesInterestedIn " class="row space-out-top-sm space-out-left">
-									<span class="tag label label-info">
-                            <span>{{category}}</span>
-									<a ng-click="removeCategory(category)"><i class="remove glyphicon glyphicon-remove-sign glyphicon-white"></i></a>
-									</span>
-								</div>
-							</div>
-							<div class="col-xs-12">
-								<p ng-show="submitted && categoriesInterestedIn.length == 0" class="help-block warning-text">You must pick at least one book genre.</p>
-							</div>
-						</div>
 						<div id="avatarSelection" class="row">
 							<div class="row">
-								<h2> Avatar Selection </h2>
-
-								<h4 class="col-xs-12 col-md-3">Choose avatar</h4>
-								<div class="col-xs-12 col-md-6 omb_loginOr">
-									<div class="">
-										<hr class="omb_hrOr">
-										<span class="omb_spanOr">or</span>
-									</div>
-								</div>
-								<h4 class="col-xs-12 col-md-3"> Upload Avatar </h4>
-							</div>
-							<div class="row">
-								<div class="col-xs-12 col-md-6" id="defaultAvatarsPicker">
-									<img class="default-avatar-image" ng-repeat="avatarImg in avatarImages" src="{{avatarImg}}" alt="Avatar Image" ng-click="selectDefaultAvatarImg(avatarImg)" />
-								</div>
-
-								<div class="col-xs-12 col-md-3 col-md-offset-3" id="uploadAvatarPicker">
-									<div class="row">
+								<div class="col-xs-12" id="uploadAvatarPicker">
+									<div class="row text-center">
 									    <form:input path="avatarUrl" type="hidden" name="avatarUrl" id="avatarUrl" ng-model="$scope.user.avatarUrl"/>
 										<img src="resources/core/img/empty-avatar.png" />
 									</div>
-									<div class="row">
-										<button type="button" class="btn btn-primary col-md-offset-2" data-toggle="modal" data-target="#myUploadAvatarModal"><span class="glyphicon glyphicon-upload"></span>Upload Avatar</button>
+									<div class="row text-center">
+										<button type="button" class="ghost-button sign-up-button" data-toggle="modal" data-target="#myUploadAvatarModal"><span class="glyphicon glyphicon-upload"></span>Upload Avatar</button>
 									</div>
 								</div>
 							</div>
-							<p ng-show="submitted && !userAvatarSet" class="help-block warning-text">You must select an avatar image.</p>
+							<p ng-show="submitted && !userAvatarSet" class="help-block warning-text" ng-cloak>You must select an avatar image.</p>
 						</div>
-						<div class="space-out-top-sm row">
+						<div class="space-out-top-md row">
 							<div class="col-xs-4 col-sm-3 col-md-3">
 								<label class="checkbox-inline">
 									<input type="checkbox" name="favoriteColors" ng-model="conditionsAgreement" ng-class="{ 'has-error' : submitted && !conditionsAgreement}"> I Agree
@@ -146,14 +113,14 @@
 									By clicking <strong class="label label-primary">Register</strong>, you agree to the <a href="#" data-toggle="modal" data-target="#t_and_c_m">Terms and Conditions</a> set out by this site, including our Cookie Use.
 								</div>
 								<div class="row">
-									<p ng-show="submitted && !conditionsAgreement" class="help-block warning-text">You must accept the terms and conditions.</p>
+									<p ng-show="submitted && !conditionsAgreement" class="help-block warning-text" ng-cloak>You must accept the terms and conditions.</p>
 								</div>
 							</div>
 						</div>
-						<div class="row">
+						<div class="row space-out-top-md text-center">
 							<div class="col-xs-12 col-md-6 col-md-offset-3">
 							<input path="tokenName" type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-							<form:button type="button" ng-click="submitForm(true)" value="Sign Up" class="btn btn-primary btn-block btn-lg" tabindex="8" />
+							<form:button type="button" ng-click="submitForm(true)" value="Sign Up" class="ghost-button sign-up-button" tabindex="8" > Sign Up </form:button>
 							</div>
 						</div>
 					</form:form>
@@ -244,9 +211,14 @@
 		<!-- Placed at the end of the document so the pages load faster -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
 		<script src="https://ucarecdn.com/widget/2.6.0/uploadcare/uploadcare.min.js" charset="utf-8"></script>
+		<script src="resources/core/js/angular.js "></script>
 		<script src="resources/core/js/bootstrap.js "></script>
 		<script src="resources/core/js/bootstrap-multiselect.js"></script>
-		<script src="resources/core/js/angular.js "></script>
+					<script src="../resources/core/js/ui-bootstrap-tpls-1.1.0.min.js"></script>
+
+
+			<script src="resources/core/js/angular-scroll.js"></script>
+
 		<script src="resources/core/js/index/index.js "></script>
 		<script src="resources/core/js/index/sign-up-controller.js"></script>
 		<script type="text/javascript">

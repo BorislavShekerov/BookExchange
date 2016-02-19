@@ -413,3 +413,13 @@ display:inline;
           min-width:100%;
           max-width:100%;
         }
+
+          .filterChosen{
+              color: #fff !important;
+                                background-color:#5383d3;
+                                                border: 1px solid #fff;
+            }
+
+            a.filterChosen > span{
+                 color:white !important;
+            }

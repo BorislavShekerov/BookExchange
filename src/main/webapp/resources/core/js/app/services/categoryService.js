@@ -40,10 +40,23 @@ bookApp.service("categoryService", ['$http', function ($http) {
                                      	return postPromise;
         }
 
+    function getAllCategories(){
+          	var promise = $http.get('/getAllCategories').
+                	success(function (result, status, headers, config) {
+                		return result.data;
+                	}).
+                	error(function (data, status, headers, config) {
+                		alert("Error");
+                	});
+
+                	return promise;
+    }
+
 
     return {
         		addCategoryInterestedIn : addCategoryInterestedIn,
-        		removeCategoryInterestedIn:removeCategoryInterestedIn
+        		removeCategoryInterestedIn:removeCategoryInterestedIn,
+        		getAllCategories: getAllCategories
         	};
 
 

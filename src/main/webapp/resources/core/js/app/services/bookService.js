@@ -58,12 +58,37 @@ bookApp.service("bookService", ['$http', function ($http) {
               return promise;
         }
 
+         function getBooksForCriteria(title,categoriesToFilter){
+         var csrfToken = $("meta[name='_csrf']").attr("content");
+
+           var searchCriteria = {
+            bookTitle:title,
+            categoriesFiltered : categoriesToFilter
+           };
+                                  var req = {
+                                  				method: 'POST',
+                                  				url: '/searchForBooks',
+                                  				headers: {
+                                  					'X-CSRF-TOKEN': csrfToken
+                                  				},
+                                  				data: searchCriteria
+                                  			}
+
+                     var promise = $http(req).then(function (response) {
+                                                            				return response.data;
+                                                            			}, function (response) {
+                                                            				return response.status;
+                                                            			});
+                      return promise;
+                }
+
 
 
     return {
     		getAllBooks : getAllBooks,
     		removeBookForUser : removeBookForUser,
-    		addBook : addBook
+    		addBook : addBook,
+    		getBooksForCriteria: getBooksForCriteria
     	};
 
 }]);

@@ -1,2 +1,2 @@
-var bookApp = angular.module('myApp',[]);
+var bookApp = angular.module('myApp',['duScroll','ui.bootstrap']);
 
