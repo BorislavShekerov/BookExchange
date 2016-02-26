@@ -84,7 +84,7 @@
 													<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 													<button type="submit" class="ghost-button sign-up-button">Sign in</button>
 												</div>
-												
+
 											</form>
 										</div>
 										<div class="bottom text-center">

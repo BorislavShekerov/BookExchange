@@ -28,6 +28,11 @@ public class User {
     Set<BookCategory> categoriesInterestedIn = new HashSet<>();
     @Column(name = "FIRST_NAME")
     private String firstName;
+    @Transient
+    private double overallRating;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "commentFor",cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<RatingComment> ratingsForUser = new ArrayList<>();
     @Column(name = "LAST_NAME")
     private String lastName;
     @Column(name = "PASSWORD")
@@ -51,6 +56,7 @@ public class User {
     private int  loginCount;
     @Column(name = "VIP_TOKENS")
     private int vipTokens;
+
 
     public void addBookExchange(DirectBookExchange directBookExchange) {
         this.currentExchanges.add(directBookExchange);
@@ -106,6 +112,22 @@ public class User {
 
     public void setCategoriesInterestedIn(Set<BookCategory> categoriesInterestedIn) {
         this.categoriesInterestedIn = categoriesInterestedIn;
+    }
+
+    public List<RatingComment> getRatingsForUser() {
+        return ratingsForUser;
+    }
+
+    public void setRatingsForUser(List<RatingComment> ratingsForUser) {
+        this.ratingsForUser = ratingsForUser;
+    }
+
+    public double getOverallRating() {
+        return overallRating;
+    }
+
+    public void setOverallRating(double overallRating) {
+        this.overallRating = overallRating;
     }
 
     public void addBookToExchange(Book book) {

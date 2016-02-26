@@ -30,6 +30,8 @@ public class BookService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private RatingService ratingService;
 
     public void setBookDao(BookDao bookDao) {
         this.bookDao = bookDao;
@@ -37,9 +39,15 @@ public class BookService {
 
     public List<Book> getAllBooksOnExchange(String currentUserEmail) {
         if (currentUserEmail.equals(ANONYMOUS_USER)) {
-            return bookDao.getAllBooksOnExchange();
+            List<Book> allBooksOnExchnage = bookDao.getAllBooksOnExchange();
+            computeUserRatings(allBooksOnExchnage);
+            return allBooksOnExchnage;
         }
         return bookDao.getAllBooksReqestedByUser(currentUserEmail);
+    }
+
+    private void computeUserRatings(List<Book> allBooksOnExchnage) {
+        allBooksOnExchnage.stream().map(book -> book.getPostedBy()).forEach(user -> user.setOverallRating(ratingService.computeOverallRating(user.getRatingsForUser())));
     }
 
 
@@ -72,9 +80,12 @@ public class BookService {
 
     public List<Book> getBooksForTitle(BookSearchCriteria bookSearchCriteria) {
         if(bookSearchCriteria.getBookTitle().equals("")){
+            List<Book> booksForCategories = bookDao.getBooksForCategories(bookSearchCriteria.getCategoriesFiltered());
+            computeUserRatings(booksForCategories);
             return bookDao.getBooksForCategories(bookSearchCriteria.getCategoriesFiltered());
         }
         List<Book> booksForSearchTitle =  bookDao.getBooksForTitle(bookSearchCriteria.getBookTitle());
+        computeUserRatings(booksForSearchTitle);
 
         if(bookSearchCriteria.getCategoriesFiltered().size() > 0){
            return booksForSearchTitle.stream().filter(book -> bookSearchCriteria.getCategoriesFiltered().contains(book.getCategory().getCategoryName())).collect(Collectors.toList());

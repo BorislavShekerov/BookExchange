@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "NOTIFICATIONS")
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Notification {
 
     @Id

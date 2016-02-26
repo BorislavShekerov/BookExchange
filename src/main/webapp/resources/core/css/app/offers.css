@@ -7,6 +7,10 @@
     font-size:1.2em;
 }
 
+#ratingMechanism > div {
+    margin-left : 0px !important;
+    margin-top: 1.0em;
+}
 #login { display: none; }
 .login,
 .logout {
@@ -28,9 +32,11 @@
 .media-body img{
     max-width:120px;
 }
-.well-lg div{
-    margin-left:5.0em;
-    margin-bottom: 1.0em;
+
+.rating-holder textarea{
+    width:30%;
+    height:5.0em;
+    margin-bottom:1.0em;
 }
 .media-body { position: relative;
     padding-top:0.5em;

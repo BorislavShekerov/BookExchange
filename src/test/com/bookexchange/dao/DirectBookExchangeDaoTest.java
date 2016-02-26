@@ -79,8 +79,8 @@ public class DirectBookExchangeDaoTest {
        user1.addBookExchange(directBookExchange);
         user2.addBookExchange(directBookExchange);
 
-        userDao.updateUser(user1);
-        userDao.updateUser(user2);
+        userDao.saveUser(user1);
+        userDao.saveUser(user2);
 
         user1 = userDao.findUserByEmail(DUMMY_EMAIL_1).get();
         user2 = userDao.findUserByEmail(DUMMY_EMAIL_2).get();

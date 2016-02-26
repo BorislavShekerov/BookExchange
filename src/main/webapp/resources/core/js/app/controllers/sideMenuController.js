@@ -34,6 +34,7 @@ bookApp.controller('sideMenuController', ['$scope', 'eventRecordService','$inter
                 $scope.selectedMenuItem = itemSelected;
 
                 updateMenuItemEventProperties(itemSelected,false,0);
+                eventRecordService.setSelectedItem(itemSelected);
            }
 
            function updateMenuItemEventProperties(menuItemLabel, newEventsHappened, newEvents ){
@@ -50,12 +51,26 @@ bookApp.controller('sideMenuController', ['$scope', 'eventRecordService','$inter
                   });
            }
 
-               $interval(function(){
-                   var newOffers = eventRecordService.getNewOfferEvents();
-                   if (newOffers > 0){
-                   updateMenuItemEventProperties("Your Offers",true,newOffers);
-                   }
+           function updateNewOfferEvents(){
+                var newOffers = eventRecordService.getNewOfferEvents();
+                                   if (newOffers > 0){
+                                   updateMenuItemEventProperties("Your Offers",true,newOffers);
+                                   }
+           }
 
+           function updateSelectedItem(){
+                if ($scope.selectedMenuItem != eventRecordService.getSelectedItem()){
+                    $scope.selectedMenuItem = eventRecordService.getSelectedItem();
+
+                    updateMenuItemEventProperties( $scope.selectedMenuItem ,false,0);
+                }
+           }
+               $interval(function(){
+                   updateNewOfferEvents();
                },5000);
+
+                $interval(function(){
+                                  updateSelectedItem();
+                              },50);
 }
 ]);

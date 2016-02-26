@@ -24,15 +24,16 @@
 	<div class="row" id="accountSectionSelectors">
 		<div class="col-md-4"></div>
 		<div class="col-md-8 col-xs-12" style="margin: 0px;padding: 0px;">
-			<div class="col-md-5 col-md-offset-1 col-xs-5 well" ng-class="{'active':selectorClicked == 'library'}">Library<i class="fa fa-book fa-lg"></i><span ng-bind="userAccount.booksPostedOnExchange.length"></span></div>
-			<div class="col-md-5 col-xs-5 well">Books Favoured <i class="fa fa-heart-o fa-lg"></i>5</div>
+			<div ng-click="libraryTabSelected()"class="col-md-5 col-md-offset-1 col-xs-5 well" ng-class="{'active':librarySelected}">Library<i class="fa fa-book fa-lg"></i><span ng-bind="userAccount.booksPostedOnExchange.length"></span></div>
+			<div ng-click="commentsTabSelected()" class="col-md-5 col-xs-5 well" ng-class="{'active':commentsSelected}">Peer Comments <i class="fa fa-star-o fa-lg"></i><span ng-bind="userAccount.ratingsForUser.length"></span></div>
 		</div>
 
 	</div>
+
+	<div class="row" ng-if="librarySelected">
 	<div class="row">
-		<hr>
-	</div>
-	<div class="row">
+    		<hr>
+    	</div>
 		<div class="row">
 
 			<div id="library" class="col-md-3 col-xs-12 " ng-repeat="book in userAccount.booksPostedOnExchange">
@@ -49,6 +50,30 @@
 		</div>
 
 	</div>
+
+	<div class="row" ng-if="commentsSelected" id="userCommentsSection">
+    	<div class="row">
+        		<hr>
+        	</div>
+    		<div class="row">
+
+                <div ng-repeat="userRating in userAccount.ratingsForUser" class="media">
+                		<a class="pull-left" href="#">
+                			<img class="media-object" src="{{userRating.commentatorAvatar}}" alt="profile">
+                		</a>
+
+                		<div class="media-body">
+                                 <h3 ng-bind="userRating.commentatorName"></h3>
+                                                            <h4 class="media-heading">Rating   <ng-rate-it ng-model="userRating.rating" read-only="true"></ng-rate-it></h4>
+
+                                                            <h4>Comment:</h4>
+                                                            <p ng-bind="userRating.comment"></p>
+
+                         </div>
+                 </div>
+
+    		</div>
+    	</div>
 
 	<div class="row">
 		<hr>

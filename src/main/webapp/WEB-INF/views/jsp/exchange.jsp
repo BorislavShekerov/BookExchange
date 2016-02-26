@@ -1,5 +1,6 @@
 <div class="side-body" id="main-content">
 	<div class="row">
+
 		<div class="col-md-9">
 			<form id="custom-search-form">
 				<div id="custom-search-input">
@@ -21,7 +22,7 @@
 	</div>
 	<div class="row">
 		<div ng-class="{'col-sm-6 col-md-8': filterExpanded, 'col-sm-12': !filterExpanded}">
-			<div id="library" ng-class="{'col-md-4': filterExpanded, 'col-sm-6 col-md-3': !filterExpanded}" ng-if="!filteringResults" ng-repeat="bookOnExchange in booksDisplayed" ng-mouseenter="bookOnExchange.hoveredOver = true" ng-mouseleave="bookOnExchange.hoveredOver = false">
+			<div id="library" ng-class="{'col-md-4': filterExpanded, 'col-sm-6 col-md-3': !filterExpanded}" ng-mouseenter="hoveredOverBook(bookOnExchange)" ng-mouseleave="bookOnExchange.hoveredOver = false" ng-if="!filteringResults" ng-repeat="bookOnExchange in booksDisplayed" >
 				<div ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="offer-exchange-button" ng-click="initiateExchange(bookOnExchange.title,bookOnExchange.ownerEmail)">
 					<span class="glyphicon glyphicon-refresh margin-right-small"></span>
 				</div>
@@ -32,10 +33,11 @@
 				<div id="book-details-wrap" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.mouseEntered ,'fadeIn': bookOnExchange.hoveredOver}" class="book-owner-details-wrap">
 				</div>
 				<div id="userPostedDetails" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="row book-owner-details">
-					<div class="col-md-4">
+					<div class="col-md-4" id="avatarHolder">
 						<img class="img-responsive" src="../{{bookOnExchange.ownerAvatar}}" /> </div>
-					<div class="col-md-7">
+					<div class="col-md-7" id="details">
 						<a>{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</a>
+                           <ng-rate-it ng-model="bookOnExchange.ownerRating" read-only="true"></ng-rate-it>
 					</div>
 				</div>
 			</div>

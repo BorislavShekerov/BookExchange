@@ -1,10 +1,29 @@
-bookApp.controller('AccountController', ['$scope', 'dataService','bookService','$uibModal','ngToast','categoryService', function ($scope, dataService, bookService, $uibModal, ngToast, categoryService) {
+bookApp.controller('AccountController', ['$scope', 'dataService','bookService','$uibModal','ngToast','categoryService','eventRecordService', function ($scope, dataService, bookService, $uibModal, ngToast, categoryService,eventRecordService) {
 	$scope.userAccount = dataService.getUserData();
+    $scope.librarySelected = true;
+    $scope.commentsSelected = false;
+    eventRecordService.setSelectedItem("Account");
 
-	$scope.selectorClicked = "library";
-	$scope.shouldShowLibrary = function(){
-	    return $scope.selectorClicked  == 'library';
-	}
+    $scope.libraryTabSelected = function(){
+        if(!$scope.librarySelected){
+         $scope.librarySelected = true;
+                    $scope.commentsSelected = false;
+        }else{
+            $scope.librarySelected = false;
+        }
+        }
+
+
+
+  $scope.commentsTabSelected = function(){
+        if(!$scope.commentsSelected){
+         $scope.commentsSelected = true;
+                    $scope.librarySelected = false;
+        }else{
+            $scope.commentsSelected = false;
+        }
+
+    }
 
     $scope.removeBook = function(book){
         bookService.removeBookForUser(book.title).then(function(result){

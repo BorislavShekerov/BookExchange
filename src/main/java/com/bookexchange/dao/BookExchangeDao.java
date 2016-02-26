@@ -10,6 +10,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,4 +100,27 @@ public class BookExchangeDao {
         return Optional.ofNullable((DirectBookExchange) criteria.uniqueResult());
     }
 
+    public List<DirectBookExchange> getSuccessfulDirectExchangesCompletedYesterday(){
+        Session currentSession = sessionFactory.getCurrentSession();
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        LocalDateTime dayBeforeYesterday = LocalDateTime.now().minusDays(2);
+
+        Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
+                .add(Restrictions.ge("dateCompleted", dayBeforeYesterday))
+                .add(Restrictions.lt("dateCompleted", yesterday));
+
+        return criteria.list();
+    }
+
+    public List<BookExchangeChain> getSuccessfulExchangeChainsCompletedYesterday() {
+        Session currentSession = sessionFactory.getCurrentSession();
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        LocalDateTime dayBeforeYesterday = LocalDateTime.now().minusDays(2);
+
+        Criteria criteria = currentSession.createCriteria(BookExchangeChain.class)
+                .add(Restrictions.ge("dateCompleted", dayBeforeYesterday))
+                .add(Restrictions.lt("dateCompleted", yesterday));
+
+        return criteria.list();
+    }
 }

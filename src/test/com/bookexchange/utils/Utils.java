@@ -18,7 +18,7 @@ public class Utils {
         User user = userBuilder.setEmail(email).setBooksPostedOnExchange(booksPostedOnExchange.stream()
                 .map(bookPostedCategory -> {
                     return new Book.BookBuilder().setCategory(new BookCategoryBuilder().setCategoryName(bookPostedCategory).buildBookCategory()).buildBook();
-                }).collect(Collectors.toList()))
+                }).collect(Collectors.toSet()))
                 .setCategoriesInterestedIn(categoriesInterestedIn.stream().map(categoryString -> {
                     return new BookCategoryBuilder().setCategoryName(categoryString).buildBookCategory();
                 }).collect(Collectors.toSet())).buildUser();

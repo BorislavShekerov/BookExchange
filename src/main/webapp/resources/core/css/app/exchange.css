@@ -114,12 +114,15 @@
 
     #userPostedDetails a{
 
-        font-size:1.4em;
+        font-size:1.2em;
+    }
+    #userPostedDetails #avatarHolder{
+        margin-top:1.6em;
     }
 
-    #userPostedDetails div:last-of-type{
+    #userPostedDetails #details{
         vertical-align:middle;
-        margin-top:1.0em;
+        margin-top:2.0em;
     }
     .search-query:focus + button {
         z-index: 3;

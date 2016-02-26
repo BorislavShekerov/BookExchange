@@ -1,5 +1,6 @@
 <div class="side-body" id="main-content">
-       <div class="row text-center well well-lg" ng-if="userRequestsReceived.length == 0">
+                <div class="pagination-centered text-center" ng-if="loadingRequests"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
+       <div class="row text-center well well-lg" ng-if="!loadingRequests && userRequestsReceived.length == 0">
         		        <h2 class="animated fadeIn text-center"><i class="fa fa-frown-o"></i>No offers received</h2>
       </div>
 	<div class="row">
@@ -8,7 +9,7 @@
 				<div class="col-md-8">
 					<a class="pull-left" href="#">
 						<h3 class="text-center"> Chain Creator </h3>
-						<img class="media-object" src="../{{exchangeRequest.exchangeInitiator.avatarUrl}}" alt="profile">
+						<img class="media-object" ng-src="{{exchangeRequest.exchangeInitiator.avatarUrl}}" alt="profile">
 						<h4 class="text-center"> {{exchangeRequest.exchangeInitiator.fullName}} </h4>
 					</a>
 					<div class="media-body">
@@ -22,8 +23,16 @@
 							<div>
 								<img src="{{exchangeRequest.bookRequested.imgUrl}}">
 							</div>
+							<div class="pagination-centered text-center" ng-if="ratingLoading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
+                            							<div class="rating-holder">
+                                                        				<p class="media-heading text-uppercase reviews" ng-if="!exchangeRequest.rated">{{"Rate "+ exchangeRequest.exchangeInitiator.firstName}}  <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating"  ng-click="userRatingSet(exchangeRequest)"></ng-rate-it></p>
+                                                        				<p class="media-heading text-uppercase reviews" ng-if="exchangeRequest.rated">Rated <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating" read-only ="true"></ng-rate-it></p>
+                                                        				<textarea type="textarea" ng-model="exchangeRequest.ratingComment" ng-if="exchangeRequest.showRateButton && !exchangeRequest.rated"  placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
+                                                        				</div>
 							<a class="ghost-button  reject-offer-button text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</a>
 							<a class="ghost-button  offers-received-button text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
+                            <a class="ghost-button  offers-received-button text-uppercase" ng-click="exchangeRequest.rateShown=!exchangeRequest.rateShown" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Rate <span ng-bind="exchangeRequest.bookRequested.ownerFullname"></span></a>
+						                            				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeRequest.showRateButton"  ng-click="rateUser(exchangeRequest)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
 
 						</div>
 					</div>
@@ -48,18 +57,25 @@
 					</a>
 					<div class="media-body">
 						<div class="well well-lg">
-							<h4 class="media-heading text-uppercase reviews">Request Initiator:{{" "+exchangeRequest.bookOfferedInExchange.ownerFirstname + " " + exchangeRequest.bookOfferedInExchange.ownerLastname}}</h4>
+							<h4 class="media-heading text-uppercase reviews">Request Initiator:{{" " + exchangeRequest.exchangeInitiator.fullName}}</h4>
+							<div class="pagination-centered text-center" ng-if="ratingLoading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
+							<div class="rating-holder">
+                            				<p class="media-heading text-uppercase reviews" ng-if="!exchangeRequest.rated">{{"Rate "+ exchangeRequest.exchangeInitiator.firstName}}  <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating"  ng-click="userRatingSet(exchangeRequest)"></ng-rate-it></p>
+                            				<p class="media-heading text-uppercase reviews" ng-if="exchangeRequest.rated">Rated <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating" read-only ="true"></ng-rate-it></p>
+                            				<textarea class="form-control" type="textarea" ng-model="exchangeRequest.ratingComment" ng-if="exchangeRequest.showRateButton && !exchangeRequest.rated"  placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
+                            				</div>
 							<ul class="media-date text-uppercase reviews list-inline">
 								<li class="dd">{{exchangeRequest.dateCreated.dayOfMonth}}</li>
 								<li class="mm">{{exchangeRequest.dateCreated.monthValue}}</li>
 								<li class="aaaa">{{exchangeRequest.dateCreated.year}}</li>
 							</ul>
-                        <div ng-if="!exchangeCreated.over"class="media-comment">
+                        <div ng-if="!exchangeRequest.over"class="media-comment">
 
                         				</div>
 
 							<a class="ghost-button  reject-offer-button text-uppercase" ng-if="!exchangeRequest.over" ng-click="cancelRequest(exchangeRequest)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</a>
 							<a class="ghost-button  offers-received-button text-uppercase" ng-if="!exchangeRequest.over"  ng-click="viewDetails(exchangeRequest)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
+                        				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeRequest.showRateButton"  ng-click="rateUser(exchangeRequest)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
 
 						</div>
 					</div>

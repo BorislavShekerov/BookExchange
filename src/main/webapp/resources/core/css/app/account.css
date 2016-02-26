@@ -236,3 +236,13 @@ background-color: #F1F1F1;
     }
 }
 
+#userCommentsSection div.media-body > h3{
+    margin-top:0px;
+    margin-bottom:0.3em;
+}
+
+#userCommentsSection div.media-body > h4{
+    margin-bottom:0.3em;
+}
+
+

@@ -56,6 +56,14 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
+
         <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -115,6 +123,12 @@
         </dependency>
 
         <!-- Hibernate Dependencies End-->
+        <!-- Quartz Cron Dependency-->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
+        </dependency>
 
         <!-- Testing Dependencies -->
         <dependency>

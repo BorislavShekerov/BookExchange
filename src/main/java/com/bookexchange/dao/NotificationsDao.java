@@ -1,9 +1,6 @@
 package com.bookexchange.dao;
 
-import com.bookexchange.dto.Book;
-import com.bookexchange.dto.Notification;
-import com.bookexchange.dto.NotificationType;
-import com.bookexchange.dto.User;
+import com.bookexchange.dto.*;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -59,5 +56,14 @@ public class NotificationsDao {
 
         List<Notification> newNotifications = (List<Notification>) criteria.list();
         return newNotifications;
+    }
+
+    public Optional<ExchangeRatingNotification> getExchangeChainNotificationForExchange(int exchangeId){
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(ExchangeRatingNotification.class);
+        criteria.add(Restrictions.eq("exchangeId", exchangeId));
+
+        return Optional.ofNullable((ExchangeRatingNotification) criteria.uniqueResult());
     }
 }

@@ -1,7 +1,9 @@
-bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchangeService','$uibModal', function ($scope, dataService, exchangeService,$uibModal) {
+bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchangeService','$uibModal','ratingService','eventRecordService', function ($scope, dataService, exchangeService,$uibModal,ratingService,eventRecordService) {
 	$scope.userRequestsReceived = [];
 	var userEmail = dataService.getEmail();
-
+      $scope.userRatings = [];
+      $scope.loadingRequests = true;
+      eventRecordService.setSelectedItem("Requests Received");
 
 	function findBookRequestedFromUser(exchangeChain) {
 		var bookRequestedFromUser = {};
@@ -103,17 +105,64 @@ bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchan
 			exchangeChain.userChoice = findBookRequestedByUser(exchangeChain);
 			exchangeChain.progress = computeChainProgress(exchangeChain);
 
+            setRatingInfo(exchangeChain, exchangeChain.bookRequested.ownerEmail);
+
 			$scope.userRequestsReceived.push(exchangeChain);
 		});
 	}
 
+	function setRatingInfo(exchange,userExchangingWith){
+                     exchange.rated = false;
+                      exchange.showRateButton = false;
+                     exchange.rating = 0;
+                                angular.forEach($scope.userRatings,function(rating,index){
+                                    if(rating.commentForEmail == userExchangingWith){
+                                        exchange.rated = true;
+                                         exchange.rating = rating.rating;
+                                    }
+                                });
+
+    }
+
 	function init() {
+	    requestRatingsForUser();
 		exchangeService.getExchangeRequestsReceivedByUser().then(function (currentExchanges) {
 			addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
-			$scope.userRequestsReceived = $scope.userRequestsReceived.concat(currentExchanges.directExchanges);
+			addDirectBookExchanges(currentExchanges.directExchanges);
+
+			   $scope.loadingRequests = false;
 		});
 
 	}
+
+    function addDirectBookExchanges(directExchanges){
+        angular.forEach(directExchanges,function(directExchange,index){
+            directExchange.isChain = false;
+           setRatingInfo(directExchange,directExchange.exchangeInitiator.email);
+
+           $scope.userRequestsReceived.push(directExchange);
+        });
+    }
+             $scope.userRatingSet = function(exchangeCreated){
+                        exchangeCreated.showRateButton = true;
+                        console.log(exchangeCreated.rating);
+                    }
+
+                    $scope.rateUser = function (exchangeCreated){
+                        exchangeCreated.rated =  true;
+                        var userRated = getUserRatedEmail(exchangeCreated);
+
+                        ratingService.addRating(userRated,exchangeCreated.ratingComment,exchangeCreated.rating);
+                        exchangeCreated.showRateButton = false;
+                    }
+
+                      function getUserRatedEmail(exchangeCreated){
+                                if(exchangeCreated.isChain){
+                                    return findBookRequestedByUser(exchangeCreated).ownerEmail;
+                                }else{
+                                    return exchangeCreated.exchangeInitiator.email;
+                                }
+                            }
 
 	        $scope.cancelRequest = function(exchangeToCancel){
                 if(exchangeToCancel.isChain){
@@ -126,8 +175,23 @@ bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchan
                 exchangeToCancel.successful = false;
             }
 
+             function requestRatingsForUser(){
+                        ratingService.getRatingsForUser().then(function(ratings){
+                        		                angular.forEach(ratings,function(rating,index){
+                        		                    if(rating.commentatorEmail == userEmail){
+                        		                        $scope.userRatings.push(rating);
+                        		                    }
+                        		                });
+                        		                 $scope.ratingLoading = false;
+
+                                                },function(err){
+                                                    console.log(err);
+                                                });
+
+                    }
+
             $scope.viewDetails = function(exchangeRequest){
-                dataService.getDetailsForUser(exchangeRequest.exchangeInitiatorEmail).then(function(userData){
+                dataService.getDetailsForUser(exchangeRequest.exchangeInitiator.email).then(function(userData){
                  var promptWindow = $uibModal.open({
                                 			animation: true,
                                 			templateUrl: '/app/openDirectRequestModal',

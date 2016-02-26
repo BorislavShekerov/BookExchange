@@ -36,6 +36,7 @@ public class BookJSONSerializer extends JsonSerializer<Book> {
         jsonGen.writeStringField("ownerLastname", postedBy.getLastName());
         jsonGen.writeStringField("ownerEmail", postedBy.getEmail());
         jsonGen.writeStringField("ownerAvatar",postedBy.getAvatarUrl());
+        jsonGen.writeNumberField("ownerRating",postedBy.getOverallRating());
 
         jsonGen.writeFieldName("ownerCategoriesOfInterest");
         jsonGen.writeStartArray();

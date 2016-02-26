@@ -25,7 +25,7 @@ public class DirectBookExchangeJSONSerializer extends JsonSerializer<DirectBookE
         jsonGen.writeObjectField("bookOfferedInExchange", directBookExchange.getBookOfferedInExchange());
         jsonGen.writeBooleanField("successful",directBookExchange.isSuccessful());
         jsonGen.writeBooleanField("over",directBookExchange.isOver());
-        jsonGen.writeStringField("exchangeInitiatorEmail",directBookExchange.getExchangeInitiatorEmail());
+        jsonGen.writeObjectField("exchangeInitiator",directBookExchange.getExchangeInitiator());
         jsonGen.writeNumberField("id",directBookExchange.getId());
         jsonGen.writeEndObject();
     }

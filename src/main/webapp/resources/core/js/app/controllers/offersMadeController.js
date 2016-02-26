@@ -1,6 +1,11 @@
-bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeService', function ($scope, dataService, exchangeService) {
+bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeService','ratingService','eventRecordService', function ($scope, dataService, exchangeService, ratingService,eventRecordService) {
 		var userEmail = dataService.getEmail();
+		$scope.rating = 0;
 		$scope.userExchangesCreated = [];
+		$scope.userRatings = [];
+		$scope.ratingLoading = true;
+        $scope.loadingRequests = true;
+        eventRecordService.setSelectedItem("Your Offers");
 
         function findBookRequestedByUser(exchangeChain){
             var bookRequestedByUser = {};
@@ -14,6 +19,26 @@ bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeSe
              return bookRequestedByUser;
         }
 
+        $scope.userRatingSet = function(exchangeCreated){
+            exchangeCreated.showRateButton = true;
+            console.log(exchangeCreated.rating);
+        }
+
+        $scope.rateUser = function (exchangeCreated){
+            exchangeCreated.rated =  true;
+            var userRated = getUserRatedEmail(exchangeCreated);
+
+            ratingService.addRating(userRated,exchangeCreated.ratingComment,exchangeCreated.rating);
+            exchangeCreated.showRateButton = false;
+        }
+
+        function getUserRatedEmail(exchangeCreated){
+            if(exchangeCreated.isChain){
+                return findBookRequestedByUser(exchangeCreated).ownerEmail;
+            }else{
+                return exchangeCreated.bookRequested.ownerEmail;
+            }
+        }
         $scope.cancelRequest = function(exchangeToCancel){
             if(exchangeToCancel.isChain){
                 exchangeService.rejectExchangeChainRequest(exchangeToCancel.id);
@@ -43,28 +68,70 @@ bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeSe
                 exchangeChain.isCollapsed = true;
                 exchangeChain.progress = computeChainProgress(exchangeChain);
 
+                setRatingInfo(exchangeChain, exchangeChain.bookRequested.ownerEmail);
+
                 $scope.userExchangesCreated.push( exchangeChain );
             });
         }
 
+        function setRatingInfo(exchange,userExchangingWith){
+                 exchange.rated = false;
+                  exchange.showRateButton = false;
+                 exchange.rating = 0;
+                            angular.forEach($scope.userRatings,function(rating,index){
+                                if(rating.commentForEmail == userExchangingWith){
+                                    exchange.rated = true;
+                                     exchange.rating = rating.rating;
+                                }
+                            });
+
+        }
 		function init() {
-			exchangeService.getExchangeRequestsInitiatedByUser().then(function (currentExchanges) {
-			    addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
 
+		      requestRatingsForUser();
 
-				 angular.forEach(currentExchanges.directExchanges, function (directExchange, index) {
-				    directExchange.isCollapsed = true;
-				 });
+            requestExchangesInitiatedByUser();
 
-				 	$scope.userExchangesCreated = $scope.userExchangesCreated.concat(currentExchanges.directExchanges);
-
-
-			},function (err){
-			console.log(err);
-			});
 
 		}
 
 		init();
+
+        function requestRatingsForUser(){
+            ratingService.getRatingsForUser().then(function(ratings){
+            		                angular.forEach(ratings,function(rating,index){
+            		                    if(rating.commentatorEmail == userEmail){
+            		                        $scope.userRatings.push(rating);
+            		                    }
+
+
+            		                });
+            		                 $scope.ratingLoading = false;
+
+
+                                    },function(err){
+                                        console.log(err);
+                                    });
+
+        }
+		function requestExchangesInitiatedByUser(){
+		exchangeService.getExchangeRequestsInitiatedByUser().then(function (currentExchanges) {
+        			    addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
+
+
+        				 angular.forEach(currentExchanges.directExchanges, function (directExchange, index) {
+        				    directExchange.isCollapsed = true;
+
+                            setRatingInfo(directExchange, directExchange.bookRequested.ownerEmail);
+        				 });
+
+
+
+        				 	$scope.userExchangesCreated = $scope.userExchangesCreated.concat(currentExchanges.directExchanges);
+                        $scope.loadingRequests = false;
+        			},function (err){
+        			console.log(err);
+        			});
+		}
 }
 ]);

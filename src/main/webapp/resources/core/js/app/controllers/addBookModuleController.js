@@ -17,6 +17,7 @@ bookApp.controller('AddBookModalController', ['$scope', '$http', 'dataService','
 		}
 
         function addBook(){
+            delete $scope.selectedCategory.selected;
             var bookToAdd = {
                 title: $scope.bookTitle,
                 author: $scope.bookAuthor,

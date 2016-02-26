@@ -29,6 +29,8 @@ public class DirectBookExchange {
     protected Book bookOfferedInExchange;
     @Column(name = "DATE_POSTED")
     private LocalDateTime dateCreated;
+    @Column(name = "DATE_COMPLETED")
+    private LocalDateTime dateCompleted;
     @Column(name = "IS_SUCCESSFUL")
     private boolean isSuccessful;
     @Column(name = "IS_OVER")
@@ -124,6 +126,10 @@ public class DirectBookExchange {
 
         public BookExchangeBuilder(){
             directBookExchange = new DirectBookExchange();
+        }
+
+        public BookExchangeBuilder setId(int id) {
+            directBookExchange.setId(id); return this;
         }
 
         public BookExchangeBuilder setBookRequested(Book bookPostedOnExchange) {

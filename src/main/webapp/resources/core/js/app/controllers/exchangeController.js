@@ -14,6 +14,7 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 		$scope.searching = true;
     	$scope.loadingMoreResults = false;
 
+    $scope.rating= 4;
 
     $scope.shouldFixCategoriesFilter = false;
     	$scope.currentBatch = 1;
@@ -36,8 +37,13 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
                 }
         },100);
 
+    $scope.hoveredOverBook = function(bookOnExchange){
+        bookOnExchange.hoveredOver = true;
+    }
+
 
 	function init() {
+
 		var allBooksPromise = bookService.getAllBooks();
 		allBooksPromise.then(function (response) {
 			sortBooksInPages(response.data);

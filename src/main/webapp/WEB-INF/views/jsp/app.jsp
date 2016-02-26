@@ -26,6 +26,7 @@
 
 		<!-- Custom styles for index page-->
 		<link href="../resources/core/css/app/nav_bar.css" rel="stylesheet">
+		<link href="../resources/core/css/ng-rateit.css" rel="stylesheet">
 		<link href="../resources/core/css/app/exchange.css" rel="stylesheet">
 		<link href="../resources/core/css/app/app_side_menu.css" rel="stylesheet">
 		<link href="../resources/core/css/app/app.css" rel="stylesheet">
@@ -182,6 +183,7 @@
 		<script src="../resources/core/js/bootstrap.js "></script>
 		<script src="../resources/core/js/angular.js "></script>
 		<script src="../resources/core/js/angular-route.js "></script>
+		<script src="../resources/core/js/ng-rateit.js "></script>
 		<script src="../resources/core/js/ui-bootstrap-tpls-1.1.0.min.js"></script>
 		<script src="../resources/core/js/bootstrap-multiselect.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-sanitize.js"></script>
@@ -214,6 +216,7 @@
          <script src="../resources/core/js/app/services/bookService.js "></script>
          <script src="../resources/core/js/app/services/notificationsService.js "></script>
            <script src="../resources/core/js/app/services/categoryService.js "></script>
+                      <script src="../resources/core/js/app/services/ratingService.js "></script>
            <script src="../resources/core/js/app/services/searchService.js "></script>
 
         <script type='text/javascript' src='../resources/core/js/app/eventRecordService.js'></script>

@@ -42,6 +42,8 @@ public class BookExchangeChain {
     private User chainBreaker;
     @Column(name = "DATE_POSTED")
     private LocalDateTime dateCreated;
+    @Column(name = "DATE_COMPLETED")
+    private LocalDateTime dateCompleted;
 
     public User getExchangeInitiator() {
         return exchangeInitiator;
@@ -110,6 +112,14 @@ public class BookExchangeChain {
         isOver = over;
     }
 
+    public LocalDateTime getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(LocalDateTime dateCompleted) {
+        this.dateCompleted = dateCompleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,6 +164,10 @@ public class BookExchangeChain {
 
         public BookExchangeChainBuilder(){
             bookExchangeChain = new BookExchangeChain();
+        }
+
+        public BookExchangeChainBuilder setId(int id) {
+            bookExchangeChain.setId(id); return this;
         }
 
         public BookExchangeChainBuilder setExchangeInitiator(User initiator) {

@@ -25,10 +25,9 @@ public class ExchangePathSuggestionServiceTest {
         Set<Vertex<String>> component4 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ff"), new Vertex<String>("xx"), new Vertex<String>("zzzdf"), new Vertex<String>(EXCHANGE_INITATOR)));
 
         ExchangeOrder exchangeOrder = new ExchangeOrder();
-        exchangeOrder.setBookOfferedInExchangeOwner(EXCHANGE_INITATOR);
         exchangeOrder.setBookUnderOfferOwner(USER_UNDER_OFFER);
 
-        Optional<Set<Vertex<String>>> filteredComponents = testObj.filterRelevantComponents(new HashSet<>(Arrays.asList(component1, component2, component3, component4)), exchangeOrder);
+        Optional<Set<Vertex<String>>> filteredComponents = testObj.filterRelevantComponents(new HashSet<>(Arrays.asList(component1, component2, component3, component4)), exchangeOrder, EXCHANGE_INITATOR);
 
         assertEquals(2, filteredComponents.get().size());
     }
