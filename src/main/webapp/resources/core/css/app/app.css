@@ -186,3 +186,9 @@ margin-top: 10em;
 .space-out-right-sm{
     margin-right: 0.3em;
 }
+
+#ratingNotificationContainer > textarea{
+    margin-top:1.0em;
+    height:5.0em;
+    margin-bottom:1.0em;
+}

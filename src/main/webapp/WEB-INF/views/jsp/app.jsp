@@ -92,7 +92,7 @@
 										<div class="row">
 											<div class="col-sm-4 col-lg-4">
 												<p class="text-center">
-													<img src="../${userDetails.avatarUrl}" class="profile-picture">
+													<img src="${userDetails.avatarUrl}" class="profile-picture">
 												</p>
 											</div>
 											<div class="col-sm-8 col-lg-8">
@@ -134,7 +134,11 @@
 
 											<div ng-class="{'cursor-pointer': notification.notificationType == 'EXCHANGE_CHAIN_INVITATION'}" class="notification-item" ng-click="notificationClicked(notification)">
 												<p class="item-info">{{notification.message}}</p>
-
+                                                <div class="row" ng-if="notification.notificationType == 'RATE_EXCHANGE_RATING' && !notification.rated" id="ratingNotificationContainer">
+                                                    				<ng-rate-it ng-model="notification.rating"  ng-click="userRatingSet(notification)"></ng-rate-it>
+                                                    	            <textarea class="form-control" type="textarea" ng-model="notification.ratingComment" placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
+                                                                    				<a class="ghost-button  offers-received-button text-uppercase" ng-if="notification.showRateButton"  ng-click="rateUser(notification)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
+                                                </div>
 											</div>
 
 

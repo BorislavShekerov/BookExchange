@@ -85,7 +85,7 @@
 						<div class="row">
 						    <h4 class="col-md-4">Posted By</h4>
 						    <div class="col-md-3">
-						    <img class="media-object profile-picture" src="../{{bookToExchangeFor.ownerAvatar}}" alt="...">
+						    <img class="media-object profile-picture" ng-src="{{bookToExchangeFor.ownerAvatar}}" alt="...">
 						    </div>
 						    <h4 class="col-md-3">{{bookToExchangeFor.ownerFirstname + " " + bookToExchangeFor.lastName}}</h4>
 						</div>

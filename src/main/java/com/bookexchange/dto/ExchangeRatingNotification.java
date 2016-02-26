@@ -1,5 +1,8 @@
 package com.bookexchange.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -49,7 +52,10 @@ public class ExchangeRatingNotification extends Notification {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + exchangeId;
-        result = 31 * result + userRated.hashCode();
+
+        if(userRated != null){
+            result = 31 * result + userRated.hashCode();
+        }
         return result;
     }
 

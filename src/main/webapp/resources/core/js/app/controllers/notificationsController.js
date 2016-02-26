@@ -1,7 +1,9 @@
-bookApp.controller('notificationsController', ['notificationsService', 'exchangeService', '$scope', '$interval', 'dataService', '$uibModal', function (notificationsService, exchangeService, $scope, $interval, dataService, $uibModal) {
+bookApp.controller('notificationsController', ['notificationsService', 'exchangeService', '$scope', '$interval', 'dataService', '$uibModal','ratingService', function (notificationsService, exchangeService, $scope, $interval, dataService, $uibModal,ratingService) {
+	var userEmail = dataService.getEmail();
 	$scope.notifications = [];
 	$scope.notificationsDropdownOpen = false;
 	$scope.unseenNotifications = 0;
+     $scope.userRatings = [];
 
 	$scope.notificationsDropdownOpened = function () {
 
@@ -22,8 +24,20 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 	}
 
     function init(){
+        requestRatingsForUser();
+
         notificationsService.getAllNotificationsForUser().then(function (response) {
-        			$scope.notifications = response;
+
+        						angular.forEach(response, function (newNotification, index) {
+
+
+                    					 if(newNotification.notificationType == 'RATE_EXCHANGE_RATING'){
+                    						    checkIfRated(newNotification);
+                    						}
+
+                    						$scope.notifications.unshift(newNotification);
+                    					}
+                    				);
         		}, function (error) {
         			console.log(error);
         		});
@@ -81,6 +95,18 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 
 		return isNotificationInList;
 	}
+
+	      $scope.userRatingSet = function(notification){
+                notification.showRateButton = true;
+            }
+
+	$scope.rateUser = function (notification){
+                ratingService.addRating(notification.userRatedEmail,notification.ratingComment,notification.rating);
+                notification.rated =  true;
+                notification.showRateButton = false;
+            }
+
+
 	$interval(function () {
 		notificationsService.getNewNotificationsForUser().then(function (response) {
 			if (response.length > 0) {
@@ -89,7 +115,9 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 					if (!isNotificationInList(newNotification)) {
 
 						if (newNotification.notificationType != 'NEW_USER') {
-							hideEmailFromMessage(newNotification);
+//							hideEmailFromMessage(newNotification);
+						}else if(newNotification.notificationType == 'RATE_EXCHANGE_RATING'){
+						    checkIfRated(newNotification);
 						}
 
 						$scope.unseenNotifications++;
@@ -101,5 +129,36 @@ bookApp.controller('notificationsController', ['notificationsService', 'exchange
 			console.log(error);
 		});
 	}, 30000);
+
+
+    function checkIfRated(newNotification){
+        newNotification.rating = 0;
+        newNotification.rated = false;
+        newNotification.showRateButton = false;
+
+        angular.forEach($scope.userRatings,function(rating,index){
+            if(rating.commentForEmail == newNotification.userRatedEmail){
+                newNotification.rated = true;
+            }
+        });
+    }
+
+    function requestRatingsForUser(){
+                ratingService.getRatingsForUser().then(function(ratings){
+                		                angular.forEach(ratings,function(rating,index){
+                		                    if(rating.commentatorEmail == userEmail){
+                		                        $scope.userRatings.push(rating);
+                		                    }
+
+
+                		                });
+                		                 $scope.ratingLoading = false;
+
+
+                                        },function(err){
+                                            console.log(err);
+                                        });
+
+            }
 
 }]);

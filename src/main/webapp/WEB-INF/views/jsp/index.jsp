@@ -158,7 +158,7 @@
 						</div>
 						<div id="userPostedDetails" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="row book-owner-details">
 							<div class="col-md-4">
-								<img class="img-responsive" src="../{{bookOnExchange.ownerAvatar}}" /> </div>
+								<img class="img-responsive" src="{{bookOnExchange.ownerAvatar}}" /> </div>
 							<div class="col-md-7">
 								<a>{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</a>
 							</div>

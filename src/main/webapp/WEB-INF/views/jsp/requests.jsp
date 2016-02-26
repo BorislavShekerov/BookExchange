@@ -24,7 +24,7 @@
 								<img src="{{exchangeRequest.bookRequested.imgUrl}}">
 							</div>
 							<div class="pagination-centered text-center" ng-if="ratingLoading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
-                            							<div class="rating-holder">
+                            							<div class="rating-holder" ng-if="exchangeRequest.over && exchangeRequest.successful">
                                                         				<p class="media-heading text-uppercase reviews" ng-if="!exchangeRequest.rated">{{"Rate "+ exchangeRequest.exchangeInitiator.firstName}}  <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating"  ng-click="userRatingSet(exchangeRequest)"></ng-rate-it></p>
                                                         				<p class="media-heading text-uppercase reviews" ng-if="exchangeRequest.rated">Rated <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating" read-only ="true"></ng-rate-it></p>
                                                         				<textarea type="textarea" ng-model="exchangeRequest.ratingComment" ng-if="exchangeRequest.showRateButton && !exchangeRequest.rated"  placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
@@ -59,7 +59,7 @@
 						<div class="well well-lg">
 							<h4 class="media-heading text-uppercase reviews">Request Initiator:{{" " + exchangeRequest.exchangeInitiator.fullName}}</h4>
 							<div class="pagination-centered text-center" ng-if="ratingLoading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
-							<div class="rating-holder">
+							<div class="rating-holder"  ng-if="exchangeRequest.over && exchangeRequest.successful">
                             				<p class="media-heading text-uppercase reviews" ng-if="!exchangeRequest.rated">{{"Rate "+ exchangeRequest.exchangeInitiator.firstName}}  <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating"  ng-click="userRatingSet(exchangeRequest)"></ng-rate-it></p>
                             				<p class="media-heading text-uppercase reviews" ng-if="exchangeRequest.rated">Rated <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating" read-only ="true"></ng-rate-it></p>
                             				<textarea class="form-control" type="textarea" ng-model="exchangeRequest.ratingComment" ng-if="exchangeRequest.showRateButton && !exchangeRequest.rated"  placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>

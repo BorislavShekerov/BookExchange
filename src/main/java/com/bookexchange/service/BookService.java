@@ -38,12 +38,15 @@ public class BookService {
     }
 
     public List<Book> getAllBooksOnExchange(String currentUserEmail) {
+        List<Book> allBooksOnExchnage = null;
         if (currentUserEmail.equals(ANONYMOUS_USER)) {
-            List<Book> allBooksOnExchnage = bookDao.getAllBooksOnExchange();
-            computeUserRatings(allBooksOnExchnage);
-            return allBooksOnExchnage;
+            allBooksOnExchnage = bookDao.getAllBooksOnExchange();
+        }else{
+            allBooksOnExchnage = bookDao.getAllBooksReqestedByUser(currentUserEmail);
         }
-        return bookDao.getAllBooksReqestedByUser(currentUserEmail);
+
+        computeUserRatings(allBooksOnExchnage);
+        return allBooksOnExchnage;
     }
 
     private void computeUserRatings(List<Book> allBooksOnExchnage) {

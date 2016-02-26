@@ -34,7 +34,7 @@
 				</div>
 				<div id="userPostedDetails" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="row book-owner-details">
 					<div class="col-md-4" id="avatarHolder">
-						<img class="img-responsive" src="../{{bookOnExchange.ownerAvatar}}" /> </div>
+						<img class="img-responsive" ng-src="{{bookOnExchange.ownerAvatar}}" /> </div>
 					<div class="col-md-7" id="details">
 						<a>{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</a>
                            <ng-rate-it ng-model="bookOnExchange.ownerRating" read-only="true"></ng-rate-it>

@@ -3,8 +3,8 @@
 		<div class="col-md-4 bg_blur ">
 		</div>
 		<div class="col-md-8  col-xs-12">
-			<img src="../{{userAccount.avatarUrl}}" class="img-thumbnail picture hidden-xs" />
-			<img src="../{{userAccount.avatarUrl}}" class="img-thumbnail visible-xs picture_mob" />
+			<img src="{{userAccount.avatarUrl}}" class="img-thumbnail picture hidden-xs" />
+			<img src="{{userAccount.avatarUrl}}" class="img-thumbnail visible-xs picture_mob" />
 			<div class="header">
 				<h1 ng-bind="userAccount.fullName"></h1>
 				<h4>Genres Interested In:</h4>

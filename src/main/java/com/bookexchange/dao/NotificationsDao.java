@@ -8,6 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,5 +66,18 @@ public class NotificationsDao {
         criteria.add(Restrictions.eq("exchangeId", exchangeId));
 
         return Optional.ofNullable((ExchangeRatingNotification) criteria.uniqueResult());
+    }
+
+    public Collection<? extends Notification> getAllRatingNotificationsForUser(String userEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(ExchangeRatingNotification.class);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.createAlias("userNotified", "user")
+                .add(Restrictions.eq("user.email", userEmail));
+
+
+        List<Notification> newNotifications = (List<Notification>) criteria.list();
+        return newNotifications;
     }
 }

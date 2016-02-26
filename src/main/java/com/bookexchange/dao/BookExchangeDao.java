@@ -106,6 +106,7 @@ public class BookExchangeDao {
         LocalDateTime dayBeforeYesterday = LocalDateTime.now().minusDays(2);
 
         Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
                 .add(Restrictions.ge("dateCompleted", dayBeforeYesterday))
                 .add(Restrictions.lt("dateCompleted", yesterday));
 
@@ -118,6 +119,7 @@ public class BookExchangeDao {
         LocalDateTime dayBeforeYesterday = LocalDateTime.now().minusDays(2);
 
         Criteria criteria = currentSession.createCriteria(BookExchangeChain.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
                 .add(Restrictions.ge("dateCompleted", dayBeforeYesterday))
                 .add(Restrictions.lt("dateCompleted", yesterday));
 

@@ -28,7 +28,7 @@ public class Notification {
     private LocalDateTime dateCreated;
     @Column(name="NOTIFICATION_TYPE")
     @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    protected NotificationType notificationType;
     @Column(name = "IS_SEEN")
     private boolean isSeen;
 
