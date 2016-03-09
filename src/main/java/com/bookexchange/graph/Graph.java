@@ -22,67 +22,107 @@ package com.bookexchange.graph;
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+import com.bookexchange.graph.abstraction.BaseGraph;
+import com.bookexchange.graph.abstraction.BaseVertex;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
 import java.util.*;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * A directed graph data structure.
  *
- * @param <T>
  * @author Scott.Stark@jboss.org
  * @version $Revision$
  */
-@SuppressWarnings("unchecked")
-public class Graph<T> {
+@Entity
+@Table(name = "GRAPHS")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Graph implements BaseGraph{
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    private long id;
+    @Column(name = "PATHS_EXPLORED_COUNT")
+    private int pathsExploredCount;
+    @Transient
+    private Set<String> removedVerticesNameSet = new HashSet<>();
+    @Transient
+    private Set<Edge> removedEdgesSet = new HashSet<>();
+    @Transient
+    public static final double DISCONNECTED = Double.MAX_VALUE;
     /**
      * Color used to mark unvisited nodes
      */
+    @Transient
     public static final int VISIT_COLOR_WHITE = 1;
 
     /**
      * Color used to mark nodes as they are first visited in DFS order
      */
+    @Transient
     public static final int VISIT_COLOR_GREY = 2;
 
     /**
      * Color used to mark nodes after descendants are completely visited
      */
+    @Transient
     public static final int VISIT_COLOR_BLACK = 3;
 
     /**
      * Vector<Vertex> of graph verticies
      */
-    private List<Vertex<T>> verticies;
+    @OneToMany(mappedBy = "graphBelongingTo",cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Vertex> verticies;
 
     /**
      * Vector<Edge> of edges in the graph
      */
-    private List<Edge<T>> edges;
+    @OneToMany(mappedBy = "graphBelongingTo",cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Edge> edges;
 
     /**
      * The vertex identified as the root of the graph
      */
-    private Vertex<T> rootVertex;
+    @Transient
+    private Vertex rootVertex;
 
-
+    @Transient
     private int index = 0;
     /**
      * Used for finding closed components
      */
-    private Deque<Vertex<T>> nodeStack;
+    @Transient
+    private Deque<Vertex> nodeStack;
+    @Transient
+    private final Function<Vertex,Set<Vertex>> findAdjacentVerticesFunction = v -> v.getAllAdjacentVertices();
+    @Transient
+    private final Function<Vertex,Set<Vertex>> findPrecedentVerticesFunction = v -> v.getAllPrecedentVertices();
 
     /**
      * Construct a new graph without any vertices or edges
      */
     public Graph() {
-        verticies = new ArrayList<Vertex<T>>();
-        edges = new ArrayList<Edge<T>>();
+        verticies = new ArrayList<Vertex>();
+        edges = new ArrayList<Edge>();
     }
 
 
     /**
      * Construct a new graph without any vertices or edges
      */
-    public Graph(List<Vertex<T>> verticies, List<Edge<T>> edges) {
+    public Graph(List<Vertex> verticies, List<Edge> edges) {
         this.verticies = verticies;
         this.edges = edges;
     }
@@ -102,7 +142,7 @@ public class Graph<T> {
      * @param v the Vertex to add
      * @return true if the vertex was added, false if it was already in the graph.
      */
-    public boolean addVertex(Vertex<T> v) {
+    public boolean addVertex(Vertex v) {
         boolean added = false;
         if (verticies.contains(v) == false) {
             added = verticies.add(v);
@@ -125,7 +165,7 @@ public class Graph<T> {
      * @return the root vertex if one is set, null if no vertex has been set as
      * the root.
      */
-    public Vertex<T> getRootVertex() {
+    public Vertex getRootVertex() {
         return rootVertex;
     }
 
@@ -136,7 +176,7 @@ public class Graph<T> {
      *             the vertex to set as the root and optionally add if it does not
      *             exist in the graph.
      */
-    public void setRootVertex(Vertex<T> root) {
+    public void setRootVertex(Vertex root) {
         this.rootVertex = root;
         if (verticies.contains(root) == false)
             this.addVertex(root);
@@ -148,7 +188,7 @@ public class Graph<T> {
      * @param n the index [0, size()-1] of the Vertex to access
      * @return the nth Vertex
      */
-    public Vertex<T> getVertex(int n) {
+    public Vertex getVertex(int n) {
         return verticies.get(n);
     }
 
@@ -157,7 +197,7 @@ public class Graph<T> {
      *
      * @return the graph verticies
      */
-    public List<Vertex<T>> getVerticies() {
+    public List<Vertex> getVerticies() {
         return this.verticies;
     }
 
@@ -173,13 +213,13 @@ public class Graph<T> {
      * @return true if the Edge<T> was added, false if from already has this Edge<T>
      * @throws IllegalArgumentException if from/to are not verticies in the graph
      */
-    public boolean addEdge(Vertex<T> from, Vertex<T> to, int cost) throws IllegalArgumentException {
+    public boolean addEdge(Vertex from, Vertex to, int cost) throws IllegalArgumentException {
         if (verticies.contains(from) == false)
             throw new IllegalArgumentException("from is not in graph");
         if (verticies.contains(to) == false)
             throw new IllegalArgumentException("to is not in graph");
 
-        Edge<T> e = new Edge<T>(from, to, cost);
+        Edge e = new Edge(from, to, cost);
         if (from.findEdge(to) != null)
             return false;
         else {
@@ -190,195 +230,43 @@ public class Graph<T> {
         }
     }
 
-    /**
-     * Insert a bidirectional Edge<T> in the graph
-     *
-     * @param from -
-     *             the Edge<T> starting vertex
-     * @param to   -
-     *             the Edge<T> ending vertex
-     * @param cost -
-     *             the Edge<T> weight/cost
-     * @return true if edges between both nodes were added, false otherwise
-     * @throws IllegalArgumentException if from/to are not verticies in the graph
-     */
-    public boolean insertBiEdge(Vertex<T> from, Vertex<T> to, int cost)
-            throws IllegalArgumentException {
-        return addEdge(from, to, cost) && addEdge(to, from, cost);
+    public void addEdgeNoChecks(Vertex from, Vertex to, int cost) throws IllegalArgumentException {
+        if (verticies.contains(from) == false)
+            throw new IllegalArgumentException("from is not in graph");
+        if (verticies.contains(to) == false)
+            throw new IllegalArgumentException("to is not in graph");
+
+        Edge e = new Edge(from, to, cost);
+//        if (from.findEdge(to) != null)
+//            return false;
+//        else {
+//            from.addEdge(e);
+//            to.addEdge(e);
+            edges.add(e);
+//            return true;
+
     }
+
 
     /**
      * Get the graph edges
      *
      * @return the graph edges
      */
-    public List<Edge<T>> getEdges() {
+    public List<Edge> getEdges() {
         return this.edges;
     }
 
-    /**
-     * Remove a vertex from the graph
-     *
-     * @param v the Vertex to remove
-     * @return true if the Vertex was removed
-     */
-    public boolean removeVertex(Vertex<T> v) {
-        if (!verticies.contains(v))
-            return false;
-
-        verticies.remove(v);
-        if (v == rootVertex)
-            rootVertex = null;
-
-        // Remove the edges associated with v
-        for (int n = 0; n < v.getOutgoingEdgeCount(); n++) {
-            Edge<T> e = v.getOutgoingEdge(n);
-            v.remove(e);
-            Vertex<T> to = e.getTo();
-            to.remove(e);
-            edges.remove(e);
-        }
-        for (int n = 0; n < v.getIncomingEdgeCount(); n++) {
-            Edge<T> e = v.getIncomingEdge(n);
-            v.remove(e);
-            Vertex<T> predecessor = e.getFrom();
-            predecessor.remove(e);
-        }
-        return true;
-    }
-
-    /**
-     * Remove an Edge<T> from the graph
-     *
-     * @param from -
-     *             the Edge<T> starting vertex
-     * @param to   -
-     *             the Edge<T> ending vertex
-     * @return true if the Edge<T> exists, false otherwise
-     */
-    public boolean removeEdge(Vertex<T> from, Vertex<T> to) {
-        Edge<T> e = from.findEdge(to);
-        if (e == null)
-            return false;
-        else {
-            from.remove(e);
-            to.remove(e);
-            edges.remove(e);
-            return true;
-        }
-    }
-
-    /**
-     * Clear the mark state of all verticies in the graph by calling clearMark()
-     * on all verticies.
-     *
-     * @see Vertex#clearMark()
-     */
-    public void clearMark() {
-        for (Vertex<T> w : verticies)
-            w.clearMark();
-    }
-
-    /**
-     * Clear the mark state of all edges in the graph by calling clearMark() on
-     * all edges.
-     */
-    public void clearEdges() {
-        for (Edge<T> e : edges)
-            e.clearMark();
-    }
-
-    /**
-     * Search the verticies for one with name.
-     *
-     * @param name -
-     *             the vertex name
-     * @return the first vertex with a matching name, null if no matches are found
-     */
-    public Vertex<T> findVertexByName(String name) {
-        Vertex<T> match = null;
-        for (Vertex<T> v : verticies) {
-            if (name.equals(v.getName())) {
-                match = v;
-                break;
-            }
-        }
-        return match;
-    }
-
-    /**
-     * Search the verticies for one with data.
-     *
-     * @param data    -
-     *                the vertex data to match
-     * @param compare -
-     *                the comparator to perform the match
-     * @return the first vertex with a matching data, null if no matches are found
-     */
-    public Vertex<T> findVertexByData(T data, Comparator<T> compare) {
-        Vertex<T> match = null;
-        for (Vertex<T> v : verticies) {
-            if (compare.compare(data, v.getData()) == 0) {
-                match = v;
-                break;
-            }
-        }
-        return match;
-    }
-
-    /**
-     * Search the graph for cycles. In order to detect cycles, we use a modified
-     * depth first search called a colored DFS. All nodes are initially marked
-     * white. When a node is encountered, it is marked grey, and when its
-     * descendants are completely visited, it is marked black. If a grey node is
-     * ever encountered, then there is a cycle.
-     *
-     * @return the edges that form cycles in the graph. The array will be empty if
-     * there are no cycles.
-     */
-    public Edge<T>[] findCycles() {
-        ArrayList<Edge<T>> cycleEdges = new ArrayList<Edge<T>>();
-        // Mark all verticies as white
-        for (int n = 0; n < verticies.size(); n++) {
-            Vertex<T> v = getVertex(n);
-            v.setMarkState(VISIT_COLOR_WHITE);
-        }
-        for (int n = 0; n < verticies.size(); n++) {
-            Vertex<T> v = getVertex(n);
-            visit(v, cycleEdges);
-        }
-
-        Edge<T>[] cycles = new Edge[cycleEdges.size()];
-        cycleEdges.toArray(cycles);
-        return cycles;
-    }
-
-    private void visit(Vertex<T> v, ArrayList<Edge<T>> cycleEdges) {
-        v.setMarkState(VISIT_COLOR_GREY);
-        int count = v.getOutgoingEdgeCount();
-        for (int n = 0; n < count; n++) {
-            Edge<T> e = v.getOutgoingEdge(n);
-            Vertex<T> u = e.getTo();
-            if (u.getMarkState() == VISIT_COLOR_GREY) {
-                // A cycle Edge<T>
-                cycleEdges.add(e);
-            } else if (u.getMarkState() == VISIT_COLOR_WHITE) {
-                visit(u, cycleEdges);
-            }
-        }
-        v.setMarkState(VISIT_COLOR_BLACK);
-    }
-
-    public Set<Set<Vertex<T>>> findStronglyConnectedComponents() {
+    public Set<Set<Vertex>> findStronglyConnectedComponents() {
         index = 0;
         nodeStack = new ArrayDeque<>();
-        Set<Set<Vertex<T>>> stronglyConnectedComponents = new HashSet<>();
+        Set<Set<Vertex>> stronglyConnectedComponents = new HashSet<>();
 
         verticies.stream().filter(vertex -> vertex.getIndex() == -1).forEach(vertex -> strongConnect(vertex,stronglyConnectedComponents));
         return stronglyConnectedComponents;
     }
 
-    private void strongConnect(Vertex<T> vertex, Set<Set<Vertex<T>>> stronglyConnectedComponents) {
+    private void strongConnect(Vertex vertex, Set<Set<Vertex>> stronglyConnectedComponents) {
         vertex.setIndex(index);
         vertex.setLowIndex(index);
         index++;
@@ -387,7 +275,7 @@ public class Graph<T> {
         vertex.setOnStack(true);
 
         // Consider successors of v
-        List<Edge<T>> outgoingEdges = vertex.getOutgoingEdges();
+        List<Edge> outgoingEdges = vertex.getOutgoingEdges();
         outgoingEdges.stream().map(edge -> edge.getTo()).forEach(successorVertex -> {
             if (successorVertex.getIndex() == -1) {
                 // Successor w has not yet been visited; recurse on it
@@ -402,8 +290,8 @@ public class Graph<T> {
 
         if (vertex.getIndex() == vertex.getLowIndex()){
             //start a new strongly connected component
-            Set<Vertex<T>> stronglyConnectedComponent = new HashSet<>();
-            Vertex<T> vertexPoppedFromTheStack;
+            Set<Vertex> stronglyConnectedComponent = new HashSet<>();
+            Vertex vertexPoppedFromTheStack;
 
             do{
                 vertexPoppedFromTheStack = nodeStack.pop();
@@ -415,24 +303,6 @@ public class Graph<T> {
         }
 
 
-    }
-
-    /**
-     * Perform a breadth first search of this graph, starting at v.
-     *
-     * @param v -
-     *          the search starting point
-     * @param visitor -
-     *          the vistor whose vist method is called prior to visting a vertex.
-     */
-    public void breadthFirstSearch(Vertex<T> v, final Visitor<T> visitor) {
-        VisitorEX<T, RuntimeException> wrapper = new VisitorEX<T, RuntimeException>() {
-            public void visit(Graph<T> g, Vertex<T> v, Vertex<T> o) throws RuntimeException {
-                if (visitor != null)
-                    visitor.visit(g, v);
-            }
-        };
-        this.breadthFirstSearch(v, wrapper);
     }
 
 
@@ -449,35 +319,144 @@ public class Graph<T> {
      * @throws E
      *           if vistor.visit throws an exception
      */
-    public <E extends Exception> void breadthFirstSearch(Vertex<T> v, VisitorEX<T, E> visitor)
-            throws E {
-        LinkedList<Vertex<T>> q = new LinkedList<Vertex<T>>();
-
-        q.add(v);
-        if (visitor != null)
-            visitor.visit(this, v,null);
-        v.visit();
-        while (q.isEmpty() == false) {
-            v = q.removeFirst();
-            for (int i = 0; i < v.getOutgoingEdgeCount(); i++) {
-                Edge<T> e = v.getOutgoingEdge(i);
-                Vertex<T> to = e.getTo();
-                if (!to.visited()) {
-                    q.add(to);
-                    if (visitor != null)
-                        visitor.visit(this, to, v);
-                    to.visit();
-                }
-            }
-        }
-    }
+//    public <E extends Exception> void breadthFirstSearch(Vertex v, VisitorEX<T, E> visitor)
+//            throws E {
+//        LinkedList<Vertex<T>> q = new LinkedList<Vertex<T>>();
+//
+//        q.add(v);
+//        if (visitor != null)
+//            visitor.visit(this, v,null);
+//        v.visit();
+//        while (q.isEmpty() == false) {
+//            v = q.removeFirst();
+//            for (int i = 0; i < v.getOutgoingEdgeCount(); i++) {
+//                Edge<T> e = v.getOutgoingEdge(i);
+//                Vertex<T> to = e.getTo();
+//                if (!to.visited()) {
+//                    q.add(to);
+//                    if (visitor != null)
+//                        visitor.visit(this, to, v);
+//                    to.visit();
+//                }
+//            }
+//        }
+//    }
 
     public String toString() {
         StringBuffer tmp = new StringBuffer("Graph[");
-        for (Vertex<T> v : verticies)
+        for (Vertex v : verticies)
             tmp.append(v);
         tmp.append(']');
         return tmp.toString();
+    }
+
+    @Override
+    public List<Vertex> getVertexList() {
+        return verticies;
+    }
+
+    @Override
+    public double getEdgeWeight(Vertex source, Vertex sink) {
+        return 0;
+    }
+
+    @Override
+    public Set<Vertex> getAdjacentVertices(Vertex vertex) {
+        return getNeighbours(vertex,findAdjacentVerticesFunction);
+    }
+
+    @Override
+    public Set<Vertex> getPrecedentVertices(Vertex vertex) {
+        return getNeighbours(vertex,findPrecedentVerticesFunction);
+    }
+
+    public int getPathsExploredCount() {
+        return pathsExploredCount;
+    }
+
+    public void setPathsExploredCount(int pathsExploredCount) {
+        this.pathsExploredCount = pathsExploredCount;
+    }
+
+    private Set<Vertex> getNeighbours(Vertex vertex, Function<Vertex,Set<Vertex>> adjacentVerticesFunction){
+            Set<Vertex> retSet = new HashSet<>();
+            String startingVertexName = vertex.getName();
+
+            if (!removedVerticesNameSet.contains(startingVertexName))	{
+                Set<Vertex> adjVertexSet = adjacentVerticesFunction.apply(vertex);
+                for (Vertex curVertex : adjVertexSet) {
+                    String endingVertexName = curVertex.getName();
+                    if (removedVerticesNameSet.contains(endingVertexName) ||
+                            removedEdgesSet.contains(new Edge(vertex,curVertex))) {
+                        continue;
+                    }
+
+                    retSet.add(curVertex);
+                }
+            }
+            return retSet;
+    }
+
+    public void deleteEdge(String edgeFromVertexName,String edgeToVertexName) {
+        removedEdgesSet.add(findEdge(edgeFromVertexName, edgeToVertexName));
+    }
+
+    public void deleteVertex(String vertexName) {
+        removedVerticesNameSet.add(vertexName);
+    }
+
+    public void recoverDeletedVertex(String vertexName) {
+        removedVerticesNameSet.remove(vertexName);
+    }
+
+    public double getEdgeWeightOfGraph(BaseVertex baseVertex, BaseVertex baseVertex1) {
+        return 0;
+    }
+
+    public void recoverDeletedEdge(String edgeFromVertexName,String edgeToVertexName) {
+        Edge deletedEdge = findEdge(edgeFromVertexName, edgeToVertexName);
+        removedEdgesSet.remove(deletedEdge);
+    }
+
+    public void recoverDeletedEdges() {
+        removedEdgesSet.clear();
+    }
+
+    public void recoverDeletedVertices() {
+        removedVerticesNameSet.clear();
+    }
+
+    private Edge findEdge(String edgeFromVertexName,String edgeToVertexName){
+        return edges.stream().filter(edge -> edge.getFrom().getName().equals(edgeFromVertexName) &&
+                edge.getTo().getName().equals(edgeToVertexName))
+                .findFirst().get();
+    }
+
+    public void fixMappings() {
+        this.id = 0;
+        this.edges.stream().distinct().forEach(edge -> {
+            edge.setGraphBelongingTo(this);
+            edge.setId(0);
+        });
+        this.verticies.stream().distinct().forEach(vertex -> {
+            if(vertex != null){
+                vertex.setId(0);
+                vertex.setGraphBelongingTo(this);
+            }
+        });
+
+    }
+
+    public void removeDuplicates(){
+        Set<Vertex> uniqueVertices = new HashSet<>(verticies);
+        Set<Edge> uniqueEdges = new HashSet<>(edges);
+
+        verticies = new ArrayList<>(uniqueVertices);
+        edges = new ArrayList<>(uniqueEdges);
+    }
+
+    public void increaseExploredPathsCount() {
+        pathsExploredCount++;
     }
 
 }

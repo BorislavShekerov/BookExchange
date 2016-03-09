@@ -63,94 +63,95 @@
 						<span class="icon-bar"></span>
 					</button>
 					<a class="navbar-brand" href="#"><img src="../resources/core/img/logo.png"></a>
+
 				</div>
-				<div id="navbar" class="navbar-collapse collapse" >
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
-					</ul>
-					<form class="navbar-form navbar-left" role="search" ng-controller="NavBarSearchController">
-                            <div class="form-group" ng-show="searchBarVisible">
-                              <input type="text" class="form-control" placeholder="Search" ng-model="searchPhrase">
-                            </div>
-                          </form>
+            <div id="navbar" class="navbar-collapse collapse">
+            					<ul class="nav navbar-nav">
+            						<li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
+            					</ul>
+            					<form class="navbar-form navbar-left" role="search" ng-controller="NavBarSearchController">
+            						<div class="form-group" ng-show="searchBarVisible">
+            							<input type="text" class="form-control" placeholder="Search" ng-model="searchPhrase">
+            						</div>
+            					</form>
 
-					<ul class="nav navbar-nav navbar-right" >
+            					<ul class="nav navbar-nav navbar-right" >
 
-						<li ng-controller="AddBookController">
-							<a role="button" ng-click="openAddBookModal()">
-								<span class="glyphicon glyphicon-plus"></span>Add Book
-							</a>
-						</li>
-						<li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" role="button">
-								<span class="glyphicon glyphicon-user"></span>
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li>
-									<div class="navbar-login">
-										<div class="row">
-											<div class="col-sm-4 col-lg-4">
-												<p class="text-center">
-													<img src="${userDetails.avatarUrl}" class="profile-picture">
-												</p>
-											</div>
-											<div class="col-sm-8 col-lg-8">
-												<p class="text-left"><strong>${userDetails.firstName}</strong></p>
-												<p class="text-left small">${userDetails.email}</p>
-											</div>
-										</div>
-									</div>
-								</li>
-								<li class="divider"></li>
-								<li>
-									<div class="navbar-login navbar-login-session">
-										<div class="row">
-											<div class="col-sm-10 col-sm-10-offset-1">
+            						<li ng-controller="AddBookController">
+            							<a role="button" ng-click="openAddBookModal()">
+            								<span class="glyphicon glyphicon-plus"></span>Add Book
+            							</a>
+            						</li>
+            						<li class="dropdown">
+            							<a class="dropdown-toggle" data-toggle="dropdown" role="button">
+            								<span class="glyphicon glyphicon-user"></span>
+            								<span class="caret"></span>
+            							</a>
+            							<ul class="dropdown-menu">
+            								<li>
+            									<div class="navbar-login">
+            										<div class="row">
+            											<div class="col-sm-4 col-lg-4">
+            												<p class="text-center">
+            													<img src="${userDetails.avatarUrl}" class="profile-picture">
+            												</p>
+            											</div>
+            											<div class="col-sm-8 col-lg-8">
+            												<p class="text-left"><strong>${userDetails.firstName}</strong></p>
+            												<p class="text-left small">${userDetails.email}</p>
+            											</div>
+            										</div>
+            									</div>
+            								</li>
+            								<li class="divider"></li>
+            								<li>
+            									<div class="navbar-login navbar-login-session">
+            										<div class="row">
+            											<div class="col-sm-10 col-sm-10-offset-1">
 
-												    <a href="javascript:formSubmit()" class="logout-ghost-button">Log Out</a>
+            												<a href="javascript:formSubmit()" class="logout-ghost-button">Log Out</a>
 
-											</div>
-										</div>
-									</div>
-								</li>
-							</ul>
-						</li>
+            											</div>
+            										</div>
+            									</div>
+            								</li>
+            							</ul>
+            						</li>
 
-						<li class="dropdown" ng-controller="notificationsController" >
-							<a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle" ng-click="notificationsDropdownOpened()" data-target="#">
-								<span class="glyphicon glyphicon-bell"></span><span ng-if="unseenNotifications > 0" class="badge" ng-bind="unseenNotifications"></span>
-							</a>
+            						<li class="dropdown" ng-controller="notificationsController">
+            							<a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle" ng-click="notificationsDropdownOpened()" data-target="#">
+            								<span class="glyphicon glyphicon-bell"></span><span ng-if="unseenNotifications > 0" class="badge" ng-bind="unseenNotifications"></span>
+            							</a>
 
-							<ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+            							<ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
 
-								<div class="notification-heading">
-									<h4 class="menu-title">Notifications</h4>
-								</div>
-								<li class="divider"></li>
-								<div class="notifications-wrapper" ng-repeat="notification in notifications">
-
-
-
-											<div ng-class="{'cursor-pointer': notification.notificationType == 'EXCHANGE_CHAIN_INVITATION'}" class="notification-item" ng-click="notificationClicked(notification)">
-												<p class="item-info">{{notification.message}}</p>
-                                                <div class="row" ng-if="notification.notificationType == 'RATE_EXCHANGE_RATING' && !notification.rated" id="ratingNotificationContainer">
-                                                    				<ng-rate-it ng-model="notification.rating"  ng-click="userRatingSet(notification)"></ng-rate-it>
-                                                    	            <textarea class="form-control" type="textarea" ng-model="notification.ratingComment" placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
-                                                                    				<a class="ghost-button  offers-received-button text-uppercase" ng-if="notification.showRateButton"  ng-click="rateUser(notification)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
-                                                </div>
-											</div>
+            								<div class="notification-heading">
+            									<h4 class="menu-title">Notifications</h4>
+            								</div>
+            								<li class="divider"></li>
+            								<div class="notifications-wrapper" ng-repeat="notification in notifications">
 
 
-								</div>
-								<li class="divider"></li>
-								<div class="notification-footer">
-									<h4 class="menu-title">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<!--/.nav-collapse -->
+
+            									<div ng-class="{'cursor-pointer': notification.notificationType == 'EXCHANGE_CHAIN_INVITATION'}" class="notification-item" ng-click="notificationClicked(notification)">
+            										<p class="item-info">{{notification.message}}</p>
+            										<div class="row" ng-if="notification.notificationType == 'RATE_EXCHANGE_RATING' && !notification.rated" id="ratingNotificationContainer">
+            											<ng-rate-it ng-model="notification.rating" ng-click="userRatingSet(notification)"></ng-rate-it>
+            											<textarea class="form-control" type="textarea" ng-model="notification.ratingComment" placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
+            											<a class="ghost-button  offers-received-button text-uppercase" ng-if="notification.showRateButton" ng-click="rateUser(notification)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
+            										</div>
+            									</div>
+
+
+            								</div>
+            								<li class="divider"></li>
+            								<div class="notification-footer">
+            									<h4 class="menu-title">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+            							</ul>
+            						</li>
+            					</ul>
+            				</div>
+            				<!--/.nav-collapse -->
 			</div>
 		</nav>
 		<!-- uncomment code for absolute positioning tweek see top comment in css -->
@@ -163,8 +164,7 @@
 
 				<!-- Main Menu -->
 				<div class="side-menu-container">
-					<ul class="nav navbar-nav">
-						<li class="list-item-chosen"><a href="#" ng-click="sideMenuItemSelected()"><span class="glyphicon glyphicon-send"></span> Link</a></li>
+					<ul class="nav navbar-nav" ng-class="{'slide-in':shouldSlideMenuIn}">
 
 						<li ng-repeat="menuItem in sideMenuOptions" ng-click="menuItemSelected(menuItem.label)" ng-class="{'selected-menu-item': selectedMenuItem == menuItem.label}"><a href="{{menuItem.url}}"><span class="glyphicon {{menuItem.glyphicon}}"></span><span ng-bind="menuItem.label"> </span> <span ng-if="menuItem.eventHappened" class="badge" ng-bind="menuItem.eventSum"></span></a></li>
 
@@ -174,7 +174,7 @@
 			</nav>
 
 		</div>
-        <toast></toast>
+		<toast></toast>
 		<!-- Main Content -->
 		<div class="container-fluid" ng-view>
 
@@ -195,9 +195,11 @@
 		<script src="../resources/core/js/jquery.bootpag.js"></script>
 		<script type='text/javascript' src='../resources/core/js/infinite-scroll.js'></script>
 		<script src="https://ucarecdn.com/widget/2.6.0/uploadcare/uploadcare.min.js" charset="utf-8"></script>
+		<script src="../resources/core/js/ng-device-detector.js "></script>
+		<script src="../resources/core/js/re-tree.js "></script>
 
 		<!-- Custom Controller JS -->
-		  <script src="../resources/core/js/app/app.js "></script>
+		<script src="../resources/core/js/app/app.js "></script>
 		<script src="../resources/core/js/app/controllers/addBookModuleController.js "></script>
 		<script src="../resources/core/js/app/controllers/exchangeController.js "></script>
 		<script src="../resources/core/js/app/controllers/exchangeHistoryController.js "></script>
@@ -206,31 +208,34 @@
 		<script src="../resources/core/js/app/controllers/notificationsController.js "></script>
 		<script src="../resources/core/js/app/controllers/chainRequestModalController.js "></script>
 		<script src="../resources/core/js/app/controllers/offerExchangeController.js "></script>
-        <script src="../resources/core/js/app/controllers/offersMadeController.js "></script>
-         <script src="../resources/core/js/app/controllers/offersReceivedController.js "></script>
-        <script src="../resources/core/js/app/controllers/sideMenuController.js "></script>
-         <script src="../resources/core/js/app/controllers/directRequestModalController.js"></script>
-         <script src="../resources/core/js/app/controllers/accountController.js"></script>
-          <script src="../resources/core/js/app/controllers/addBookController.js"></script>
-          <script src="../resources/core/js/app/controllers/navBarSearchController.js"></script>
-         <!-- Custom Services JS -->
-        <script src="../resources/core/js/app/services/dataService.js "></script>
-         <script src="../resources/core/js/app/services/eventRecordService.js "></script>
-        <script src="../resources/core/js/app/services/exchangeService.js "></script>
-         <script src="../resources/core/js/app/services/bookService.js "></script>
-         <script src="../resources/core/js/app/services/notificationsService.js "></script>
-           <script src="../resources/core/js/app/services/categoryService.js "></script>
-                      <script src="../resources/core/js/app/services/ratingService.js "></script>
-           <script src="../resources/core/js/app/services/searchService.js "></script>
+		<script src="../resources/core/js/app/controllers/offersMadeController.js "></script>
+		<script src="../resources/core/js/app/controllers/offersReceivedController.js "></script>
+		<script src="../resources/core/js/app/controllers/sideMenuController.js "></script>
+		<script src="../resources/core/js/app/controllers/directRequestModalController.js"></script>
+		<script src="../resources/core/js/app/controllers/accountController.js"></script>
+		<script src="../resources/core/js/app/controllers/addBookController.js"></script>
+		<script src="../resources/core/js/app/controllers/navBarSearchController.js"></script>
+		<script src="../resources/core/js/app/controllers/exploreMoreOptionsModalController.js"></script>
 
-        <script type='text/javascript' src='../resources/core/js/app/eventRecordService.js'></script>
+
+		<!-- Custom Services JS -->
+		<script src="../resources/core/js/app/services/dataService.js "></script>
+		<script src="../resources/core/js/app/services/eventRecordService.js "></script>
+		<script src="../resources/core/js/app/services/exchangeService.js "></script>
+		<script src="../resources/core/js/app/services/bookService.js "></script>
+		<script src="../resources/core/js/app/services/notificationsService.js "></script>
+		<script src="../resources/core/js/app/services/categoryService.js "></script>
+		<script src="../resources/core/js/app/services/ratingService.js "></script>
+		<script src="../resources/core/js/app/services/searchService.js "></script>
+
+		<script type='text/javascript' src='../resources/core/js/app/eventRecordService.js'></script>
 
 
 
 		<script type="text/javascript">
-        	UPLOADCARE_PUBLIC_KEY = '76aa760fad5093c9dcc0';
+			UPLOADCARE_PUBLIC_KEY = '76aa760fad5093c9dcc0';
 			var email = "${userDetails.email}";
-            var userLoginCount = "${userDetails.loginCount}";
+			var userLoginCount = "${userDetails.loginCount}";
 
 			function formSubmit() {
 				document.getElementById("logoutForm").submit();

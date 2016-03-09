@@ -1,5 +1,6 @@
-bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', '$interval', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService, $interval) {
+bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', '$interval','$rootScope', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService, $interval,$rootScope) {
 	dataService.setEmail(email);
+    $rootScope.shouldSlideMenuIn = false;
 
 	$scope.searchFor = '';
 	$scope.filterExpanded = false;
@@ -15,6 +16,7 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
     	$scope.loadingMoreResults = false;
 
     $scope.rating= 4;
+    $scope.isMobile = $rootScope.isMobile;
 
     $scope.shouldFixCategoriesFilter = false;
     	$scope.currentBatch = 1;
@@ -103,6 +105,18 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
         				templateUrl: '/offerExchange',
         				controller: 'exchangeOfferController'
         			});
+
+        		          promptWindow.result.then(function (result) {
+                                       ngToast.create({
+                                                                           							className: 'success',
+                                                                           							content: '<a href="#" class="">Exchange created successfully!</a>',
+                                                                           							timeout: 2000,
+                                                                           							animation: 'slide'
+                                                                           						});
+
+                                			}, function () {
+                                				$log.info('Modal dismissed at: ' + new Date());
+                                			});
 	}
 
      $scope.mouseEntered = function(bookHoveredOver){

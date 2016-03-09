@@ -23,6 +23,8 @@ public class ExchangeChainRequest {
     private User userChoosingFrom;
     @Column(name = "ACCEPTED")
     private boolean isAccepted;
+    @Column(name = "ANSWERED")
+    private boolean isAnswered;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CHAIN_EXCHANGE_ID", nullable = false)
     private BookExchangeChain parentExchangeChain;
@@ -95,6 +97,14 @@ public class ExchangeChainRequest {
         if (!userOfferingTo.equals(that.userOfferingTo)) return false;
         return userChoosingFrom.equals(that.userChoosingFrom);
 
+    }
+
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(boolean answered) {
+        isAnswered = answered;
     }
 
     @Override

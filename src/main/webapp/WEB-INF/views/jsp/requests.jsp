@@ -29,8 +29,8 @@
                                                         				<p class="media-heading text-uppercase reviews" ng-if="exchangeRequest.rated">Rated <ng-rate-it id="ratingMechanism" ng-model="exchangeRequest.rating" read-only ="true"></ng-rate-it></p>
                                                         				<textarea type="textarea" ng-model="exchangeRequest.ratingComment" ng-if="exchangeRequest.showRateButton && !exchangeRequest.rated"  placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
                                                         				</div>
-							<a class="ghost-button  reject-offer-button text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</a>
-							<a class="ghost-button  offers-received-button text-uppercase" ng-click="cancelRequest(exchangeCreated)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
+							<a class="ghost-button  reject-offer-button text-uppercase" ng-click="cancelRequest(exchangeRequest)" id="reply"><span class="glyphicon glyphicon glyphicon-remove"></span> Reject Request</a>
+							<a class="ghost-button  offers-received-button text-uppercase" ng-click="cancelRequest(exchangeRequest)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
                             <a class="ghost-button  offers-received-button text-uppercase" ng-click="exchangeRequest.rateShown=!exchangeRequest.rateShown" id="reply"><span class="glyphicon glyphicon-share-alt"></span> Rate <span ng-bind="exchangeRequest.bookRequested.ownerFullname"></span></a>
 						                            				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeRequest.showRateButton"  ng-click="rateUser(exchangeRequest)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
 

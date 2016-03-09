@@ -16,6 +16,10 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 		return false;
 	}
 
+	$scope.exchangeOptionDoesntExist = function(){
+		$scope.exchangeOptionExists = false;
+	}
+
     $scope.initiateExchangeChain = function(){
             var dataToPost = {};
 
@@ -27,6 +31,7 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 
             dataToPost.userChain = userEmails;
             dataToPost.bookRequestedTitle = $scope.bookToExchangeFor.title;
+            dataToPost.closedComponent = $scope.closedComponent;
 
         	var req = {
         			method: 'POST',
@@ -37,11 +42,12 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
         			data: dataToPost
         		}
 
+
         		$http(req).then(function (response) {
-        		   if(response.data == "Success"){
-        		    $uibModalInstance.close();
-        		   }
+
+        		    $uibModalInstance.close(response);
         		}, function (response) {
+        		    $uibModalInstance.close();
         			alert("error");
         		});
 
@@ -61,7 +67,8 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 
 		$http(req).then(function (response) {
 			$('#processing-modal').modal('hide');
-			$scope.exchangeOptionPath = response.data;
+			$scope.exchangeOptionPath = response.data.chain;
+			$scope.closedComponent = response.data.closedComponent;
 			$scope.exchangeOptionExists = true;
 		}, function () {
 			alert("error");

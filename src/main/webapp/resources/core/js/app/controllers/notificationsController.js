@@ -1,10 +1,9 @@
-bookApp.controller('notificationsController', ['notificationsService', 'exchangeService', '$scope', '$interval', 'dataService', '$uibModal','ratingService', function (notificationsService, exchangeService, $scope, $interval, dataService, $uibModal,ratingService) {
+bookApp.controller('notificationsController', ['notificationsService', 'exchangeService', '$scope', '$interval', 'dataService', '$uibModal','ratingService','$rootScope','deviceDetector', function (notificationsService, exchangeService, $scope, $interval, dataService, $uibModal,ratingService,$rootScope,deviceDetector) {
 	var userEmail = dataService.getEmail();
 	$scope.notifications = [];
 	$scope.notificationsDropdownOpen = false;
 	$scope.unseenNotifications = 0;
-     $scope.userRatings = [];
-
+    $scope.userRatings = [];
 	$scope.notificationsDropdownOpened = function () {
 
 		$scope.notificationsDropdownOpen = !$scope.notificationsDropdownOpen;

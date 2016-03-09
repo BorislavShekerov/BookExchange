@@ -28,7 +28,7 @@ public class UserService {
     private static final int INITIAL_VIP_TOKENS = 5;
     @Autowired
     private UserDao userDao;
-    @Autowired
+   // @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private CategoryDao bookCategoryDao;

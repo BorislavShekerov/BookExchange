@@ -35,6 +35,7 @@
 				<button class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeCreated.over && exchangeCreated.successful" ng-click="" id="reply"><span class="glyphicon glyphicon glyphicon-random"></span> Initiate Dispatching</button>
 				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeCreated.isSuccessful"><span class="glyphicon glyphicon-comment"></span> Mark Dispatched</a>
 				<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeCreated.showRateButton"  ng-click="rateUser(exchangeCreated)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
+                <a class="ghost-button  explore-other-options-button button-wider text-uppercase" ng-if="exchangeCreated.over && !exchangeCreated.isSuccessful"  ng-click="findOtherExchangePaths(exchangeCreated)"><span class="glyphicon glyphicon-comment"></span> Explore Other Options</a>
 
 				<div id="collapsedChainDetails" uib-collapse="exchangeCreated.isCollapsed">
 					<div class="well well-lg">
@@ -47,9 +48,11 @@
 							<li ng-repeat="exchangeChainRequest in exchangeCreated.exchangeChainRequests" role="presentation" ng-class="{'active':exchangeChainRequest.accepted}">
 								<h3 class="text-center">{{exchangeChainRequest.requestFor.fullName}}</h3>
 								<a href="#dustin" aria-controls="dustin" role="tab" data-toggle="tab">
-									<img class="img-circle" src="../{{exchangeChainRequest.requestFor.avatarUrl}}" />
+									<img class="img-circle" src="{{exchangeChainRequest.requestFor.avatarUrl}}" />
 								</a>
-								<h3 class="text-center">Accepted <span class="glyphicon" ng-class="{'glyphicon-ok':exchangeChainRequest.accepted,'glyphicon-remove':!exchangeChainRequest.accepted}"></span></h3>
+								<h3 class="text-center" ng-if="!exchangeChainRequest.answered">Not Answered <span class="glyphicon glyphicon-eye-close"></span></h3>
+								<h3 class="text-center" ng-if="exchangeChainRequest.answered && !exchangeChainRequest.accepted">Rejected <span class="glyphicon glyphicon-remove"></span></h3>
+								<h3 class="text-center" ng-if="exchangeChainRequest.answered && exchangeChainRequest.accepted">Accepted <span class="glyphicon glyphicon-ok"></span></h3>
 							</li>
 						</ul>
 					</div>

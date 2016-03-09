@@ -5,9 +5,8 @@ package com.bookexchange.graph;
  *
  * @author Scott.Stark@jboss.org
  * @version $Revision$
- * @param <T>
  */
-interface Visitor<T> {
+interface Visitor {
     /**
      * Called by the graph traversal methods when a vertex is first visited.
      *
@@ -16,7 +15,7 @@ interface Visitor<T> {
      * @param v -
      *          the vertex being visited.
      */
-    public void visit(Graph<T> g, Vertex<T> v);
+    public void visit(Graph g, Vertex v);
 }
 
 /**
@@ -25,10 +24,8 @@ interface Visitor<T> {
  *
  * @author Scott.Stark@jboss.org
  * @version $Revision$
- * @param <T>
- * @param <E>
  */
-interface VisitorEX<T, E extends Exception> {
+interface VisitorEX{
     /**
      * Called by the graph traversal methods when a vertex is first visited.
      *
@@ -37,8 +34,7 @@ interface VisitorEX<T, E extends Exception> {
      * @param v -
      *          the vertex being visited.
      * @param o
-     * @throws E
      *           exception for any error
      */
-    public void visit(Graph<T> g, Vertex<T> v, Vertex<T> o) throws E;
+    public void visit(Graph g, Vertex v, Vertex o) throws Exception;
 }

@@ -1,4 +1,4 @@
-bookApp.controller('indexController', ['$scope', 'categoryService', '$document', '$interval', 'bookService', '$window', '$anchorScroll', '$location', '$uibModal', function ($scope, categoryService, $document, $interval, bookService, $window, $anchorScroll, $location, $uibModal) {
+bookApp.controller('indexController', ['$scope', 'categoryService', '$document', '$interval', 'bookService', '$window', '$anchorScroll', '$location', '$uibModal','deviceDetector','$http', function ($scope, categoryService, $document, $interval, bookService, $window, $anchorScroll, $location, $uibModal,deviceDetector, $http) {
 	$scope.showBouncingScrollArrow = true;
 	$scope.searchFor = '';
 	$scope.filterExpanded = false;
@@ -18,7 +18,25 @@ bookApp.controller('indexController', ['$scope', 'categoryService', '$document',
 	$scope.filterReachedBottom = false;
 
 	$scope.currentBatch = 1;
+	$scope.isUserMobile = deviceDetector.isMobile();
 
+    $scope.connectToFacebook = function(){
+         var csrfToken = $("meta[name='_csrf']").attr("content");
+
+                            var req = {
+                            				method: 'POST',
+                            				url: '/connect/facebook/',
+                            				headers: {
+                            					'X-CSRF-TOKEN': csrfToken
+                            				}
+                            			}
+
+                            	 $http(req).then(function (response) {
+                            				return response.data;
+                            			}, function (response) {
+                            				return response.status;
+                            			});
+    }
 
 	angular.element($document).bind("scroll", function () {
 		loadMoreResultsIfNeeded();

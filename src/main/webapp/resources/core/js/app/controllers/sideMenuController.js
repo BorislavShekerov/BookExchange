@@ -1,4 +1,7 @@
-bookApp.controller('sideMenuController', ['$scope', 'eventRecordService','$interval', function ($scope, eventRecordService, $interval) {
+bookApp.controller('sideMenuController', ['$scope', 'eventRecordService','$interval','$rootScope','deviceDetector', function ($scope, eventRecordService, $interval, $rootScope, deviceDetector) {
+		  $rootScope.isMobile =  deviceDetector.isMobile();
+            $scope.isMobile = $rootScope.isMobile ;
+
 		$scope.sideMenuOptions = [{
 			url: '#/',
 			glyphicon: 'glyphicon-globe',

@@ -20,37 +20,62 @@ package com.bookexchange.graph;
  * site: http://www.fsf.org.
  */
 
+import com.bookexchange.graph.abstraction.BaseVertex;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A named graph vertex with optional data.
  *
  * @author Scott.Stark@jboss.org
  * @version $Revision$
- * @param <T>
  */
-@SuppressWarnings("unchecked")
-public class Vertex<T> {
-    private List<Edge<T>> incomingEdges;
-
-    private List<Edge<T>> outgoingEdges;
-
+@Entity
+@Table(name = "GRAPH_VERTICES")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Vertex implements BaseVertex,Comparable<Vertex> {
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    private long id;
+    @OneToMany(mappedBy = "to")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Edge> incomingEdges;
+    @OneToMany(mappedBy = "from")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Edge> outgoingEdges;
+    @Column(name = "NAME")
     private String name;
-
+    @Transient
     private boolean mark;
-
+    @Transient
     private int markState;
-
-    private T data;
-
+    @Transient
+    private String data;
+    @Transient
     private int index = -1;
+    @Transient
     private int lowIndex = -1;
-
+    @Transient
     private boolean onStack;
-
-    private List<Vertex<T>> pathsToVertex = new ArrayList<>();
-
+    @Transient
+    private int weight = 0;
+    @Transient
+    private List<Vertex> pathsToVertex = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "GRAPH_BELONGING_TO")
+    private Graph graphBelongingTo;
     /**
      * Calls this(null, null).
      */
@@ -70,15 +95,15 @@ public class Vertex<T> {
     /**
      * Create a Vertex with name n and given data
      *
-     * @param n -
+     * @param name -
      *          name of vertex
      * @param data -
      *          data associated with vertex
      */
-    public Vertex(String n, T data) {
-        incomingEdges = new ArrayList<Edge<T>>();
-        outgoingEdges = new ArrayList<Edge<T>>();
-        name = n;
+    public Vertex(String name,  String data) {
+        incomingEdges = new ArrayList<Edge>();
+        outgoingEdges = new ArrayList<Edge>();
+        this.name = name;
         mark = false;
         this.data = data;
     }
@@ -90,10 +115,20 @@ public class Vertex<T> {
         return name;
     }
 
+    @Override
+    public double getWeight() {
+        return 0;
+    }
+
+    @Override
+    public void setWeight(double weight) {
+
+    }
+
     /**
      * @return the possibly null data of the vertex
      */
-    public T getData() {
+    public String getData() {
         return this.data;
     }
 
@@ -101,7 +136,7 @@ public class Vertex<T> {
      * @param data
      *          The data to set.
      */
-    public void setData(T data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -114,7 +149,7 @@ public class Vertex<T> {
      *          the edge to add
      * @return true if the edge was added, false otherwise
      */
-    public boolean addEdge(Edge<T> e) {
+    public boolean addEdge(Edge e) {
         if (e.getFrom() == this)
             outgoingEdges.add(e);
         else if (e.getTo() == this)
@@ -131,8 +166,8 @@ public class Vertex<T> {
      * @param cost
      *          the edge cost
      */
-    public void addOutgoingEdge(Vertex<T> to, int cost) {
-        Edge<T> out = new Edge<T>(this, to, cost);
+    public void addOutgoingEdge(Vertex to, int cost) {
+        Edge out = new Edge(this, to, cost);
         outgoingEdges.add(out);
     }
 
@@ -144,8 +179,8 @@ public class Vertex<T> {
      * @param cost
      *          the edge cost
      */
-    public void addIncomingEdge(Vertex<T> from, int cost) {
-        Edge<T> out = new Edge<T>(this, from, cost);
+    public void addIncomingEdge(Vertex from, int cost) {
+        Edge out = new Edge(this, from, cost);
         incomingEdges.add(out);
     }
 
@@ -156,7 +191,7 @@ public class Vertex<T> {
      *          the edge to check
      * @return true it has an edge
      */
-    public boolean hasEdge(Edge<T> e) {
+    public boolean hasEdge(Edge e) {
         if (e.getFrom() == this)
             return incomingEdges.contains(e);
         else if (e.getTo() == this)
@@ -173,7 +208,7 @@ public class Vertex<T> {
      * @return true if the edge was removed, false if the edge was not connected
      *         to this vertex
      */
-    public boolean remove(Edge<T> e) {
+    public boolean remove(Edge e) {
         if (e.getFrom() == this)
             incomingEdges.remove(e);
         else if (e.getTo() == this)
@@ -198,7 +233,7 @@ public class Vertex<T> {
      *          the index into incoming edges
      * @return ith incoming edge
      */
-    public Edge<T> getIncomingEdge(int i) {
+    public Edge getIncomingEdge(int i) {
         return incomingEdges.get(i);
     }
 
@@ -207,7 +242,7 @@ public class Vertex<T> {
      *
      * @return incoming edge list
      */
-    public List getIncomingEdges() {
+    public List<Edge> getIncomingEdges() {
         return this.incomingEdges;
     }
 
@@ -226,7 +261,7 @@ public class Vertex<T> {
      *          the index into outgoing edges
      * @return ith outgoing edge
      */
-    public Edge<T> getOutgoingEdge(int i) {
+    public Edge getOutgoingEdge(int i) {
         return outgoingEdges.get(i);
     }
 
@@ -235,7 +270,7 @@ public class Vertex<T> {
      *
      * @return outgoing edge list
      */
-    public List<Edge<T>> getOutgoingEdges() {
+    public List<Edge> getOutgoingEdges() {
         return this.outgoingEdges;
     }
 
@@ -246,8 +281,8 @@ public class Vertex<T> {
      *          the destination
      * @return the outgoing edge going to dest if one exists, null otherwise.
      */
-    public Edge<T> findEdge(Vertex<T> dest) {
-        for (Edge<T> e : outgoingEdges) {
+    public Edge findEdge(Vertex dest) {
+        for (Edge e : outgoingEdges) {
             if (e.getTo() == dest)
                 return e;
         }
@@ -261,7 +296,7 @@ public class Vertex<T> {
      *          the edge to check
      * @return e if its a member of the outgoing edges, null otherwise.
      */
-    public Edge<T> findEdge(Edge<T> e) {
+    public Edge findEdge(Edge e) {
         if (outgoingEdges.contains(e))
             return e;
         else
@@ -276,7 +311,7 @@ public class Vertex<T> {
      * @return true if there is an outgoing edge ending at vertex, false
      *         otherwise.
      */
-    public boolean hasEdge(Vertex<T> dest) {
+    public boolean hasEdge(Vertex dest) {
         return (findEdge(dest) != null);
     }
 
@@ -316,6 +351,13 @@ public class Vertex<T> {
         return markState;
     }
 
+    public Set<Vertex> getAllAdjacentVertices(){
+        return this.outgoingEdges.stream().map(Edge::getTo).collect(Collectors.toSet());
+    }
+
+    public Set<Vertex> getAllPrecedentVertices() {
+        return this.incomingEdges.stream().map(Edge::getFrom).collect(Collectors.toSet());
+    }
     /**
      * Visit the vertex and set the mark flag to true.
      *
@@ -324,11 +366,11 @@ public class Vertex<T> {
         mark();
     }
 
-    public List<Vertex<T>> getPathsToVertex() {
+    public List<Vertex> getPathsToVertex() {
         return pathsToVertex;
     }
 
-    public void setPathsToVertex(List<Vertex<T>> pathsToVertex) {
+    public void setPathsToVertex(List<Vertex> pathsToVertex) {
         this.pathsToVertex = pathsToVertex;
     }
 
@@ -374,7 +416,7 @@ public class Vertex<T> {
         tmp.append(data);
         tmp.append("), in:[");
         for (int i = 0; i < incomingEdges.size(); i++) {
-            Edge<T> e = incomingEdges.get(i);
+            Edge e = incomingEdges.get(i);
             if (i > 0)
                 tmp.append(',');
             tmp.append('{');
@@ -383,7 +425,7 @@ public class Vertex<T> {
         }
         tmp.append("], out:[");
         for (int i = 0; i < outgoingEdges.size(); i++) {
-            Edge<T> e = outgoingEdges.get(i);
+            Edge e = outgoingEdges.get(i);
             if (i > 0)
                 tmp.append(',');
             tmp.append('{');
@@ -399,7 +441,7 @@ public class Vertex<T> {
         if (this == o) return true;
         if (!(o instanceof Vertex)) return false;
 
-        Vertex<?> vertex = (Vertex<?>) o;
+        Vertex vertex = (Vertex) o;
 
         return !(getName() != null ? !getName().equals(vertex.getName()) : vertex.getName() != null);
 
@@ -409,5 +451,43 @@ public class Vertex<T> {
     public int hashCode() {
         return getName() != null ? getName().hashCode() : 0;
     }
+
+
+    @Override
+    public int compareTo(Vertex o) {
+        double diff = this.weight - o.weight;
+        if (diff > 0) {
+            return 1;
+        } else if (diff < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setIncomingEdges(List<Edge> incomingEdges) {
+        this.incomingEdges = incomingEdges;
+    }
+
+    public void setOutgoingEdges(List<Edge> outgoingEdges) {
+        this.outgoingEdges = outgoingEdges;
+    }
+
+    public Graph getGraphBelongingTo() {
+        return graphBelongingTo;
+    }
+
+    public void setGraphBelongingTo(Graph graphBelongingTo) {
+        this.graphBelongingTo = graphBelongingTo;
+    }
+
 }
 

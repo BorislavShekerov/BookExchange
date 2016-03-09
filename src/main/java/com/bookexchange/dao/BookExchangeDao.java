@@ -39,6 +39,7 @@ public class BookExchangeDao {
 
         Criteria criteria = currentSession.createCriteria(BookExchangeChain.class)
                 .createAlias("exchangeInitiator", "initiator")
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
                 .add(Restrictions.eq("initiator.email", userEmail));
 
         List<BookExchangeChain> bookExchangeChain = criteria.list();
@@ -82,7 +83,7 @@ public class BookExchangeDao {
         return booksOnExchange;
     }
 
-    public Optional<BookExchangeChain> getExchangeChainRequest(int newExchangeChainRequestId) {
+    public Optional<BookExchangeChain> getExchangeChainForId(int newExchangeChainRequestId) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(BookExchangeChain.class)
@@ -125,4 +126,5 @@ public class BookExchangeDao {
 
         return criteria.list();
     }
+
 }

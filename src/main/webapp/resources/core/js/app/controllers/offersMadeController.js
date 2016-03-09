@@ -1,4 +1,5 @@
-bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeService','ratingService','eventRecordService', function ($scope, dataService, exchangeService, ratingService,eventRecordService) {
+bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeService','ratingService','eventRecordService','$rootScope','$uibModal', function ($scope, dataService, exchangeService, ratingService,eventRecordService,$rootScope, $uibModal) {
+		$rootScope.shouldSlideMenuIn = false;
 		var userEmail = dataService.getEmail();
 		$scope.rating = 0;
 		$scope.userExchangesCreated = [];
@@ -116,22 +117,54 @@ bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeSe
         }
 		function requestExchangesInitiatedByUser(){
 		exchangeService.getExchangeRequestsInitiatedByUser().then(function (currentExchanges) {
-        			    addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
-
-
-        				 angular.forEach(currentExchanges.directExchanges, function (directExchange, index) {
-        				    directExchange.isCollapsed = true;
-
-                            setRatingInfo(directExchange, directExchange.bookRequested.ownerEmail);
-        				 });
-
-
-
-        				 	$scope.userExchangesCreated = $scope.userExchangesCreated.concat(currentExchanges.directExchanges);
-                        $scope.loadingRequests = false;
+        			   addExchangesCreatedByUser(currentExchanges);
         			},function (err){
         			console.log(err);
         			});
 		}
+
+        function addExchangesCreatedByUser(exchanges){
+          addExchangeChainsToAllExchanges(exchanges.bookExchangeChains);
+
+
+                                            				 angular.forEach(exchanges.directExchanges, function (directExchange, index) {
+                                            				    directExchange.isCollapsed = true;
+
+                                                                setRatingInfo(directExchange, directExchange.bookRequested.ownerEmail);
+                                            				 });
+
+
+
+                                            				 	$scope.userExchangesCreated = $scope.userExchangesCreated.concat(exchanges.directExchanges);
+                                                            $scope.loadingRequests = false;
+        }
+
+		$scope.findOtherExchangePaths = function(exchangeChainCreated){
+
+		        var bookRequested = findBookRequestedByUser(exchangeChainCreated);
+            	var promptWindow = $uibModal.open({
+            					animation: true,
+            					templateUrl: '/app/openExploreMoreOptionsModal',
+            					controller: 'ExploreMoreOptionsModalController',
+            					resolve: {
+                                						 exchangeChain: exchangeChainCreated,
+                                						 bookRequested:bookRequested
+
+                                					}
+            				});
+
+
+				promptWindow.result.then(function (result) {
+				$scope.loadingRequests = true;
+				$scope.userExchangesCreated =[];
+
+                           addExchangesCreatedByUser();
+                			}, function () {
+                				$log.info('Modal dismissed at: ' + new Date());
+                			});
+
+
+
+            		}
 }
 ]);

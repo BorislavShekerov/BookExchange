@@ -1,12 +1,11 @@
 package com.bookexchange.dto;
 
+import com.bookexchange.graph.Graph;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -44,7 +43,9 @@ public class BookExchangeChain {
     private LocalDateTime dateCreated;
     @Column(name = "DATE_COMPLETED")
     private LocalDateTime dateCompleted;
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="CLOSED_COMPONENT_GRAPH_ID")
+    private Graph closedComponent;
     public User getExchangeInitiator() {
         return exchangeInitiator;
     }
@@ -120,6 +121,10 @@ public class BookExchangeChain {
         this.dateCompleted = dateCompleted;
     }
 
+    public String getLastBookInChainOwnerEmail(){
+        return booksRequestedInChain.stream().filter(bookRequestedInChain -> bookRequestedInChain.getRequestedBy().equals(exchangeInitiator)).map(BookRequestedInChain::getRequestedBookOwnerEmail).findFirst().get();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -147,7 +152,10 @@ public class BookExchangeChain {
     }
 
     public void markExchangeChainRequestAcceptedFromUser(String userEmail) {
-        getExchangeChainRequestForUser(userEmail).get().setAccepted(true);
+        ExchangeChainRequest exchangeChainRequest = getExchangeChainRequestForUser(userEmail).get();
+
+        exchangeChainRequest.setAccepted(true);
+        exchangeChainRequest.setAnswered(true);
     }
 
     public boolean areAllChainRequestsAccepted() {
@@ -158,6 +166,20 @@ public class BookExchangeChain {
         return this.getExchangeChainRequests().stream().map(exchangeChainRequest1 -> exchangeChainRequest1.getRequestFor()).collect(Collectors.toList());
     }
 
+    public Graph getClosedComponent() {
+        return closedComponent;
+    }
+
+    public void setClosedComponent(Graph closedComponent) {
+        this.closedComponent = closedComponent;
+    }
+
+    public void markExchangeChainRequestRejectedFromUser(String userRejectingEmail) {
+        ExchangeChainRequest exchangeChainRequest = getExchangeChainRequestForUser(userRejectingEmail).get();
+
+        exchangeChainRequest.setAccepted(false);
+        exchangeChainRequest.setAnswered(true);
+    }
 
     public static class BookExchangeChainBuilder{
         private BookExchangeChain bookExchangeChain;
@@ -181,6 +203,11 @@ public class BookExchangeChain {
 
         public BookExchangeChainBuilder setDateCreated(LocalDateTime dateCreated){
             bookExchangeChain.setDateCreated(dateCreated);
+            return this;
+        }
+
+        public BookExchangeChainBuilder setClosedComponent(Graph closedComponent) {
+            bookExchangeChain.setClosedComponent(closedComponent);
             return this;
         }
 

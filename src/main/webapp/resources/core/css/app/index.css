@@ -298,3 +298,12 @@ a:active {
     a.filterChosen > span{
          color:white !important;
     }
+
+@media only screen and (max-width: 768px) {
+   #scrollButtonHolder{
+        left:40%;
+   }
+   #login-dp .bottom > span{
+       color:black;
+   }
+}

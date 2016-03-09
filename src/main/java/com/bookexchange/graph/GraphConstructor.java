@@ -15,10 +15,10 @@ public class GraphConstructor {
         this.users = user;
     }
 
-    public Graph<String> constructGraph() {
+    public Graph constructGraph() {
         Map<String, List<String>> categoryToUserListMap = constructBookCategoryToUsersMap();
-        Map<String, Vertex<String>> usernameToVertexMap = new HashMap<>();
-        Set<Edge<String>> edgesList = new HashSet<>();
+        Map<String, Vertex> usernameToVertexMap = new HashMap<>();
+        Set<Edge> edgesList = new HashSet<>();
 
         users.stream().forEach(user -> {
             Vertex userVertex;
@@ -40,7 +40,7 @@ public class GraphConstructor {
                             usernameToVertexMap.put(userInterestedInCategory, interestedUserVertex);
                         } else interestedUserVertex = usernameToVertexMap.get(userInterestedInCategory);
 
-                        edgesList.add(new Edge<String>(userVertex, interestedUserVertex));
+                        edgesList.add(new Edge(userVertex, interestedUserVertex));
                     });
                 }
             });
@@ -49,10 +49,10 @@ public class GraphConstructor {
         return buildGraph(usernameToVertexMap, edgesList);
     }
 
-    private Graph<String> buildGraph(Map<String, Vertex<String>> userEmailToVertexMap,Set<Edge<String>> edges) {
-        List<Vertex<String>> verticiesList = new ArrayList<>(userEmailToVertexMap.values());
+    private Graph buildGraph(Map<String, Vertex> userEmailToVertexMap, Set<Edge> edges) {
+        List<Vertex> verticiesList = new ArrayList<>(userEmailToVertexMap.values());
 
-        Graph<String> graph = new Graph<>(verticiesList, new ArrayList<>());
+        Graph graph = new Graph(verticiesList, new ArrayList<>());
         edges.stream().forEach( edge -> graph.addEdge(edge.getFrom(),edge.getTo(),0));
 
         return graph;

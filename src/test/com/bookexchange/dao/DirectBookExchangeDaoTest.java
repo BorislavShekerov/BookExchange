@@ -1,6 +1,8 @@
 package com.bookexchange.dao;
 
 import com.bookexchange.dto.*;
+import com.bookexchange.graph.Graph;
+import com.bookexchange.graph.Vertex;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -148,6 +151,9 @@ public class DirectBookExchangeDaoTest {
 
         bookExchangeChain.setExchangeChainRequests(Arrays.asList(exchangeChainRequest1, exchangeChainRequest2));
 
+        Graph closedComponent = constructGraph(user1,user2,user3);
+        bookExchangeChain.setClosedComponent(closedComponent);
+
         bookExchangeDao.addBookExchangeChainRequest(exchangeChainRequest1);
         bookExchangeDao.addBookExchangeChainRequest(exchangeChainRequest2);
         bookExchangeDao.saveBookExchangeChain(bookExchangeChain);
@@ -157,9 +163,24 @@ public class DirectBookExchangeDaoTest {
         assertEquals("There should only be one exchange chain initiated by user",1,result.size());
 
         List<ExchangeChainRequest> exchangeChainRequests = result.get(0).getExchangeChainRequests();
+        Graph closedComponentForChain = result.get(0).getClosedComponent();
+        assertEquals(3,closedComponentForChain.getVerticies().size());
+        assertEquals(2,closedComponentForChain.getEdges().size());
         assertEquals("There should be 2 chain exchange requests in chain",2, exchangeChainRequests.size());
         assertEquals("There should be 2 chain exchange requests in chain",2, exchangeChainRequests.size());
 
+    }
+
+    private Graph constructGraph(User user1, User user2, User user3) {
+        Vertex vertex1 = new Vertex(user1.getEmail());
+        Vertex vertex2 = new Vertex(user2.getEmail());
+        Vertex vertex3 = new Vertex(user3.getEmail());
+
+        Graph graph = new Graph(Arrays.asList(vertex1,vertex2,vertex3),new ArrayList<>());
+        graph.addEdge(vertex1,vertex2,0);
+        graph.addEdge(vertex2,vertex3,0);
+
+        return graph;
     }
 
     private void persistData(List<User> users, List<BookCategory> bookCategories, List<Book> books) {

@@ -16,7 +16,7 @@
 				</div>
 			</form>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-3" ng-if="!isMobile">
 			<a id="filterButton" class="filter-exchange-ghost-button" ng-click="filterExpanded =! filterExpanded" ng-class="{'filter-button-clicked': filterExpanded}"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</a>
 		</div>
 	</div>

@@ -19,15 +19,15 @@ public class ExchangePathSuggestionServiceTest {
 
     @Test
     public void filterRelevantComponents() {
-        Set<Vertex<String>> component1 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>(EXCHANGE_INITATOR), new Vertex<String>(USER_UNDER_OFFER)));
-        Set<Vertex<String>> component2 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ddd"), new Vertex<String>("zzz")));
-        Set<Vertex<String>> component3 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ff"), new Vertex<String>("xx"), new Vertex<String>("zzzdf")));
-        Set<Vertex<String>> component4 = new HashSet<Vertex<String>>(Arrays.asList(new Vertex<String>("ff"), new Vertex<String>("xx"), new Vertex<String>("zzzdf"), new Vertex<String>(EXCHANGE_INITATOR)));
+        Set<Vertex> component1 = new HashSet<Vertex>(Arrays.asList(new Vertex(EXCHANGE_INITATOR), new Vertex(USER_UNDER_OFFER)));
+        Set<Vertex> component2 = new HashSet<Vertex>(Arrays.asList(new Vertex("ddd"), new Vertex("zzz")));
+        Set<Vertex> component3 = new HashSet<Vertex>(Arrays.asList(new Vertex("ff"), new Vertex("xx"), new Vertex("zzzdf")));
+        Set<Vertex> component4 = new HashSet<Vertex>(Arrays.asList(new Vertex("ff"), new Vertex("xx"), new Vertex("zzzdf"), new Vertex(EXCHANGE_INITATOR)));
 
         ExchangeOrder exchangeOrder = new ExchangeOrder();
         exchangeOrder.setBookUnderOfferOwner(USER_UNDER_OFFER);
 
-        Optional<Set<Vertex<String>>> filteredComponents = testObj.filterRelevantComponents(new HashSet<>(Arrays.asList(component1, component2, component3, component4)), exchangeOrder, EXCHANGE_INITATOR);
+        Optional<Set<Vertex>> filteredComponents = testObj.filterRelevantComponents(new HashSet<>(Arrays.asList(component1, component2, component3, component4)), exchangeOrder, EXCHANGE_INITATOR);
 
         assertEquals(2, filteredComponents.get().size());
     }

@@ -192,3 +192,9 @@ margin-top: 10em;
     height:5.0em;
     margin-bottom:1.0em;
 }
+
+@media only screen and (max-width: 768px) {
+   #main-content{
+       padding-top:0px !important;
+   }
+}

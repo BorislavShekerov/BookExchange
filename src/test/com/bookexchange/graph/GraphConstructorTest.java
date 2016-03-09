@@ -29,10 +29,10 @@ public class GraphConstructorTest {
         User user2 = Utils.constructUser(USER_2_EMAIL,Arrays.asList(CATEGORY_2), Arrays.asList(CATEGORY_1));
 
         testObj = new GraphConstructor(Arrays.asList(user1,user2));
-        Graph<String> graph = testObj.constructGraph();
+        Graph graph = testObj.constructGraph();
 
-        List<Vertex<String>> verticies = graph.getVerticies();
-        List<Edge<String>> edges = graph.getEdges();
+        List<Vertex> verticies = graph.getVerticies();
+        List<Edge> edges = graph.getEdges();
 
         assertEquals("2 vertices in the graph", 2, verticies.size());
         assertEquals("1 vertex has name"+ USER_1_EMAIL, true, verticies.stream().anyMatch(vertex -> vertex.getName().equals(USER_1_EMAIL)));
@@ -52,10 +52,10 @@ public class GraphConstructorTest {
         User user3 = Utils.constructUser(USER_3_EMAIL,new ArrayList<>(), Arrays.asList(CATEGORY_2));
 
         testObj = new GraphConstructor(Arrays.asList(user1,user2,user3));
-        Graph<String> graph = testObj.constructGraph();
+        Graph graph = testObj.constructGraph();
 
-        List<Vertex<String>> verticies = graph.getVerticies();
-        List<Edge<String>> edges = graph.getEdges();
+        List<Vertex> verticies = graph.getVerticies();
+        List<Edge> edges = graph.getEdges();
 
         assertEquals("3 vertices in the graph", 3, verticies.size());
         assertEquals("1 vertex has name"+ USER_1_EMAIL, true, verticies.stream().anyMatch(vertex -> vertex.getName().equals(USER_1_EMAIL)));
@@ -75,10 +75,10 @@ public class GraphConstructorTest {
         User user3 = Utils.constructUser(USER_3_EMAIL,Arrays.asList(CATEGORY_3), Arrays.asList(CATEGORY_2));
 
         testObj = new GraphConstructor(Arrays.asList(user1,user2,user3));
-        Graph<String> graph = testObj.constructGraph();
+        Graph graph = testObj.constructGraph();
 
-        List<Vertex<String>> verticies = graph.getVerticies();
-        List<Edge<String>> edges = graph.getEdges();
+        List<Vertex> verticies = graph.getVerticies();
+        List<Edge> edges = graph.getEdges();
 
         assertEquals("3 vertices in the graph", 3, verticies.size());
         assertEquals("1 vertex has name"+ USER_1_EMAIL, true, verticies.stream().anyMatch(vertex -> vertex.getName().equals(USER_1_EMAIL)));

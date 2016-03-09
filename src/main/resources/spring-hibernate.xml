@@ -30,6 +30,7 @@
         <property name="packagesToScan">
             <list>
                 <value>com.bookexchange.dto</value>
+                <value>com.bookexchange.graph</value>
             </list>
         </property>
         <property name="hibernateProperties">

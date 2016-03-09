@@ -21,20 +21,43 @@ package com.bookexchange.graph;
  * site: http://www.fsf.org.
  */
 
+import com.bookexchange.dto.User;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+
 /**
  * A directed, weighted edge in a graph
  *
  * @author Scott.Stark@jboss.org
  * @version $Revision$
- * @param <T>
  */
-public class Edge<T> {
-    private Vertex<T> from;
-
-    private Vertex<T> to;
-
+@Entity
+@Table(name = "GRAPH_EDGES")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Edge {
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    private long id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "VERTEX_FROM")
+    private Vertex from;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "VERTEX_TO")
+    private Vertex to;
+    @Transient
+    @JsonIgnore
     private boolean mark;
-
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "GRAPH_BELONGING_TO")
+    private Graph graphBelongingTo;
     /**
      * Create a zero cost edge between from and to
      *
@@ -43,7 +66,8 @@ public class Edge<T> {
      * @param to
      *          the ending vertex
      */
-    public Edge(Vertex<T> from, Vertex<T> to) {
+    public Edge(){}
+    public Edge(Vertex from, Vertex to) {
         this(from, to, 0);
     }
 
@@ -57,7 +81,7 @@ public class Edge<T> {
      * @param cost
      *          the cost of the edge
      */
-    public Edge(Vertex<T> from, Vertex<T> to, int cost) {
+    public Edge(Vertex from, Vertex to, int cost) {
         this.from = from;
         this.to = to;
         mark = false;
@@ -68,7 +92,7 @@ public class Edge<T> {
      *
      * @return ending vertex
      */
-    public Vertex<T> getTo() {
+    public Vertex getTo() {
         return to;
     }
 
@@ -77,7 +101,7 @@ public class Edge<T> {
      *
      * @return starting vertex
      */
-    public Vertex<T> getFrom() {
+    public Vertex getFrom() {
         return from;
     }
 
@@ -127,7 +151,7 @@ public class Edge<T> {
         if (this == o) return true;
         if (!(o instanceof Edge)) return false;
 
-        Edge<?> edge = (Edge<?>) o;
+        Edge edge = (Edge) o;
 
         if (getFrom() != null ? !getFrom().equals(edge.getFrom()) : edge.getFrom() != null) return false;
         return !(getTo() != null ? !getTo().equals(edge.getTo()) : edge.getTo() != null);
@@ -139,6 +163,22 @@ public class Edge<T> {
         int result = getFrom() != null ? getFrom().hashCode() : 0;
         result = 31 * result + (getTo() != null ? getTo().hashCode() : 0);
         return result;
+    }
+
+    public Graph getGraphBelongingTo() {
+        return graphBelongingTo;
+    }
+
+    public void setGraphBelongingTo(Graph graphBelongingTo) {
+        this.graphBelongingTo = graphBelongingTo;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
 

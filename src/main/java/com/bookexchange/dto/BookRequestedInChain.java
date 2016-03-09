@@ -70,6 +70,10 @@ public class BookRequestedInChain{
         this.id = id;
     }
 
+    public String getRequestedBookOwnerEmail() {
+        return getRequestedBook().getPostedBy().getEmail();
+    }
+
     public static class BookRequestedInChainBuilder{
         private BookRequestedInChain bookRequestedInChain;
 

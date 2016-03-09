@@ -125,6 +125,27 @@ bookApp.service("exchangeService",['$http', function ($http) {
                               			return postPromise;
         }
 
+     function exploreOtherOptions(exchangeChainId){
+                      var csrfToken = $("meta[name='_csrf']").attr("content");
+
+                                    var req = {
+                                    				method: 'GET',
+                                    				url: '/app/exploreOtherOptions/' + exchangeChainId,
+                                    				headers: {
+                                    					'X-CSRF-TOKEN': csrfToken
+                                    				}
+                                    			}
+
+                                    	var postPromise	= $http(req).then(function (response) {
+                                    				return response.data;
+                                    			}, function (response) {
+                                    				return response.status;
+                                    			});
+
+                                    			return postPromise;
+            }
+
+
         function acceptExchangeChainRequest(bookId,exchangeChainId){
                   var csrfToken = $("meta[name='_csrf']").attr("content");
                      var chainAcceptanceData = {
@@ -147,6 +168,29 @@ bookApp.service("exchangeService",['$http', function ($http) {
                                 			});
         }
 
+
+     function initiateExchangeChain(exchangeOrder){
+                 var csrfToken = $("meta[name='_csrf']").attr("content");
+
+                          var req = {
+                                          			method: 'POST',
+                                          			url: '/app/exchangeChainOrder',
+                                          			headers: {
+                                          				'X-CSRF-TOKEN': csrfToken
+                                          			},
+                                          			data: exchangeOrder
+                                          		}
+
+                            	var postPromise	= $http(req).then(function (response) {
+                            				return response.data;
+                            			}, function (response) {
+                            				return response.status;
+                            			});
+
+                            			return postPromise;
+            }
+
+
 	return {
 		setBookToExchangeFor: setBookToExchangeFor,
 		getBookToExchangeFor: getBookToExchangeFor,
@@ -156,7 +200,9 @@ bookApp.service("exchangeService",['$http', function ($http) {
 		rejectDirectExchange : rejectDirectExchange,
 		acceptExchangeChainRequest : acceptExchangeChainRequest,
 		acceptDirectExchange: acceptDirectExchange,
-		getExchangeRequestsReceivedByUser:getExchangeRequestsReceivedByUser
+		getExchangeRequestsReceivedByUser:getExchangeRequestsReceivedByUser,
+		exploreOtherOptions : exploreOtherOptions,
+		initiateExchangeChain: initiateExchangeChain
 	};
 
 }]);

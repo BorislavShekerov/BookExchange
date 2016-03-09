@@ -31,4 +31,6 @@ public class NewRating {
     public void setRating(int rating) {
         this.rating = rating;
     }
+
+
 }

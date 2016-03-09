@@ -65,8 +65,8 @@
 										<div class="col-md-12">
 											Login via
 											<div class="social-buttons">
-												<a href="#" class="btn btn-fb"><i class="fa fa-facebook"></i> Facebook</a>
-												<a href="#" class="btn btn-tw"><i class="fa fa-twitter"></i> Twitter</a>
+												<a ng-click="connectToFacebook()" class="btn btn-fb"><i class="fa fa-facebook"></i> Facebook</a>
+												<a href="/connect/twitter" class="btn btn-tw"><i class="fa fa-twitter"></i> Twitter</a>
 											</div>
 											<p class="text-center">OR</p>
 											<c:url value="/login" var="loginUrl" />
@@ -88,7 +88,7 @@
 											</form>
 										</div>
 										<div class="bottom text-center">
-											New here ? <a href="/signup"><b>Join Us</b></a>
+											<span>New here ?</span> <a href="/signup"><b>Join Us</b></a>
 										</div>
 									</div>
 								</li>
@@ -132,7 +132,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-md-2">
+				<div class="col-md-2" ng-if="!isUserMobile">
 					<a id="filterButton" class="ghost-button filter-button" ng-click="filterExpanded =! filterExpanded" ng-class="{'filter-button-clicked': filterExpanded}"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</a>
 				</div>
 			</div>
@@ -226,6 +226,8 @@
 	<script src="resources/core/js/bootstrap-multiselect.js"></script>
 	<script src="resources/core/js/angular.js "></script>
 	<script src="resources/core/js/angular-scroll.js "></script>
+	<script src="resources/core/js/ng-device-detector.js "></script>
+	<script src="resources/core/js/re-tree.js "></script>
 	<script src="resources/core/js/jquery.bootpag.js"></script>
 			<script src="../resources/core/js/ui-bootstrap-tpls-1.1.0.min.js"></script>
 

@@ -245,6 +245,10 @@ input[type="file"]{
             color:#fff;
          }
 
+         .button-wider{
+            width:250px;
+         }
+
           .offers-received-button:hover > span {
            color:#5383d3;
           }

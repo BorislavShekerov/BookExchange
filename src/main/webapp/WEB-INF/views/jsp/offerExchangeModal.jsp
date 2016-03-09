@@ -6,8 +6,7 @@
 		<div class="row" ng-if="exchangeOptionExists">
 
 			<div class="row">
-			                <a ng-click="exchangeOptionExists = false"><span class="glyphicon glyphicon-arrow-left margin-right-small"></span>Back </a>
-
+        	     <a ng-click="exchangeOptionDoesntExist()"><span class="glyphicon glyphicon-arrow-left margin-right-small"></span>Back </a>
 			</div>
 			<div class="row">
 				    <div class="timeline">
@@ -27,7 +26,7 @@
 
                             <!-- Heading -->
                             			<div class="panel-heading">
-                            				<img src="../{{userOnExchangePath.avatarUrl}}" class="img-responsive"><h2 class="panel-title">{{userOnExchangePath.firstName + " " + userOnExchangePath.lastName}}</h2>
+                            				<img src="{{userOnExchangePath.avatarUrl}}" class="img-responsive"><h2 class="panel-title">{{userOnExchangePath.firstName + " " + userOnExchangePath.lastName}}</h2>
                             			</div>
                              <!-- Heading -->
                             <!-- Body -->

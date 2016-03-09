@@ -59,7 +59,7 @@ public class ExchangeChainServiceTest {
         User user2 = new User.UserBuilder().setEmail(DUMMY_EMAIL_2).buildUser();
         User user3 = new User.UserBuilder().setEmail(DUMMY_EMAIL_3).buildUser();
 
-        testObj.registerExchangeChain(Arrays.asList(user1, user2, user3),BOOK_REQUESTED);
+        //testObj.registerExchangeChain(Arrays.asList(user1, user2, user3),BOOK_REQUESTED, exchangeChainOrder.getClosedComponent());
 
         ExchangeChainRequest exchangeChainRequest1 = new ExchangeChainRequest();
         exchangeChainRequest1.setUserOfferingTo(user1);
@@ -90,7 +90,7 @@ public class ExchangeChainServiceTest {
         BookExchangeChain bookExchangeChain = Mockito.mock(BookExchangeChain.class);
         ExchangeChainRequest exchangeChainRequestForUser = Mockito.mock(ExchangeChainRequest.class);
 
-        Mockito.when(exchangeDao.getExchangeChainRequest(exchangeChainToCheckForId)).thenReturn(Optional.of(bookExchangeChain));
+        Mockito.when(exchangeDao.getExchangeChainForId(exchangeChainToCheckForId)).thenReturn(Optional.of(bookExchangeChain));
         Mockito.when(bookExchangeChain.getExchangeChainRequestForUser(userToCheckFor)).thenReturn(Optional.of(exchangeChainRequestForUser));
         Mockito.when(exchangeChainRequestForUser.getUserChoosingFrom()).thenReturn(user1);
         Mockito.when(exchangeChainRequestForUser.getUserOfferingTo()).thenReturn(user2);
@@ -118,7 +118,7 @@ public class ExchangeChainServiceTest {
 
         ExchangeChainRequest exchangeChainRequestForUser = Mockito.mock(ExchangeChainRequest.class);
 
-        Mockito.when(exchangeDao.getExchangeChainRequest(exchangeChainToCheckForId)).thenReturn(Optional.of(bookExchangeChain));
+        Mockito.when(exchangeDao.getExchangeChainForId(exchangeChainToCheckForId)).thenReturn(Optional.of(bookExchangeChain));
         Mockito.when(bookExchangeChain.getExchangeChainRequestForUser(userToCheckFor)).thenReturn(Optional.of(exchangeChainRequestForUser));
 
 //        Mockito.when(bookExchangeChain.getUserToChooseFrom(userToCheckFor)).thenReturn(Optional.of(user1));
@@ -158,7 +158,7 @@ public class ExchangeChainServiceTest {
         ExchangeChainRequest request2 = new ExchangeChainRequest();
         request2.setUserOfferingTo(userOffering2);
 
-        Mockito.when(exchangeDao.getExchangeChainRequest(exchangeChainToCheckForId)).thenReturn(Optional.of(bookExchangeChain));
+        Mockito.when(exchangeDao.getExchangeChainForId(exchangeChainToCheckForId)).thenReturn(Optional.of(bookExchangeChain));
         Mockito.when(bookExchangeChain.getId()).thenReturn(exchangeChainToCheckForId);
         Mockito.when(userDao.findUserByEmail(userRejectedEmail)).thenReturn(Optional.of(userRejected));
         Mockito.when(bookExchangeChain.getExchangeChainRequests()).thenReturn(Arrays.asList(request1,request2));

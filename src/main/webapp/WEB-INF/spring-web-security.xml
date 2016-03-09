@@ -38,5 +38,6 @@
     <beans:bean id="encoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
         <beans:constructor-arg name="strength" value="10" />
     </beans:bean>
-
+    <beans:bean id="textEncryptor" class="org.springframework.security.crypto.encrypt.Encryptors"
+                factory-method="noOpText" />
 </beans:beans>
