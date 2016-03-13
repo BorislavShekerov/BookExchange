@@ -66,7 +66,7 @@
 
 			</div>
 			<div class="row" ng-if="!exchangeRequest.isChain">
-				<div ng-class="{'col-md-8': exchangeRequest.over && exchangeRequest.successful ,'space-out-top':exchangeRequest.over && exchangeRequest.successful, 'col-md-12': !exchangeRequest.over || !exchangeRequest.successful}">
+				<div cass="col-xs-12" ng-class="{'col-md-8': exchangeRequest.over && exchangeRequest.successful ,'space-out-top':exchangeRequest.over && exchangeRequest.successful, 'col-md-12': !exchangeRequest.over || !exchangeRequest.successful}">
 					<div ng-class="{'text-center' : isUserMobile ,'pull-left': !isUserMobile ,'pagination-centered':isUserMobile}">
 					<a>
 						<img ng-class="{'text-center' : isUserMobile ,'pull-left': !isUserMobile ,'align-center': isUserMobile,'display-inline': isUserMobile}" class="media-object" src="{{exchangeRequest.bookRequested.imgUrl}}" alt="profile">
@@ -79,7 +79,7 @@
 								<h4 ng-show="!exchangeRequest.successful" class="rejected-exchange">Exchange Rejected <span class="glyphicon glyphicon-remove"></span></h4>
 							</div>
 							<div class="body-content">
-								<h4 class="media-heading text-uppercase reviews">Request Initiator:<span ng-if="isUserMobile"><br  /></span>{{" " + exchangeRequest.exchangeInitiator.fullName}}</h4>
+								<h4 class="media-heading text-uppercase reviews">Request Initiator :<span ng-if="isUserMobile"><br  /></span>{{" " + exchangeRequest.exchangeInitiator.fullName}}</h4>
 								<div class="pagination-centered text-center" ng-if="ratingLoading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
 								<div class="rating-holder" ng-if="exchangeRequest.over && exchangeRequest.successful">
 									<p class="media-heading text-uppercase reviews" ng-if="!exchangeRequest.rated">{{"Rate "+ exchangeRequest.exchangeInitiator.firstName}}
@@ -95,21 +95,24 @@
 									<li class="mm">{{exchangeRequest.dateCreated.monthValue}}</li>
 									<li class="aaaa">{{exchangeRequest.dateCreated.year}}</li>
 								</ul>
-								<div ng-if="!exchangeRequest.over" class="media-comment">
+								<div ng-if="!exchangeRequest.over && !isUserMobile" class="media-comment">
 
 								</div>
-
+                                <div class="row">
+                                								<div class="col-sm-12 col-md-2 text-center">
 								<a class="ghost-button  offers-received-button text-uppercase" ng-if="!exchangeRequest.over" ng-click="viewDetails(exchangeRequest)" id="reply"><span class="glyphicon glyphicon-share-alt"></span> View Details</a>
+								</div>
+								<div class="col-sm-12 col-md-2 text-center">
 								<a class="ghost-button  offers-received-button text-uppercase" ng-if="exchangeRequest.showRateButton" ng-click="rateUser(exchangeRequest)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
-
+                                </div>
 							</div>
 
 						</div>
 
 					</div>
 				</div>
-				<div class="col-md-4" ng-if="exchangeRequest.over && exchangeRequest.successful">
-					<div class="col-md-3">
+				<div class="col-xs-12 col-md-4" ng-if="exchangeRequest.over && exchangeRequest.successful">
+					<div class="col-md-3" ng-if="!isUserMobile">
 
 						<span class="glyphicon glyphicon-resize-horizontal"></span>
 					</div>

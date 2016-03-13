@@ -38,7 +38,6 @@
     color: #999;
     font-size: 12px;
 }
-.media .media-object {  }
 .media-body img{
     max-width:120px;
     margin-bottom:0.5em;
@@ -333,6 +332,8 @@ input[type="file"]{
         #usersInChainList > li > a > img{
             max-width:150px;
         }
+
+        .media .media-object { max-width: 70% }
 
         .well-lg{
             max-width:320px !important;
