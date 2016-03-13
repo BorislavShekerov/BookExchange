@@ -25,6 +25,7 @@ public class User {
     Book bookToAddToExchange;
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "USER_CATEGORIES_INTERESTED", joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "CATEGORY_ID")})
+    @LazyCollection(LazyCollectionOption.FALSE)
     Set<BookCategory> categoriesInterestedIn = new HashSet<>();
     @Column(name = "FIRST_NAME")
     private String firstName;
@@ -47,20 +48,12 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersForUserRole", cascade = {javax.persistence.CascadeType.PERSIST})
     @JsonIgnore
     private Set<UserRole> userRole = new HashSet<>();
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "USER_EXCHANGE_CURRENT", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "EXCHANGE_ID"))
-    private Set<DirectBookExchange> currentExchanges = new HashSet<>();
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userNotified", cascade = {javax.persistence.CascadeType.PERSIST})
     private Set<Notification> userNotifications = new HashSet<>();
     @Column(name = "LOGIN_COUNT")
     private int  loginCount;
     @Column(name = "VIP_TOKENS")
     private int vipTokens;
-
-
-    public void addBookExchange(DirectBookExchange directBookExchange) {
-        this.currentExchanges.add(directBookExchange);
-    }
 
     public void addCategoriesInterestedIn(List<BookCategory> categoriesInterestedIn){
         this.categoriesInterestedIn.addAll(categoriesInterestedIn);
@@ -152,15 +145,8 @@ public class User {
     public void setUserRole(Set<UserRole> userRole) {
         this.userRole = userRole;
     }
-
-    public Set<DirectBookExchange> getCurrentExchanges() {
-        return currentExchanges;
-    }
     public String getFullName(){
         return firstName + " " + lastName;
-    }
-    public void setCurrentExchanges(Set<DirectBookExchange> currentExchanges) {
-        this.currentExchanges = currentExchanges;
     }
 
     public String getLastName() {
@@ -287,11 +273,6 @@ public class User {
 
         public UserBuilder setUserRole(Set<UserRole> userRole) {
             user.setUserRole(userRole);
-            return this;
-        }
-
-        public UserBuilder setCurrentExchanges(Set<DirectBookExchange> currentExchanges) {
-            user.setCurrentExchanges(currentExchanges);
             return this;
         }
 

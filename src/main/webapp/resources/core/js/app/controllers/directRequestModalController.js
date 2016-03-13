@@ -1,8 +1,8 @@
-bookApp.controller('DirectRequestModalController', ['exchangeService','$scope', 'userToChooseFrom','$uibModalInstance','directExchange', function (exchangeService, $scope, userToChooseFrom, $uibModalInstance, directExchange) {
+bookApp.controller('DirectRequestModalController', ['exchangeService','$scope', 'userToChooseFrom','$uibModalInstance','directExchange','$rootScope', function (exchangeService, $scope, userToChooseFrom, $uibModalInstance, directExchange,$rootScope) {
     $scope.userToChooseFrom = userToChooseFrom;
     $scope.chosenBook = {};
     $scope.bookChosen = false;
-
+    $scope.isUserMobile = $rootScope.isUserMobile;
     $scope.imageHoveredOver = false;
 
     function init(){
@@ -26,7 +26,7 @@ bookApp.controller('DirectRequestModalController', ['exchangeService','$scope', 
 
     $scope.rejectExchangeRequest = function(){
         var result = {accepted:false}
-        exchangeService.rejectDirectExchange(exchangeChain.id);
+        exchangeService.rejectDirectExchange(directExchange.id);
         $uibModalInstance.close(result);
     }
 
@@ -35,4 +35,4 @@ bookApp.controller('DirectRequestModalController', ['exchangeService','$scope', 
             exchangeService.acceptDirectExchange( $scope.chosenBook.id,directExchange.id);
                     $uibModalInstance.close(result);
         }
-           }]);
+ }]);

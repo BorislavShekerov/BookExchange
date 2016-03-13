@@ -44,7 +44,7 @@ public class ExchangePathSuggestionService {
         }
 
         Graph graph = constructClosedComponentGraph(relevantStronglyConnectedComponent.get());
-        List<String> userEmailsOnShortestPath = orderPathsFromInitiatorToGoal(graph, exchangeOrder.getBookUnderOfferOwner(), userTriggeredSearch).get();
+        List<String> userEmailsOnShortestPath = findAlternativePath(graph, exchangeOrder.getBookUnderOfferOwner(), userTriggeredSearch).get();
         List<User> usersOnShortestPath = orderUsersOnPath(allUsers, userEmailsOnShortestPath, exchangeOrder.getBookUnderOfferOwner());
 
         return Optional.of(new ExchangeChainProposal(usersOnShortestPath, graph));
@@ -57,7 +57,7 @@ public class ExchangePathSuggestionService {
         return orderedUsers;
     }
 
-    private Optional<List<String>> orderPathsFromInitiatorToGoal(Graph relevantComponentGraph, String bookUnderOfferOwner, String userTriggeredSearch) {
+    private Optional<List<String>> findAlternativePath(Graph relevantComponentGraph, String bookUnderOfferOwner, String userTriggeredSearch) {
         List<String> orderedPath = new ArrayList<>();
 
         Vertex exchangeInitiatorVertex = relevantComponentGraph.getVertexList().stream().filter(userVertex -> userVertex.getName().equals(userTriggeredSearch)).findFirst().get();
@@ -110,7 +110,15 @@ public class ExchangePathSuggestionService {
         List<User> allUsers = userDao.getAllUsers();
         String userUnderOffer = exchangeChain.getLastBookInChainOwnerEmail();
 
-        List<String> userEmailsOnShortestPath = orderPathsFromInitiatorToGoal(exchangeChain.getClosedComponent(), userUnderOffer , exchangeInitiatorEmail).orElse(new ArrayList<>());
+        boolean chainBreakerInNewChain = true;
+        List<String> userEmailsOnShortestPath = null;
+
+        while(chainBreakerInNewChain){
+            userEmailsOnShortestPath= findAlternativePath(exchangeChain.getClosedComponent(), userUnderOffer , exchangeInitiatorEmail).orElse(new ArrayList<>());
+            if(!userEmailsOnShortestPath.contains(exchangeChain.getChainBreaker().getEmail())){
+                chainBreakerInNewChain = false;
+            }
+        }
         List<User> usersOnShortestPath = orderUsersOnPath(allUsers, userEmailsOnShortestPath, userUnderOffer);
 
         return new ExchangeChainProposal(usersOnShortestPath, exchangeChain.getClosedComponent());

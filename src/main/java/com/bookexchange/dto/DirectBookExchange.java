@@ -18,13 +18,13 @@ public class DirectBookExchange {
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     private int id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "BOOK_REQUESTED_ID")
     protected Book bookRequested;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "EXCHANGE_INITIATOR", nullable = false)
     private User exchangeInitiator;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "BOOK_OFFERED_IN_EXCHANGE")
     protected Book bookOfferedInExchange;
     @Column(name = "DATE_POSTED")
@@ -98,6 +98,14 @@ public class DirectBookExchange {
 
     public void setExchangeInitiator(User exchangeInitiator) {
         this.exchangeInitiator = exchangeInitiator;
+    }
+
+    public LocalDateTime getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(LocalDateTime dateCompleted) {
+        this.dateCompleted = dateCompleted;
     }
 
     @Override

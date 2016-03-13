@@ -156,7 +156,10 @@ form.navbar-form .form-control{
     margin-top: 20px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    overflow-y:auto;
+    max-height:300px;
 }
+
 
 .navbar-default .navbar-nav>li>a {
     font-weight: bold;
@@ -174,14 +177,14 @@ form.navbar-form .form-control{
 }
 
 .mega-dropdown-menu:before {
-    content: "";
-    border-bottom: 15px solid #fff;
-    border-right: 17px solid transparent;
-    border-left: 17px solid transparent;
-    position: absolute;
-    top: -15px;
-    left: 285px;
-    z-index: 10;
+       content: "";
+       border-bottom: 10px solid #fff;
+       border-right: 10px solid transparent;
+       border-left: 10px solid transparent;
+       position: absolute;
+       top: -10px;
+       right: 16px;
+       z-index: 10;
 }
 
 .mega-dropdown-menu:after {

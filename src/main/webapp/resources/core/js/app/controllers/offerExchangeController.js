@@ -1,9 +1,10 @@
-bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', '$uibModalInstance', 'eventRecordService', function ($scope, $http, $location, dataService, exchangeService, $uibModalInstance, eventRecordService) {
+bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', '$uibModalInstance', 'eventRecordService','$rootScope', function ($scope, $http, $location, dataService, exchangeService, $uibModalInstance, eventRecordService, $rootScope) {
 	$scope.userDetails = dataService.getUserData();
 	$scope.bookToExchangeFor = exchangeService.getBookToExchangeFor();
 	$scope.selectedBook = 'Select Book';
 	$scope.exchangeOptionExists = false;
 	$scope.exchangeOptionPath = [];
+    $scope.isUserMobile = $rootScope.isUserMobile;
 
 	var csrfToken = $("meta[name='_csrf']").attr("content");
 
@@ -44,8 +45,8 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 
 
         		$http(req).then(function (response) {
-
-        		    $uibModalInstance.close(response);
+                    		            var result = {exchangeCreated:true};
+        		    $uibModalInstance.close(result);
         		}, function (response) {
         		    $uibModalInstance.close();
         			alert("error");
@@ -100,7 +101,8 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 
 		$http(req).then(function (response) {
 		    eventRecordService.recordNewOfferEvents();
-			$uibModalInstance.close();
+		            var result = {exchangeCreated:true};
+			$uibModalInstance.close(result);
 		}, function (response) {
 			alert("error");
 		});
@@ -108,5 +110,10 @@ bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', '
 
 	$scope.bookChosen = function(selectedBook){
 	    $scope.selectedBook = selectedBook;
+	}
+
+	$scope.closeModal = function(){
+        var result = {exchangeCreated:false};
+	    $uibModalInstance.close(result);
 	}
 }]);

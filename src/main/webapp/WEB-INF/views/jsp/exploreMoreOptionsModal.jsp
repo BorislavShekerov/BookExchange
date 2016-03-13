@@ -2,10 +2,10 @@
 	<div class="modal-header">
 		<h3 class="modal-title">Exchange Chain Proposal</h3>
 	</div>
-	<div class="modal-body">
+	<div class="modal-body text-center">
 		<div class="row pagination-centered" ng-if="loading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
 		<div class="row text-center well well-lg" ng-if="!loading && !pathFound">
-			<h2 class="animated fadeIn text-center"><i class="fa fa-frown-o"></i>No offers made</h2>
+			<h2 class="animated fadeIn text-center"><i class="fa fa-frown-o"></i>No Suggestions</h2>
 		</div>
 		<div class="row" ng-if="!loading && pathFound">
 			<div class="timeline">

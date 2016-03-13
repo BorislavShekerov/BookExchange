@@ -1,9 +1,10 @@
-bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchangeService','$uibModal','ratingService','eventRecordService', function ($scope, dataService, exchangeService,$uibModal,ratingService,eventRecordService) {
+bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchangeService', '$uibModal', 'ratingService', 'eventRecordService','$rootScope', function ($scope, dataService, exchangeService, $uibModal, ratingService, eventRecordService,$rootScope) {
 	$scope.userRequestsReceived = [];
 	var userEmail = dataService.getEmail();
-      $scope.userRatings = [];
-      $scope.loadingRequests = true;
-      eventRecordService.setSelectedItem("Requests Received");
+	$scope.userRatings = [];
+	$scope.loadingRequests = true;
+	$scope.isUserMobile = $rootScope.isUserMobile;
+	eventRecordService.setSelectedItem("Requests Received");
 
 	function findBookRequestedFromUser(exchangeChain) {
 		var bookRequestedFromUser = {};
@@ -26,7 +27,6 @@ bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchan
 		angular.forEach(exchangeChain.booksRequestedInChain, function (bookRequest, index) {
 			if (bookRequest.requestedBy.email == userEmail) {
 				bookRequestedFromUser = bookRequest.requestedBook;
-
 			}
 		});
 		if (!bookRequestedFromUser.imgUrl) {
@@ -56,16 +56,16 @@ bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchan
 			}
 		});
 
-		if(!userChoosingFromYou.email){
-            userChoosingFromYou = exchangeChain.exchangeInitiator;
+		if (!userChoosingFromYou.email) {
+			userChoosingFromYou = exchangeChain.exchangeInitiator;
 		}
 
 		return userChoosingFromYou;
 	}
 	$scope.openDetailsModal = function (exchangeChain) {
-		var userToChooseFrom = findUserToChooseFrom(exchangeChain);
-		var userChoosingFromYou = findUserChoosingFromYou(exchangeChain);
-
+		var userToChooseFrom = exchangeChain.chainRequest.userChoosingFrom;
+		var userChoosingFromYou = exchangeChain.chainRequest.userOfferingTo;
+        exchangeChain
 		var promptWindow = $uibModal.open({
 			animation: true,
 			templateUrl: '/app/openChainRequestModal',
@@ -78,10 +78,17 @@ bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchan
 			}
 		});
 
-		promptWindow.result.then(function (bookChosen) {
-			exchangeChain.userChoice = bookChosen;
+		promptWindow.result.then(function (result) {
+			if(result.accepted){
+			    exchangeChain.bookOfferedInExchange = result.bookChosen;
+			    exchangeChain.chainRequest.accepted = true;
+			    exchangeChain.chainRequest.answered = true;
+			    exchangeChain.chainRequest.showRateButton = true;
+			}else{
+			 exchangeChain.chainRequest.accepted = false;
+             exchangeChain.chainRequest.answered = true;
+			}
 		}, function () {
-			$log.info('Modal dismissed at: ' + new Date());
 		});
 
 	}
@@ -103,124 +110,141 @@ bookApp.controller('offersReceivedController', ['$scope', 'dataService', 'exchan
 			exchangeChain.isChain = true;
 			exchangeChain.isCollapsed = true;
 			exchangeChain.userChoice = findBookRequestedByUser(exchangeChain);
+			exchangeChain.chainRequest = findExchangeChainRequestForUser(exchangeChain);
+			exchangeChain.showRateButton = exchangeChain.chainRequest.over && exchangeChain.chainRequest.successful;
 			exchangeChain.progress = computeChainProgress(exchangeChain);
 
-            setRatingInfo(exchangeChain, exchangeChain.bookRequested.ownerEmail);
+			setRatingInfo(exchangeChain, exchangeChain.bookRequested.ownerEmail);
 
 			$scope.userRequestsReceived.push(exchangeChain);
 		});
 	}
 
-	function setRatingInfo(exchange,userExchangingWith){
-                     exchange.rated = false;
-                      exchange.showRateButton = false;
-                     exchange.rating = 0;
-                                angular.forEach($scope.userRatings,function(rating,index){
-                                    if(rating.commentForEmail == userExchangingWith){
-                                        exchange.rated = true;
-                                         exchange.rating = rating.rating;
-                                    }
-                                });
+	function findExchangeChainRequestForUser(exchangeChain) {
+		var chainRequestForUser = {};
+		angular.forEach(exchangeChain.exchangeChainRequests, function (chainRequest, index) {
+			if (chainRequest.requestFor.email == userEmail) {
+				chainRequestForUser = chainRequest;
+			}
+		});
 
-    }
+		return chainRequestForUser;
+	}
 
-	function init() {
-	    requestRatingsForUser();
-		exchangeService.getExchangeRequestsReceivedByUser().then(function (currentExchanges) {
-			addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
-			addDirectBookExchanges(currentExchanges.directExchanges);
-
-			   $scope.loadingRequests = false;
+	function setRatingInfo(exchange, userExchangingWith) {
+		exchange.rated = false;
+		exchange.showRateButton = false;
+		exchange.rating = 0;
+		angular.forEach($scope.userRatings, function (rating, index) {
+			if (rating.commentForEmail == userExchangingWith) {
+				exchange.rated = true;
+				exchange.rating = rating.rating;
+			}
 		});
 
 	}
 
-    function addDirectBookExchanges(directExchanges){
-        angular.forEach(directExchanges,function(directExchange,index){
-            directExchange.isChain = false;
-           setRatingInfo(directExchange,directExchange.exchangeInitiator.email);
+	function init() {
+		requestRatingsForUser();
+		exchangeService.getExchangeRequestsReceivedByUser().then(function (currentExchanges) {
+			addExchangeChainsToAllExchanges(currentExchanges.bookExchangeChains);
+			addDirectBookExchanges(currentExchanges.directExchanges);
 
-           $scope.userRequestsReceived.push(directExchange);
-        });
-    }
-             $scope.userRatingSet = function(exchangeCreated){
-                        exchangeCreated.showRateButton = true;
-                        console.log(exchangeCreated.rating);
-                    }
+			$scope.loadingRequests = false;
+		});
 
-                    $scope.rateUser = function (exchangeCreated){
-                        exchangeCreated.rated =  true;
-                        var userRated = getUserRatedEmail(exchangeCreated);
+	}
 
-                        ratingService.addRating(userRated,exchangeCreated.ratingComment,exchangeCreated.rating);
-                        exchangeCreated.showRateButton = false;
-                    }
+	function addDirectBookExchanges(directExchanges) {
+		angular.forEach(directExchanges, function (directExchange, index) {
+			directExchange.isChain = false;
+			directExchange.showRateButton = directExchange.over && directExchange.successful;
+			setRatingInfo(directExchange, directExchange.exchangeInitiator.email);
 
-                      function getUserRatedEmail(exchangeCreated){
-                                if(exchangeCreated.isChain){
-                                    return findBookRequestedByUser(exchangeCreated).ownerEmail;
-                                }else{
-                                    return exchangeCreated.exchangeInitiator.email;
-                                }
-                            }
+			$scope.userRequestsReceived.push(directExchange);
+		});
+	}
+	$scope.userRatingSet = function (exchangeCreated) {
+		exchangeCreated.showRateButton = true;
+		console.log(exchangeCreated.rating);
+	}
 
-	        $scope.cancelRequest = function(exchangeToCancel){
-                if(exchangeToCancel.isChain){
-                    exchangeService.rejectExchangeChainRequest(exchangeToCancel.id);
-                }else{
-                    exchangeService.rejectDirectExchange(exchangeToCancel.id);
-                }
+	$scope.rateUser = function (exchangeCreated) {
+		exchangeCreated.rated = true;
+		var userRated = getUserRatedEmail(exchangeCreated);
 
-                exchangeToCancel.over = true;
-                exchangeToCancel.successful = false;
-            }
+		ratingService.addRating(userRated, exchangeCreated.ratingComment, exchangeCreated.rating);
+		exchangeCreated.showRateButton = false;
+	}
 
-             function requestRatingsForUser(){
-                        ratingService.getRatingsForUser().then(function(ratings){
-                        		                angular.forEach(ratings,function(rating,index){
-                        		                    if(rating.commentatorEmail == userEmail){
-                        		                        $scope.userRatings.push(rating);
-                        		                    }
-                        		                });
-                        		                 $scope.ratingLoading = false;
+	function getUserRatedEmail(exchangeCreated) {
+		if (exchangeCreated.isChain) {
+			return findBookRequestedByUser(exchangeCreated).ownerEmail;
+		} else {
+			return exchangeCreated.exchangeInitiator.email;
+		}
+	}
 
-                                                },function(err){
-                                                    console.log(err);
-                                                });
+	$scope.cancelRequest = function (exchangeToCancel) {
+		if (exchangeToCancel.isChain) {
+			exchangeService.rejectExchangeChainRequest(exchangeToCancel.id);
+		} else {
+			exchangeService.rejectDirectExchange(exchangeToCancel.id);
+		}
 
-                    }
+		exchangeToCancel.over = true;
+		exchangeToCancel.successful = false;
+	}
 
-            $scope.viewDetails = function(exchangeRequest){
-                dataService.getDetailsForUser(exchangeRequest.exchangeInitiator.email).then(function(userData){
-                 var promptWindow = $uibModal.open({
-                                			animation: true,
-                                			templateUrl: '/app/openDirectRequestModal',
-                                			controller: 'DirectRequestModalController',
-                                			size: 'lg',
-                                			resolve: {
-                                				userToChooseFrom: userData,
-                                				directExchange:exchangeRequest
-                                			}
-                                		});
+	function requestRatingsForUser() {
+		ratingService.getRatingsForUser().then(function (ratings) {
+			angular.forEach(ratings, function (rating, index) {
+				if (rating.commentatorEmail == userEmail) {
+					$scope.userRatings.push(rating);
+				}
+			});
+			$scope.ratingLoading = false;
 
-                                		promptWindow.result.then(function (result) {
-                                		    if(result.accepted){
-                                		        exchangeRequest.successful =true;
+		}, function (err) {
+			console.log(err);
+		});
 
-                                		        exchangeRequest.bookOfferedInExchange = result.bookChosen;
-                                		    }else{
-                                		      exchangeRequest.successful =false;
-                                		    }
-                                		    exchangeRequest.over = true;
+	}
 
-                                		}, function () {
-                                			$log.info('Modal dismissed at: ' + new Date());
-                                		});
-                },function(err){
-                    console.log(err);
-                });
+	$scope.viewDetails = function (exchangeRequest) {
+		if (!exchangeRequest.isChain) {
+			dataService.getDetailsForUser(exchangeRequest.exchangeInitiator.email).then(function (userData) {
+				var promptWindow = $uibModal.open({
+					animation: true,
+					templateUrl: '/app/openDirectRequestModal',
+					controller: 'DirectRequestModalController',
+					size: 'lg',
+					resolve: {
+						userToChooseFrom: userData,
+						directExchange: exchangeRequest
+					}
+				});
 
-            }
+				promptWindow.result.then(function (result) {
+					if (result.accepted) {
+						exchangeRequest.successful = true;
+
+						exchangeRequest.bookOfferedInExchange = result.bookChosen;
+					} else {
+						exchangeRequest.successful = false;
+					}
+					exchangeRequest.over = true;
+
+				}, function () {
+					$log.info('Modal dismissed at: ' + new Date());
+				});
+			}, function (err) {
+				console.log(err);
+			});
+
+		}
+
+	}
 
 	init();
 }]);

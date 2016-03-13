@@ -109,9 +109,14 @@ public class ExchangeChainService {
             bookExchangeChain.setOver(true);
             bookExchangeChain.getUsersToBeNotified().forEach(user ->  sendChainSuccessNotification(user,exchangeChainSuccessParticipants));
             sendChainSuccessNotification(bookExchangeChain.getExchangeInitiator(),exchangeChainSuccessInitiator);
+            updateBooksToInactive(bookExchangeChain);
         }else {
             notifyExchangeInitiatorForAcceptance(acceptingUser.getFullName(),bookExchangeChain.getExchangeInitiator());
         }
+    }
+
+    private void updateBooksToInactive(BookExchangeChain bookExchangeChain) {
+            bookExchangeChain.getBooksRequestedInChain().stream().map(BookRequestedInChain::getRequestedBook).forEach(book -> book.setActive(false));
     }
 
     private void sendChainSuccessNotification(User exchangeInitiator, String notificationMessage) {

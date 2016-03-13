@@ -11,20 +11,21 @@
 
 				<div class="col-md-12">
 					<div id="library" class="col-md-4 col-xs-12 " ng-repeat="book in userToChooseFrom.booksPostedOnExchange">
-                    						<div id="outer-box">
-                    							<img class="img-responsive" src="{{book.imgUrl}}">
-                    							<div id="inner-box" ng-if="!book.selected" class="text-center">
-                    								<button type="button" class="btn btn-default btn-circle btn-lg" ng-click="chooseBook(book)"><i class="glyphicon glyphicon-ok"></i></button>
-                    							</div>
+                    										<div id="outer-box">
+                                            							<img class="img-responsive" src="{{book.imgUrl}}">
+                                            							<div id="inner-box" ng-if="!book.selected" class="text-center">
+                                            								<button type="button" class="btn btn-default btn-circle btn-lg" ng-click="chooseBook(book)"><i class="glyphicon glyphicon-ok"></i></button>
+                                            							</div>
 
-                    							<div id="inner-box-book-selected" ng-if="book.selected" class="text-center">
+                                            							<div id="inner-box-book-selected" ng-if="book.selected" class="text-center">
 
-                                                </div>
+                                            							</div>
 
-                                                <div id="inner-box-book-selected-content" ng-if="book.selected" class="text-center">
-                                                <p><span class="glyphicon glyphicon-remove" ng-click="deselectBook(book)"></span></p>
-                                                							<h4> Selected <span class="glyphicon glyphicon-ok"></h4>
-                                                                            </div>
+                                            							<div id="inner-box-book-selected-content" ng-if="book.selected" class="text-center">
+                                            								<p><span class="glyphicon glyphicon-remove" ng-click="deselectBook(book)"></span></p>
+                                            								<h4> Selected <span class="glyphicon glyphicon-ok"></h4>
+                                            							</div>
+                                            						</div>
                     						</div>
                     					</div>
 
@@ -32,12 +33,16 @@
 
 			</div>
 			<hr/>
-			<div class="row">
-				<h3>User choosing from your library :{{userChoosingFromYou.firstName + " "+ userChoosingFromYou.lastName}}</h3>
+			<div class="row ">
+				<h3 class="text-center">User choosing from your library <span ng-if="isUserMobile"> <br /> </span>{{userChoosingFromYou.firstName + " "+ userChoosingFromYou.lastName}}</h3>
 			</div>
-			<div class="row">
-				<a ng-class="{'disabled-button':!bookChosen}" class="ghost-button  offers-received-button pull-right" ng-click="acceptExchangeChainRequest()">Accept</a>
-				<a class="ghost-button  reject-offer-button pull-left" ng-click="rejectExchangeChainRequest()">Reject</a>
+			<div id="footer" class="row">
+			    <div class="col-xs-12 col-md-6 text-center">
+				<a ng-class="{'disabled-button':!bookChosen, 'pull-left': !isUserMobile}" class="ghost-button  offers-received-button"  ng-disabled="!bookChosen" ng-click="acceptExchangeChainRequest()">Accept</a>
+				</div>
+				<div class="col-xs-12 col-md-6 text-center">
+				<a class="ghost-button  reject-offer-button"  ng-class="{'pull-right': !isUserMobile}" ng-click="rejectExchangeChainRequest()">Reject</a>
+			    </div>
 			</div>
 		</div>
 

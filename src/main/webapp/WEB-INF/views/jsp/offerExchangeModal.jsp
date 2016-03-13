@@ -1,6 +1,6 @@
 <div id="exchange-offer-modal">
 	<div class="modal-header">
-		<h3 class="modal-title">Make An Exchange Offer</h3>
+		<h3 class="modal-title">Make An Exchange Offer<span class="pull-right" ng-if="isUserMobile" ng-click="closeModal()">x</span></h3>
 	</div>
 	<div class="modal-body">
 		<div class="row" ng-if="exchangeOptionExists">
@@ -78,15 +78,15 @@
 
             <fiv class="row">
 			<div class="col-md-10 col-md-offset-1">
-				<div class="panel panel-default col-xs-12">
+				<div class="panel panel-default col-xs-12" id="bookInterestedInDetails">
 					<img src="{{bookToExchangeFor.imgUrl}}" class="img-responsive full-width">
 					<div class="panel-body">
 						<div class="row">
-						    <h4 class="col-md-4">Posted By</h4>
-						    <div class="col-md-3">
-						    <img class="media-object profile-picture" ng-src="{{bookToExchangeFor.ownerAvatar}}" alt="...">
+						    <h4 class="col-md-4 text-center">Posted By</h4>
+						    <div class="col-md-3 text-center">
+						    <img class="media-object profile-picture text-center" ng-src="{{bookToExchangeFor.ownerAvatar}}" alt="...">
 						    </div>
-						    <h4 class="col-md-3">{{bookToExchangeFor.ownerFirstname + " " + bookToExchangeFor.lastName}}</h4>
+						    <h4 class="col-md-3 text-center">{{bookToExchangeFor.ownerFirstname + " " + bookToExchangeFor.lastName}}</h4>
 						</div>
 					</div>
 				</div>

@@ -10,6 +10,7 @@ import com.bookexchange.dto.frontend.ExchangeOrder;
 import com.bookexchange.exception.BookExchangeInternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +48,6 @@ public class ExchangeService {
         DirectBookExchange exchangeToRecord = buildBookExchange(bookUnderOffer,exchangeInitiator);
 
         bookExchangeDao.saveBookExchange(exchangeToRecord);
-        updateUserDataWithNewExchange(bookUnderOffer.getPostedBy(), exchangeToRecord);
         addNewExchangeRequestNotification(bookUnderOffer.getPostedBy(),exchangeInitiator.getEmail());
     }
 
@@ -55,12 +55,6 @@ public class ExchangeService {
         Notification newExchangeRequestNotification = new Notification.NotificationBuilder().setMessage(newExchangeRequestMessage+" "+exchangeInitiator).setUserNotified(postedBy).setDateCreated(LocalDateTime.now()).build();
 
         notificationsDao.saveNotification(newExchangeRequestNotification);
-    }
-
-    private void updateUserDataWithNewExchange(User exchangeInitiator, DirectBookExchange exchangeToRecord) {
-        exchangeInitiator.addBookExchange(exchangeToRecord);
-
-        userDao.saveUser(exchangeInitiator);
     }
 
     private DirectBookExchange buildBookExchange(Book bookPostedOnExchange, User exchangeInitiator) {
@@ -79,10 +73,11 @@ public class ExchangeService {
         return new ExchangeAccumulator(directExchangesForUser, exchangeChainsInitiatedByUser).sortByCreationDate();
     }
 
-    public void rejecDirecttExchange(String userEmail, int id) throws BookExchangeInternalException {
+    public void rejectDirectExchange(String userEmail, int id) throws BookExchangeInternalException {
         DirectBookExchange directExchangeToReject = bookExchangeDao.getDirectBookExchange(id).orElseThrow(() -> new BookExchangeInternalException("No exchange found"));
         directExchangeToReject.setOver(true);
         directExchangeToReject.setSuccessful(false);
+        directExchangeToReject.setDateCompleted(LocalDateTime.now());
 
         bookExchangeDao.saveBookExchange(directExchangeToReject);
         notifyOtherExchangeParticipant(userEmail, directExchangeToReject);
@@ -116,14 +111,21 @@ public class ExchangeService {
         DirectBookExchange directBookExchange = bookExchangeDao.getDirectBookExchange(exchangeId).orElseThrow(() -> new BookExchangeInternalException("No exchanges found"));
         Book bookRequestedInExchange = bookDao.getBookForId(bookRequestedId).orElseThrow(() -> new BookExchangeInternalException("No book found"));
 
+        updateBooksToInactive(bookRequestedInExchange,directBookExchange.getBookRequested());
         updateExchangeDetails(directBookExchange, bookRequestedInExchange);
         bookExchangeDao.saveBookExchange(directBookExchange);
         notificationsDao.saveNotification(new Notification.NotificationBuilder().setMessage(exchangeAccepted).setUserNotified(bookRequestedInExchange.getPostedBy()).setNotificationType(NotificationType.DIRECT_EXCHANGE_ACCEPTED).setDateCreated(LocalDateTime.now()).build());
+    }
+
+    private void updateBooksToInactive(Book bookRequestedInExchange, Book bookRequested) {
+        bookRequestedInExchange.setActive(false);
+        bookRequested.setActive(false);
     }
 
     private void updateExchangeDetails(DirectBookExchange directBookExchange, Book bookRequestedInExchange) {
         directBookExchange.setBookOfferedInExchange(bookRequestedInExchange);
         directBookExchange.setOver(true);
         directBookExchange.setSuccessful(true);
+        directBookExchange.setDateCompleted(LocalDateTime.now());
     }
 }

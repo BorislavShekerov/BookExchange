@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -17,7 +19,8 @@ import java.util.Set;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public class BookCategory {
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "categoriesInterestedIn")
+    @ManyToMany(mappedBy = "categoriesInterestedIn")
+    @LazyCollection(LazyCollectionOption.FALSE)
     Set<User> usersInterestedInCategory = new HashSet<>();
     @Id
     @GeneratedValue(generator = "increment")
@@ -26,7 +29,8 @@ public class BookCategory {
     @Column(name = "CATEGORY_NAME")
     private String categoryName;
     @JsonIgnore
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
+    @OneToMany(mappedBy = "category")
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<Book> booksForCategory = new ArrayList<>();
 
     public long getId() {

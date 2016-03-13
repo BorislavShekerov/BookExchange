@@ -25,12 +25,28 @@ bookApp.controller('AccountController', ['$scope', 'dataService','bookService','
 
     }
 
-    $scope.removeBook = function(book){
-        bookService.removeBookForUser(book.title).then(function(result){
+    $scope.removeBook = function(bookToRemove){
+        bookService.removeBookForUser(bookToRemove.title).then(function(booksPosted){
+            		angular.forEach(booksPosted, function (bookPosted, index) {
+            		    if(bookPosted.title == bookToRemove.title){
+            		        raiseBookRequestedByUserWarning();
+            		    }
+                    });
+
             $scope.userAccount.booksPostedOnExchange = result;
         },function(err){
         console.log(err);});
     }
+
+
+     function  raiseBookRequestedByUserWarning(){
+      ngToast.create({
+                                         							className: 'danger',
+                                         							content: '<a href="#" class="">Book requested in an exchange!</a>',
+                                         							timeout: 2500,
+                                         							animation: 'slide'
+                                         						});W
+     }
 
     $scope.openAddPreferredCategoriesModal = function (){
         var promptWindow = $uibModal.open({

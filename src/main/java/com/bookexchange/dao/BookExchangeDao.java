@@ -1,5 +1,6 @@
 package com.bookexchange.dao;
 
+import com.bookexchange.dto.BookRequestedInChain;
 import com.bookexchange.dto.DirectBookExchange;
 import com.bookexchange.dto.BookExchangeChain;
 import com.bookexchange.dto.ExchangeChainRequest;
@@ -127,4 +128,30 @@ public class BookExchangeDao {
         return criteria.list();
     }
 
+    public boolean isBookRequestedInDirectExchange(String bookTitle,String userPostedEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(DirectBookExchange.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .createAlias("bookRequested", "requestedBook")
+                .createAlias("requestedBook.postedBy", "userPostedBook")
+                .add(Restrictions.eq("userPostedBook.email", userPostedEmail))
+                .add(Restrictions.eq("requestedBook.title", bookTitle));
+
+        return criteria.list().size() > 0;
+
+    }
+
+    public boolean isBookRequestedInChain(String bookTitle,String userPostedEmail) {
+        Session currentSession = sessionFactory.getCurrentSession();
+
+        Criteria criteria = currentSession.createCriteria(BookRequestedInChain.class)
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .createAlias("requestedBook", "bookRequested")
+                .createAlias("bookRequested.postedBy", "userPostedBook")
+                .add(Restrictions.eq("userPostedBook.email", userPostedEmail))
+                .add(Restrictions.eq("bookRequested.title", bookTitle));
+
+        return criteria.list().size() > 0;
+    }
 }

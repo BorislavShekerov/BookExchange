@@ -1,9 +1,9 @@
 package com.bookexchange.service;
 
 import com.bookexchange.dao.BookDao;
+import com.bookexchange.dao.BookExchangeDao;
 import com.bookexchange.dao.UserDao;
 import com.bookexchange.dto.Book;
-import com.bookexchange.dto.BookCategory;
 import com.bookexchange.dto.User;
 import com.bookexchange.dto.frontend.BookSearchCriteria;
 import com.bookexchange.exception.BookExchangeInternalException;
@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +25,8 @@ public class BookService {
 
     @Autowired
     private BookDao bookDao;
-
+    @Autowired
+    private BookExchangeDao bookExchangeDao;
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -42,7 +41,8 @@ public class BookService {
         if (currentUserEmail.equals(ANONYMOUS_USER)) {
             allBooksOnExchnage = bookDao.getAllBooksOnExchange();
         }else{
-            allBooksOnExchnage = bookDao.getAllBooksReqestedByUser(currentUserEmail);
+            allBooksOnExchnage = bookDao.getAllBooksForLoggedInUser(currentUserEmail);
+
         }
 
         computeUserRatings(allBooksOnExchnage);
@@ -76,9 +76,16 @@ public class BookService {
         User userPosted = bookToRemove.getPostedBy();
         userPosted.removeBookPosted(bookToRemove);
 
-        bookDao.deleteBook(bookToRemove);
-        userDao.saveUser(userPosted);
+        if(!isBookRequestedByAnotherUser(bookToRemove)){
+            bookDao.deleteBook(bookToRemove);
+            userDao.saveUser(userPosted);
+        }
+
         return bookDao.getAllBooksPostedByUser(currentUserEmail);
+    }
+
+    private boolean isBookRequestedByAnotherUser(Book bookToRemove) {
+        return bookExchangeDao.isBookRequestedInDirectExchange(bookToRemove.getTitle(),bookToRemove.getPostedBy().getEmail()) || bookExchangeDao.isBookRequestedInChain(bookToRemove.getTitle(),bookToRemove.getPostedBy().getEmail());
     }
 
     public List<Book> getBooksForTitle(BookSearchCriteria bookSearchCriteria) {

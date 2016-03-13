@@ -31,7 +31,13 @@
 
 	}
 
-	#directRequestModal #outer-box #inner-box button{
+      #chainRequestModal > .modal-body h3{
+        margin-top:0px;
+        margin-bottom:1.0em;
+      }
+
+
+	#directRequestModal #outer-box #inner-box button, #chainRequestModal #outer-box #inner-box button{
         margin-top:60% !important;
 	}
 
@@ -40,7 +46,7 @@
 	    color:#5383d3;
 	}
 
-	#directRequestModal #inner-box-book-selected{
+	#directRequestModal #inner-box-book-selected, #chainRequestModal #inner-box-book-selected{
 	     background: #AFDAA8;
           color: #fff;
           height: 20%;
@@ -52,7 +58,7 @@
           position: absolute;
           padding: 0;
 	}
-	#directRequestModal  #inner-box-book-selected-content{
+	#directRequestModal  #inner-box-book-selected-content, #chainRequestModal  #inner-box-book-selected-content{
 	    opacity:1;
 	     height: 20%;
 	     bottom: 0.3em;
@@ -63,16 +69,16 @@
                   position: absolute;
 	}
 
-	#directRequestModal  #inner-box-book-selected-content p{
+	#directRequestModal  #inner-box-book-selected-content p, #chainRequestModal  #inner-box-book-selected-content p{
 	    margin-top:0.3em;
 	    color:#f56262;
 	}
 
-	#directRequestModal  #inner-box-book-selected-content h4{
+	#directRequestModal  #inner-box-book-selected-content h4, #chainRequestModal  #inner-box-book-selected-content h4{
     	    margin-top:1.1em;
     	}
 
-	#directRequestModal  #inner-box-book-selected-content p>span{
+	#directRequestModal  #inner-box-book-selected-content p>span, #chainRequestModal  #inner-box-book-selected-content p>span{
 	    margin-right:0.3em;
 	    float:right;
 	    cursor:pointer;
@@ -81,3 +87,37 @@
 	.disabled-button{
 	    background-color:#a8a8a8;
 	}
+
+	   @media screen and (min-width:320px) and (max-width: 767px) {
+	   #directRequestModal > .modal-body h2{
+	        font-size:1.2em;
+	        margin-top:0px;
+	   }
+
+	   #directRequestModal #footer > div , #chainRequestModal #footer > div{
+	        margin-bottom : 0.3em;
+	   }
+
+         #chainRequestModal > .modal-body h2{
+        	        font-size:1.2em;
+        	        margin-top:0px;
+        	   }
+
+	   #chainRequestModal > .modal-body > div > h3{
+	        font-size : 1.2em;
+	        margin-top:0px;
+	        margin-bottom : 1.0em;
+	   }
+
+	   #outer-box img {
+	    max-height:350px !important;
+	    min-height:350px !important;
+	   }
+	   }
+
+	   @media screen and (max-width:320px){
+	    #outer-box img {
+        	    max-height:300px !important;
+        	    min-height:300px !important;
+        	   }
+	   }

@@ -149,7 +149,7 @@ bookApp.service("exchangeService",['$http', function ($http) {
         function acceptExchangeChainRequest(bookId,exchangeChainId){
                   var csrfToken = $("meta[name='_csrf']").attr("content");
                      var chainAcceptanceData = {
-                     exchangeChainId: exchangeChainId,
+                     exchangeId: exchangeChainId,
                      bookId: bookId};
 
                                 var req = {

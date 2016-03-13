@@ -6,6 +6,7 @@ bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeSe
 		$scope.userRatings = [];
 		$scope.ratingLoading = true;
         $scope.loadingRequests = true;
+        $scope.isUserMobile = $rootScope.isMobile;
         eventRecordService.setSelectedItem("Your Offers");
 
         function findBookRequestedByUser(exchangeChain){
@@ -46,7 +47,7 @@ bookApp.controller('offersMadeController', ['$scope', 'dataService', 'exchangeSe
             }else{
                 exchangeService.rejectDirectExchange(exchangeToCancel.id);
             }
-
+            exchangeToCancel.canceled = true;
             exchangeToCancel.over = true;
             exchangeToCancel.successful = false;
         }

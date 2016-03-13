@@ -56,7 +56,7 @@
 		<nav class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<button type="button" id="nav-toggle-button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 						<span class="sr-only">Toggle navigation</span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -65,7 +65,8 @@
 					<a class="navbar-brand" href="#"><img src="../resources/core/img/logo.png"></a>
 
 				</div>
-            <div id="navbar" class="navbar-collapse collapse">
+            <div id="navbar"  ng-controller="notificationsController" class="navbar-collapse collapse" >
+                <div ng-if="!isUserMobile">
             					<ul class="nav navbar-nav">
             						<li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
             					</ul>
@@ -118,7 +119,7 @@
             							</ul>
             						</li>
 
-            						<li class="dropdown" ng-controller="notificationsController">
+            						<li class="dropdown">
             							<a id="dLabel" role="button" data-toggle="dropdown" class="dropdown-toggle" ng-click="notificationsDropdownOpened()" data-target="#">
             								<span class="glyphicon glyphicon-bell"></span><span ng-if="unseenNotifications > 0" class="badge" ng-bind="unseenNotifications"></span>
             							</a>
@@ -145,11 +146,11 @@
 
             								</div>
             								<li class="divider"></li>
-            								<div class="notification-footer">
-            									<h4 class="menu-title">View all<i class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+
             							</ul>
             						</li>
             					</ul>
+            				</div>
             				</div>
             				<!--/.nav-collapse -->
 			</div>

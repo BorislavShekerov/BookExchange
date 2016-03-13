@@ -3,10 +3,20 @@
     uifaces.com (http://uifaces.com/authorized)
 */
 #main-content > div > h2 > i {
-    margin-right:1.0em;
+    margin-right:0.5em;
     font-size:1.2em;
 }
 
+#offers-made{
+    margin-top: 4.0em;
+}
+#offers-made .media-body{
+    margin-top:0em;
+}
+
+#offers-made #loading-container{
+    margin-top:3em;
+}
 #ratingMechanism > div {
     margin-left : 0px !important;
     margin-top: 1.0em;
@@ -28,9 +38,10 @@
     color: #999;
     font-size: 12px;
 }
-.media .media-object { max-width: 200px; max-height: 200px; }
+.media .media-object {  }
 .media-body img{
     max-width:120px;
+    margin-bottom:0.5em;
 }
 
 .rating-holder textarea{
@@ -41,10 +52,15 @@
 .media-body { position: relative;
     padding-top:0.5em;
  }
+
+ #offers-made > .media > div > a >img{
+    max-width:150px;
+    max-height:150px;
+ }
 .media-date {
     position: absolute;
     right: 25px;
-    top: 25px;
+    top: 0.5em;
 }
 .media span.glyphicon-resize-horizontal{
     font-size: 3.0em;
@@ -77,9 +93,18 @@
 }
 
 .media-heading{
-    cursor:pointer;
+
+
 }
 
+.body-content{
+    margin-left:1.2em;
+    margin-bottom:0.5em;
+}
+
+.body-content > div > div {
+    padding-left : 0px;
+}
 
 .btn-circle span { padding-right: 6px; }
 .embed-responsive { margin-bottom: 20px; }
@@ -127,6 +152,9 @@ input[type="file"]{
 }
 .custom-input-file:hover .uploadPhoto { display: block; }
 
+#main-content .pull-left, #offers-made .pull-left{
+    margin-top:0.4em;
+}
 
 
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css);
@@ -180,25 +208,59 @@ input[type="file"]{
     margin-left:14em;
 }
 
+.opacity-max > img{
+    opacity:1 !important;
+}
+
+.display-block{
+    display:block !important;
+}
+
+.display-inline{
+    display:inline !important;
+}
 #collapsedChainDetails{
     margin-top:1.3em;
 }
 
 .successful-exchange{
+    margin-top:0px;
     padding:10px;
-    background-color:#47EA61;
+    background-color:RGBA(71, 234, 97, 0.54);
 }
 
 .rejected-exchange{
+    margin-top:0px;
     padding:10px;
-    background-color:#FF1B72;
+    background-color:#ff6464;
 }
 
+#main-content .space-out-top{
+    margin-top:3.5em;
+    }
+
+ .user-choice-header{
+    font-weight:700;
+    font-family:Arial;
+
+ }
+.chain-creator-wrapper{
+    border:2px solid #e3e3e3;
+    border-radius:6px;
+    background-color: #f5f5f5;
+}
 .well-lg{
-    padding: 10 24 24 24;
+
+    padding-bottom:24px;
+    padding-top:0px;
     margin-left:1.3em;
+    margin-top:0.4em;
 }
 
+.well{
+
+    padding:0px !important;
+}
     /* BUTTONS */
 
     .ghost-button{
@@ -236,6 +298,11 @@ input[type="file"]{
             background-color: #5383d3;
         }
 
+        #offers-made i.fa-frown-o{
+            margin-right:0.5em;
+            font-size:1.2em;
+        }
+
          .offers-received-button:hover {
              background-color: #fff;
              color: #5383d3;
@@ -252,4 +319,40 @@ input[type="file"]{
           .offers-received-button:hover > span {
            color:#5383d3;
           }
+        .align-center{
+        horizontal-align:middle;
+        }
+     @media screen and (max-width: 767px) {
+        .rating-holder{
+            text-align:center;
+        }
 
+        #offers-made > div > h2 , #main-content > div > h2{
+            font-size:1.8em;
+        }
+        #usersInChainList > li > a > img{
+            max-width:150px;
+        }
+
+        .well-lg{
+            max-width:320px !important;
+            margin-left : 0.5em;
+            margin-right: 0.5em;
+        }
+
+        .reviews{
+            font-size:0.9em;
+        }
+        .well{
+            max-width:320px !important;
+        }
+
+        .body-content > h4{
+            font-size:0.65em !important;
+            padding-top:0.2em;
+        }
+
+        .well > div > h4{
+            font-size:0.9em;
+        }
+     }

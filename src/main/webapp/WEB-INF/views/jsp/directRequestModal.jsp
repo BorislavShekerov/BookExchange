@@ -35,9 +35,13 @@
 		</div>
 		<hr/>
 
-		<div class="row">
-			<button ng-class="{'disabled-button':!bookChosen}" class="ghost-button  offers-received-button pull-right" type="button" ng-disabled="!bookChosen" ng-click="acceptExchangeRequest()">Accept</button>
-			<a class="ghost-button  reject-offer-button  pull-left" type="button" ng-click="rejectExchangeRequest()">Reject</a>
+		<div id="footer" class="row">
+		    <div class="col-xs-12 col-md-6 text-center">
+			<button ng-class="{'disabled-button':!bookChosen}" class="ghost-button offers-received-button" ng-class="{'pull-right': !isUserMobile}"  type="button" ng-disabled="!bookChosen" ng-click="acceptExchangeRequest()">Accept</button>
+			</div>
+			<div class="col-xs-12 col-md-6 text-center">
+			<a class="ghost-button reject-offer-button  " ng-class="{'pull-left': !isUserMobile}" type="button" ng-click="rejectExchangeRequest()">Reject</a>
+			</div>
 		</div>
 	</div>
 

@@ -27,7 +27,8 @@ public class BookDao {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(Book.class);
-        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .add(Restrictions.eq("active", true));
         List<Book> booksOnExchange = criteria.list();
         return booksOnExchange;
     }
@@ -38,7 +39,8 @@ public class BookDao {
         Criteria criteria = currentSession.createCriteria(Book.class);
         criteria.createAlias("postedBy", "userPosted")
                 .add(Restrictions.eq("title", bookTitle))
-                .add(Restrictions.eq("userPosted.email", email));
+                .add(Restrictions.eq("userPosted.email", email))
+                .add(Restrictions.eq("active", true));
 
         Book bookForUsername = (Book) criteria.uniqueResult();
         return Optional.of(bookForUsername);
@@ -48,12 +50,13 @@ public class BookDao {
         sessionFactory.getCurrentSession().save(bookToPost);
     }
 
-    public List<Book> getAllBooksReqestedByUser(String currentUserEmail) {
+    public List<Book> getAllBooksForLoggedInUser(String currentUserEmail) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         Criteria criteria = currentSession.createCriteria(Book.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.createAlias("postedBy", "userPosted")
+                .add(Restrictions.eq("active", true))
                 .add(Restrictions.ne("userPosted.email", currentUserEmail));
 
         return (List<Book>) criteria.list();
@@ -65,6 +68,7 @@ public class BookDao {
         Criteria criteria = currentSession.createCriteria(Book.class);
         criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         criteria.createAlias("postedBy", "userPosted")
+                .add(Restrictions.eq("active", true))
                 .add(Restrictions.eq("userPosted.email", currentUserEmail));
 
         return (List<Book>) criteria.list();
@@ -75,6 +79,7 @@ public class BookDao {
 
         Criteria criteria = currentSession.createCriteria(Book.class);
         criteria.createAlias("postedBy", "userPosted")
+                .add(Restrictions.eq("active", true))
                 .add(Restrictions.eq("id", bookId));
 
 
@@ -93,7 +98,8 @@ public class BookDao {
 
         Criteria criteria = currentSession.createCriteria(Book.class)
                 .add(Restrictions.like("title", title, MatchMode.ANYWHERE))
-        .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+                .add(Restrictions.eq("active", true))
+                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
         List<Book> bookForUsername = (List<Book>) criteria.list();
         return bookForUsername;
@@ -105,6 +111,7 @@ public class BookDao {
 
         Criteria criteria = currentSession.createCriteria(Book.class)
                 .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
+                .add(Restrictions.eq("active", true))
                 .createAlias("category","bookCategory");
 
         Disjunction unifier = Restrictions.or();

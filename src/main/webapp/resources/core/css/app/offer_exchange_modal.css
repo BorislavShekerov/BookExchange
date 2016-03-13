@@ -31,3 +31,12 @@
         #exchange-offer-modal a > span{
             color: #5383d3;
         }
+
+
+ #exchange-offer-modal #bookInterestedInDetails h4 {
+
+ }
+
+  #exchange-offer-modal .profile-picture {
+    display:inline-block;
+  }

@@ -84,7 +84,7 @@
         padding-left: 3px;
         padding-left: 4px \9;
         /* IE7-8 doesn't have border-radius, so don't indent the padding */
-
+        margin-left:1em;
         margin-bottom: 0;
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
@@ -95,6 +95,7 @@
         width:300px;
         cursor:pointer;
     }
+
 
     #custom-search-input button {
         border: 0;
@@ -426,3 +427,27 @@ display:inline;
             a.filterChosen > span{
                  color:white !important;
             }
+
+
+            @media screen and (max-width: 767px) {
+                        .book-owner-details > #avatarHolder{
+                            margin-bottom: -5.7em !important;
+                        }
+
+                        .book-owner-details > #avatarHolder >img{
+                            max-height:55px;
+                        }
+                          .book-owner-details > #details{
+                          margin-left:5.0em;
+                          margin-bottom: 1.0em;
+                          }
+
+                          #offers-made > .media > div > a > img{
+                            display:inline !important;
+                          }
+
+                          .modal-title > span {
+                            opacity:0.6;
+                          }
+
+            		}

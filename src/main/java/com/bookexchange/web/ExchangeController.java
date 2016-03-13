@@ -161,7 +161,7 @@ public class ExchangeController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = auth.getName();
 
-        exchangeService.rejecDirecttExchange(userEmail,bookExchangeChain.getId());
+        exchangeService.rejectDirectExchange(userEmail,bookExchangeChain.getId());
         return "Success";
     }
 

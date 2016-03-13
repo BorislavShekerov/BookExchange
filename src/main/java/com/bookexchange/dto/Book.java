@@ -34,6 +34,8 @@ public class Book {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "USER_ID", nullable = false)
     private User postedBy = new User();
+    @Column(name = "IS_ACTIVE")
+    private boolean active;
 
     public String getTitle() {
         return title;
@@ -93,6 +95,14 @@ public class Book {
 
     public void setPostedBy(User postedBy) {
         this.postedBy = postedBy;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public static class BookBuilder{
