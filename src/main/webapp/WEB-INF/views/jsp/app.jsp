@@ -94,7 +94,7 @@
             										<div class="row">
             											<div class="col-sm-4 col-lg-4">
             												<p class="text-center">
-            													<img src="${userDetails.avatarUrl}" class="profile-picture">
+            													<img ng-src="${userDetails.avatarUrl}" class="profile-picture">
             												</p>
             											</div>
             											<div class="col-sm-8 col-lg-8">

@@ -133,12 +133,6 @@ body {
     background-size: cover;
 }
 
-@media only screen and  (max-width:374px){
-    .home{
-        min-height:760px;
-    }
-}
-
 #scrollButtonHolder{
     position:absolute;
     bottom:0;
@@ -334,7 +328,7 @@ a:active {
     margin-top:2.0em !important;
 }
 .navbar-right {
-    margin-right:0px;
+    margin-right:0.5em;
 }
 
 @media screen and (min-width:320px) and (max-width: 767px) {
@@ -353,9 +347,7 @@ a:active {
 
 
 @media only screen and (max-width:320px){
-     .navbar-header > button {
-        margin-right: 4.0em;
-       }
+
 
         #scrollButtonHolder{
                 left:42%;

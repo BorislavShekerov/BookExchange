@@ -28,7 +28,7 @@
 				</div>
 				<div ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="triangle-topright"></div>
 				<div id="outer-box">
-					<img class="img-responsive" src="{{bookOnExchange.imgUrl}}">
+					<img class="img-responsive" ng-src="{{bookOnExchange.imgUrl}}">
 				</div>
 				<div id="book-details-wrap" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.mouseEntered ,'fadeIn': bookOnExchange.hoveredOver}" class="book-owner-details-wrap">
 				</div>
