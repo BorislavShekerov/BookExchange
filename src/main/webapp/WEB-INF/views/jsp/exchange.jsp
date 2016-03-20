@@ -17,13 +17,13 @@
 			</form>
 		</div>
 		<div class="col-md-3" ng-if="!isMobile">
-			<a id="filterButton" class="filter-exchange-ghost-button" ng-click="filterExpanded =! filterExpanded" ng-class="{'filter-button-clicked': filterExpanded}"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</a>
+			<a id="filterButton" class="filter-exchange-ghost-button"  ng-click="changeFilterState()" ng-class="{'filter-button-clicked': filterExpanded}"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</a>
 		</div>
 	</div>
 	<div class="row">
 		<div ng-class="{'col-sm-6 col-md-8': filterExpanded, 'col-sm-12': !filterExpanded}">
 			<div id="library" ng-class="{'col-md-4': filterExpanded, 'col-sm-6 col-md-3': !filterExpanded}" ng-mouseenter="hoveredOverBook(bookOnExchange)" ng-mouseleave="bookOnExchange.hoveredOver = false" ng-if="!filteringResults" ng-repeat="bookOnExchange in booksDisplayed" >
-				<div ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="offer-exchange-button" ng-click="initiateExchange(bookOnExchange.title,bookOnExchange.ownerEmail)">
+				<div ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="offer-exchange-button" ng-click="openExchangeModal(bookOnExchange)">
 					<span class="glyphicon glyphicon-refresh margin-right-small"></span>
 				</div>
 				<div ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="triangle-topright"></div>
@@ -33,10 +33,10 @@
 				<div id="book-details-wrap" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.mouseEntered ,'fadeIn': bookOnExchange.hoveredOver}" class="book-owner-details-wrap">
 				</div>
 				<div id="userPostedDetails" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="row book-owner-details">
-					<div class="col-md-4" id="avatarHolder">
+					<div class="col-md-3" id="avatarHolder">
 						<img class="img-responsive" ng-src="{{bookOnExchange.ownerAvatar}}" /> </div>
-					<div class="col-md-7" id="details">
-						<a>{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</a>
+					<div class="col-md-9" id="details">
+						<a href="#/account/{{bookOnExchange.ownerEmail}}">{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</a>
                            <ng-rate-it ng-model="bookOnExchange.ownerRating" read-only="true"></ng-rate-it>
 					</div>
 				</div>

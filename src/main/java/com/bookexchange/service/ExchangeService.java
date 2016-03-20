@@ -48,11 +48,11 @@ public class ExchangeService {
         DirectBookExchange exchangeToRecord = buildBookExchange(bookUnderOffer,exchangeInitiator);
 
         bookExchangeDao.saveBookExchange(exchangeToRecord);
-        addNewExchangeRequestNotification(bookUnderOffer.getPostedBy(),exchangeInitiator.getEmail());
+        addNewExchangeRequestNotification(bookUnderOffer.getPostedBy(),exchangeInitiator.getFullName(),exchangeToRecord);
     }
 
-    private void addNewExchangeRequestNotification(User postedBy,String exchangeInitiator) {
-        Notification newExchangeRequestNotification = new Notification.NotificationBuilder().setMessage(newExchangeRequestMessage+" "+exchangeInitiator).setUserNotified(postedBy).setDateCreated(LocalDateTime.now()).build();
+    private void addNewExchangeRequestNotification(User postedBy,String exchangeInitiator,DirectBookExchange exchangeToRecord) {
+        DirectExchangeInvitationNotification newExchangeRequestNotification = new DirectExchangeInvitationNotification.DirectExchangeNotificationBuilder().setNotificationType(NotificationType.DIRECT_EXCHANGE_INVITATION).setMessage(newExchangeRequestMessage+" "+exchangeInitiator).setUserNotified(postedBy).setDateCreated(LocalDateTime.now()).setDirectBookExchange(exchangeToRecord).build();
 
         notificationsDao.saveNotification(newExchangeRequestNotification);
     }

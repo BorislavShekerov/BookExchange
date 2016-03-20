@@ -6,7 +6,7 @@
 	</div>
 	<div class="modal-body">
 		<div class="row">
-			<div class="col-md-10 col-md-offset-1">
+			<div class="col-xs-12 col-md-10 col-md-offset-1">
 				<form name="addBookForm" class="form-horizontal" role="form" ng-submit="submitForm(addBookForm.$valid)" novalidate>
 					<fieldset>
 						<!-- Text input-->
@@ -32,9 +32,9 @@
 
 
 						<!-- Text input-->
-						<div class="col-sm-10 col-sm-offset-1 separate-bottom" id="categorySelector">
-							<h4>Pick Book Category</h4>
-							<div>
+						<div class="col-xs-12 col-sm-10 col-sm-offset-1 separate-bottom" id="categorySelector">
+							<h4 class="text-center">Pick Book Category</h4>
+							<div class="row">
 								<a ng-class="{'category-button-activated' :category.selected}"class="ghost-button offers-received-button" ng-click="addCategory(category)" ng-repeat="category in allCategories">{{category.categoryName}}</a>
 							</div>
 							<p ng-show="formSubmitted && !categorySelected" class="help-block">Book Category is required.</p>
@@ -42,10 +42,10 @@
 
 
 						<!-- Text input-->
-						<div class="col-sm-10 col-sm-offset-1 separate-bottom">
+						<div class="col-xs-12 col-sm-10 col-sm-offset-1 separate-bottom">
 							<label class="col-sm-3 control-label" for="textinput">Cover Image</label>
 
-							<div class="col-sm-9" ng-class="{'col-sm-offset-2':showBookCoverImage}">
+							<div class="col-xs-12 col-sm-9" ng-class="{'col-sm-offset-2':showBookCoverImage}">
 								<input ng-model="imgUrl" id="avatarUploadInput" name="picture" role="uploadcare-uploader" data-image-shrink="1024x1024" />
 								<p ng-show="formSubmitted && !bookCoverImgSelected" class="help-block">Please upload a book cover image</p>
 							</div>

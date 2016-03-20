@@ -1,6 +1,6 @@
-bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', '$uibModalInstance', 'eventRecordService','$rootScope', function ($scope, $http, $location, dataService, exchangeService, $uibModalInstance, eventRecordService, $rootScope) {
+bookApp.controller('exchangeOfferController', ['$scope', '$http', '$location', 'dataService', 'exchangeService', '$uibModalInstance', 'eventRecordService','$rootScope','bookToExchangeFor', function ($scope, $http, $location, dataService, exchangeService, $uibModalInstance, eventRecordService, $rootScope, bookToExchangeFor) {
 	$scope.userDetails = dataService.getUserData();
-	$scope.bookToExchangeFor = exchangeService.getBookToExchangeFor();
+	$scope.bookToExchangeFor = bookToExchangeFor;
 	$scope.selectedBook = 'Select Book';
 	$scope.exchangeOptionExists = false;
 	$scope.exchangeOptionPath = [];

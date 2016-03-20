@@ -48,8 +48,6 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersForUserRole", cascade = {javax.persistence.CascadeType.PERSIST})
     @JsonIgnore
     private Set<UserRole> userRole = new HashSet<>();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userNotified", cascade = {javax.persistence.CascadeType.PERSIST})
-    private Set<Notification> userNotifications = new HashSet<>();
     @Column(name = "LOGIN_COUNT")
     private int  loginCount;
     @Column(name = "VIP_TOKENS")
@@ -157,17 +155,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void addNotification(Notification newNotification){
-        userNotifications.add(newNotification);
-    }
-    public Set<Notification> getUserNotifications() {
-        return userNotifications;
-    }
-
-    public void setUserNotifications(Set<Notification> userNotifications) {
-        this.userNotifications = userNotifications;
-    }
-
     public int getVipTokens() {
         return vipTokens;
     }
@@ -273,11 +260,6 @@ public class User {
 
         public UserBuilder setUserRole(Set<UserRole> userRole) {
             user.setUserRole(userRole);
-            return this;
-        }
-
-        public UserBuilder setUserNotifications(Set<Notification> userNotifications) {
-            user.setUserNotifications(userNotifications);
             return this;
         }
 

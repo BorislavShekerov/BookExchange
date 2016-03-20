@@ -23,3 +23,17 @@
      background-color: #5383d3;
                        color: #fff;
 }
+
+@media screen and (max-width: 768px) {
+    #categorySelector > div > a{
+        margin-left: -2.0em;
+    }
+
+    .submit-button{
+        margin-top:1.0em;
+    }
+
+    #bookAddModal .modal-header > button,#shortlist-creation-modal .modal-header > button{
+        margin-top:-0.2em;
+    }
+}

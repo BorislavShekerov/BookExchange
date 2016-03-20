@@ -28,11 +28,14 @@ bookApp.config(function ($routeProvider) {
     })
 
     // route for the contact page
-    .when('/account', {
+    .when('/account/:userEmail', {
         templateUrl: '/account',
         controller: 'AccountController'
     })
-
+        .when('/account', {
+              templateUrl: '/account',
+              controller: 'AccountController'
+          })
       .when('/offerExchange', {
             templateUrl: '/offerExchange',
             controller: 'exchangeOfferController'

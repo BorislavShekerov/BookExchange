@@ -61,6 +61,14 @@
     right: 25px;
     top: 0.5em;
 }
+
+@media screen and (max-width: 768px) {
+    .media-date{
+     right: 15px;
+      top:1.0em;
+    }
+}
+
 .media span.glyphicon-resize-horizontal{
     font-size: 3.0em;
     margin-top: 3.0em;
@@ -158,10 +166,9 @@ input[type="file"]{
 
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css);
 
-#usersInChainList > li > a { position: relative; }
-#usersInChainList > li > a:hover,
-#usersInChainList > li > a:focus { background-color: transparent; }
-#usersInChainList > li > a > .quote {
+#usersInChainList > div > a:hover,
+#usersInChainList > div > a:focus { background-color: transparent; }
+#usersInChainList > div > a > .quote {
     position: absolute;
     left: 0px;
     top: 0;
@@ -173,9 +180,9 @@ input[type="file"]{
     border-radius: 15px;
     color: #fff;
 }
-#usersInChainList > li.active > a > .quote { opacity: 1; }
-#usersInChainList > li > a > img { box-shadow: 0 0 0 5px #337ab7; }
-#usersInChainList > li > a > img {
+#usersInChainList > div.active > a > .quote { opacity: 1; }
+#usersInChainList > div > a > img { box-shadow: 0 0 0 5px #337ab7; }
+#usersInChainList > div > a > img {
     max-width: 100%;
     opacity: .3;
     -webkit-transform: scale(.8,.8);
@@ -183,9 +190,32 @@ input[type="file"]{
     -webkit-transition: all 0.3s 0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transition: all 0.3s 0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#usersInChainList > li.active > a > img,
-#usersInChainList > li:hover > a > img,
-#usersInChainList > li:focus > a > img {
+
+ @media screen and (max-width: 767px) {
+    #usersInChainList > div > a > img {
+         opacity: 1;
+    }
+
+    #usersInChainList > div > h4 {
+        padding-bottom:0px;
+         margin-bottom:0px;
+         padding-top:0px;
+                  margin-top:0px;
+    }
+
+    #usersInChainList > div {
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+
+    #usersInChainList > div > a > img {
+        max-height:125px;
+    }
+ }
+
+#usersInChainList > div.active > a > img,
+#usersInChainList > div:hover > a > img,
+#usersInChainList > div:focus > a > img {
     opacity: 1;
     -webkit-transform: none;
             transform: none;
@@ -246,8 +276,31 @@ input[type="file"]{
 .chain-creator-wrapper{
     border:2px solid #e3e3e3;
     border-radius:6px;
+    margin-top:0.5em;
     background-color: #f5f5f5;
 }
+  @media screen and (max-width: 767px) {
+    .chain-creator-wrapper > h4{
+        font-size: 0.65em;
+        font-weight:bold;
+    }
+
+    .chain-creator-wrapper > img{
+        max-width:50%;
+        min-width:50%;
+        height:100px;
+        display: inline-block;
+    }
+  }
+
+.chain-creator-wrapper > img{
+        max-width:100%;
+        min-width:50%;
+        min-height:150px;
+         max-height:150px;
+        display: inline-block;
+    }
+
 .well-lg{
 
     padding-bottom:24px;
@@ -321,6 +374,12 @@ input[type="file"]{
         .align-center{
         horizontal-align:middle;
         }
+
+         #main-content #directRequest img{
+                    width:100%;
+                    min-width:100%;
+                    height:160px;
+                }
      @media screen and (max-width: 767px) {
         .rating-holder{
             text-align:center;
@@ -356,4 +415,6 @@ input[type="file"]{
         .well > div > h4{
             font-size:0.9em;
         }
+
+
      }

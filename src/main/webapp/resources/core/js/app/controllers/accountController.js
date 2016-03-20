@@ -1,8 +1,33 @@
-bookApp.controller('AccountController', ['$scope', 'dataService','bookService','$uibModal','ngToast','categoryService','eventRecordService', function ($scope, dataService, bookService, $uibModal, ngToast, categoryService,eventRecordService) {
-	$scope.userAccount = dataService.getUserData();
+bookApp.controller('AccountController', ['$scope', 'dataService','bookService','$uibModal','ngToast','categoryService','eventRecordService','$routeParams', function ($scope, dataService, bookService, $uibModal, ngToast, categoryService,eventRecordService,$routeParams) {
+
+    $scope.loading = true;
+    $scope.isEditable = false;
+    var currentUser =  dataService.getUserData();
+    if($routeParams.userEmail){
+        if(currentUser.email != $routeParams.userEmail){
+         dataService.getDetailsForUser($routeParams.userEmail).then(function(userDetails){
+                    $scope.loading = false;
+                    $scope.userAccount =userDetails;
+                    $scope.isEditable = false;
+             eventRecordService.setSelectedItem("");
+                },function (error){
+                });
+        }else{
+              $scope.loading = false;
+                    $scope.isEditable = true;
+                    $scope.userAccount = currentUser;
+                      eventRecordService.setSelectedItem("Account");
+        }
+    }else{
+        $scope.loading = false;
+        $scope.isEditable = true;
+        $scope.userAccount = currentUser;
+        eventRecordService.setSelectedItem("Account");
+    }
+
     $scope.librarySelected = true;
     $scope.commentsSelected = false;
-    eventRecordService.setSelectedItem("Account");
+
 
     $scope.libraryTabSelected = function(){
         if(!$scope.librarySelected){
@@ -38,6 +63,29 @@ bookApp.controller('AccountController', ['$scope', 'dataService','bookService','
         console.log(err);});
     }
 
+    $scope.openExchangeModal = function(book){
+        var promptWindow = $uibModal.open({
+                				animation: true,
+                				templateUrl: '/offerExchange',
+                				controller: 'exchangeOfferController',
+                				resolve: {
+                                           						bookToExchangeFor: bookInterestedIn
+                                           					}
+                			});
+
+                		          promptWindow.result.then(function (result) {
+                		                if(result.exchangeCreated){
+                		                     ngToast.create({
+                                                                                                                       							className: 'success',
+                                                                                                                       							content: '<a href="#" class="">Exchange created successfully!</a>',
+                                                                                                                       							timeout: 2000,
+                                                                                                                       							animation: 'slide'
+                                                                                                                       						});
+
+                                                                            			}}, function () {
+                                                                            				$log.info('Modal dismissed at: ' + new Date());
+                                                                            			});
+    }
 
      function  raiseBookRequestedByUserWarning(){
       ngToast.create({

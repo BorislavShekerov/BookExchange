@@ -6,9 +6,9 @@
 	<div class="row">
 		<div ng-repeat="exchangeRequest in userRequestsReceived" class="media">
 			<div class="row" ng-if="exchangeRequest.isChain">
-			    <div class="col-xs-10 col-xs-offset-1 col-md-3 col-md-offset-0 text-center">
-			    <div class="chain-creator-wrapper " href="#">
-                						<h3 class="text-center"> Chain Creator </h3>
+			    <div class="col-xs-8 col-xs-offset-2 col-md-3 col-md-offset-0 text-center">
+			    <div class="chain-creator-wrapper text-center" href="#">
+                						<h4 class="text-center"> Chain Creator </h4>
                 						<img class="media-object img-responsive" ng-src="{{exchangeRequest.exchangeInitiator.avatarUrl}}" alt="profile">
                 						<h4 class="text-center"> {{exchangeRequest.exchangeInitiator.fullName}} </h4>
                 					</div>
@@ -65,13 +65,13 @@
 				</div>
 
 			</div>
-			<div class="row" ng-if="!exchangeRequest.isChain">
-				<div cass="col-xs-12" ng-class="{'col-md-8': exchangeRequest.over && exchangeRequest.successful ,'space-out-top':exchangeRequest.over && exchangeRequest.successful, 'col-md-12': !exchangeRequest.over || !exchangeRequest.successful}">
-					<div ng-class="{'text-center' : isUserMobile ,'pull-left': !isUserMobile ,'pagination-centered':isUserMobile}">
-					<a>
-						<img ng-class="{'text-center' : isUserMobile ,'pull-left': !isUserMobile ,'align-center': isUserMobile,'display-inline': isUserMobile}" class="media-object" src="{{exchangeRequest.bookRequested.imgUrl}}" alt="profile">
-					</a>
-					</div>
+			<div class="row" id="directRequest" ng-if="!exchangeRequest.isChain">
+				<div ng-class="{'col-md-8': exchangeRequest.over && exchangeRequest.successful ,'space-out-top':exchangeRequest.over && exchangeRequest.successful, 'col-md-12': !exchangeRequest.over || !exchangeRequest.successful}">
+					<div ng-class="{'text-center' : isUserMobile  ,'pagination-centered':isUserMobile,'col-xs-2':!isUserMobile,'col-xs-6 col-xs-offset-3':isUserMobile}">
+
+						<img class="media-object" src="{{exchangeRequest.bookRequested.imgUrl}}" alt="profile">
+
+					</div  class="col-xs-10">
 					<div class="media-body">
 						<div class="well well-lg">
 							<div ng-if="exchangeRequest.over">
@@ -123,7 +123,8 @@
 				</div>
 
 			</div>
-			<hr/>
+
 		</div>
+		<hr/>
 	</div>
 </div>

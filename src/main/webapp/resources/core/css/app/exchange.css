@@ -1,5 +1,10 @@
 
+  @media screen and (max-width: 320px) {
+    .modal-title{
+        font-size:1.3em;
 
+    }
+}
 #custom-search-input {
         margin:0;
         margin-top: 10px;
@@ -123,7 +128,13 @@
 
     #userPostedDetails #details{
         vertical-align:middle;
-        margin-top:2.0em;
+        margin-top:3.0em;
+        padding-right:0px;
+        padding-left:0px;
+    }
+
+    #userPostedDetails #details > a{
+        display:block;
     }
     .search-query:focus + button {
         z-index: 3;
@@ -161,6 +172,7 @@
 
     .full-width {
         max-width: 100%;
+        min-width: 100%;
     }
 
     .margin-right-small {
@@ -429,25 +441,56 @@ display:inline;
             }
 
 
-            @media screen and (max-width: 767px) {
-                        .book-owner-details > #avatarHolder{
-                            margin-bottom: -5.7em !important;
-                        }
+       @media screen and (min-width:375px) and (max-width: 767px) {
+                                    .book-owner-details > #avatarHolder{
+                                        margin-bottom: -6.7em !important;
+                                    }
 
-                        .book-owner-details > #avatarHolder >img{
-                            max-height:55px;
-                        }
-                          .book-owner-details > #details{
-                          margin-left:5.0em;
-                          margin-bottom: 1.0em;
-                          }
+                                    .book-owner-details > #avatarHolder >img{
+                                        max-height:55px;
+                                    }
+                                      .book-owner-details > #details{
+                                      margin-left:5.0em;
+                                      margin-bottom: 1.0em;
+                                      }
 
-                          #offers-made > .media > div > a > img{
-                            display:inline !important;
-                          }
+                                      #offers-made > .media > div > a > img{
+                                        display:inline !important;
+                                      }
 
-                          .modal-title > span {
-                            opacity:0.6;
-                          }
+                                      .modal-title > span {
+                                        opacity:0.6;
+                                      }
 
-            		}
+                        		}
+
+                        		 @media screen and (min-width:320px) and (max-width: 374px) {
+                        		      .book-owner-details > #avatarHolder{
+                                                                margin-bottom: -6.35em !important;
+                                                            }
+
+                                                            #avatarHolder >img{
+                                                                max-height:50px;
+                                                                 min-height:50px;
+                                                            }
+                                                              .book-owner-details > #details{
+                                                              margin-left:5.0em;
+                                                              margin-bottom: 1.0em;
+                                                              }
+
+                                                                .book-owner-details-wrap{
+                                                                    max-height:50px;
+                                                                    min-height:50px;
+                                                                }
+
+                                                                #userPostedDetails  a{
+                                                                    font-size: 0.9em;
+                                                                }
+                                                              #offers-made > .media > div > a > img{
+                                                                display:inline !important;
+                                                              }
+
+                                                              .modal-title > span {
+                                                                opacity:0.6;
+                                                              }
+                        		 }

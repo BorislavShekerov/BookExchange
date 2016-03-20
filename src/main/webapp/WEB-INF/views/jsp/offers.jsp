@@ -18,7 +18,7 @@
 					<h4 ng-show="exchangeCreated.canceled || !exchangeCreated.bookOfferedInExchange" class="rejected-exchange">Exchange Canceled <span class="glyphicon glyphicon-remove"></span></h4>
 				</div>
 				<div class="body-content">
-					<h4 class="media-heading text-uppercase reviews">{{"Requested from : "+ exchangeCreated.bookRequested.ownerFirstname + " " + exchangeCreated.bookRequested.ownerLastname}}</h4>
+					<h4 class="media-heading text-uppercase reviews">Requested from: <span ng-if="isUserMobile"><br /> </span>{{ exchangeCreated.bookRequested.ownerFirstname + " " + exchangeCreated.bookRequested.ownerLastname}}</h4>
 					<div class="pagination-centered text-center" ng-if="ratingLoading"><img src="../resources/core/img/ajax-loader.gif" id="loading-indicator" /> </div>
 					<div class="rating-holder"  ng-if="!ratingLoading && (exchangeCreated.over && exchangeCreated.successful)">
 						<p class="media-heading text-uppercase reviews" ng-if="!exchangeCreated.rated">{{"Rate "+ exchangeCreated.bookRequested.ownerFirstname}}
@@ -57,22 +57,19 @@
                     </div>
 					<div id="collapsedChainDetails" uib-collapse="exchangeCreated.isCollapsed">
 						<div class="well well-lg">
-							<div class="row">
-								<div class="col-md-6 col-md-offset-3">
-									<uib-progressbar max="100" value="0"><span style="color:black; white-space:nowrap;">Chain Progress {{exchangeCreated.progress}}%</span></uib-progressbar>
-								</div>
-							</div>
-							<ul id="usersInChainList" class="nav nav-justified" id="nav-tabs" role="tablist">
-								<li ng-repeat="exchangeChainRequest in exchangeCreated.exchangeChainRequests" role="presentation" ng-class="{'active':exchangeChainRequest.accepted}">
-									<h3 class="text-center">{{exchangeChainRequest.requestFor.fullName}}</h3>
+						    <div class="row"  id="usersInChainList">
+						        <div ng-repeat="exchangeChainRequest in exchangeCreated.exchangeChainRequests" class="col-xs-12 col-md-4 text-center" >
+
+									<h4 class="text-center">{{exchangeChainRequest.requestFor.fullName}}</h4>
 									<a href="#dustin" aria-controls="dustin" role="tab" data-toggle="tab" ng-class="{'opacity-max':exchangeChainRequest.answered}">
 										<img class="img-circle" src="{{exchangeChainRequest.requestFor.avatarUrl}}" />
 									</a>
-									<h3 class="text-center" ng-if="!exchangeChainRequest.answered">Not Answered <span class="glyphicon glyphicon-eye-close"></span></h3>
-									<h3 class="text-center" ng-if="exchangeChainRequest.answered && !exchangeChainRequest.accepted">Rejected <span class="glyphicon glyphicon-remove"></span></h3>
-									<h3 class="text-center" ng-if="exchangeChainRequest.answered && exchangeChainRequest.accepted">Accepted <span class="glyphicon glyphicon-ok"></span></h3>
-								</li>
-							</ul>
+									<h4 class="text-center" ng-if="!exchangeChainRequest.answered">Not Answered <span class="glyphicon glyphicon-eye-close"></span></h4>
+									<h4 class="text-center" ng-if="exchangeChainRequest.answered && !exchangeChainRequest.accepted">Rejected <span class="glyphicon glyphicon-remove"></span></h4>
+									<h4 class="text-center" ng-if="exchangeChainRequest.answered && exchangeChainRequest.accepted">Accepted <span class="glyphicon glyphicon-ok"></span></h4>
+
+							 </div>
+							</div>
 						</div>
 					</div>
 				</div>

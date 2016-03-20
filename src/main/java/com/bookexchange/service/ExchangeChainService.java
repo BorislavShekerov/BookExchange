@@ -157,7 +157,7 @@ public class ExchangeChainService {
     private void addExchangeChainInvitationNotification(List<User> usersOnChain, BookExchangeChain exchangeChain) {
         User initiatorUser = usersOnChain.get(0);
         for (int i = 1; i < usersOnChain.size(); i++) {
-            Notification exchangeChainRequestNotification = new Notification.NotificationBuilder().setMessage(initiatorUser.getFullName() + "(" + exchangeChain.getId() + ") " + newExchangeChainRequestMessage).setUserNotified(usersOnChain.get(i)).setDateCreated(LocalDateTime.now()).setNotificationType(NotificationType.EXCHANGE_CHAIN_INVITATION).build();
+            ExchangeChainInvitationNotification exchangeChainRequestNotification = new ExchangeChainInvitationNotification.ExchangeChainNotificationBuilder().setMessage(initiatorUser.getFullName() + " " + newExchangeChainRequestMessage).setUserNotified(usersOnChain.get(i)).setDateCreated(LocalDateTime.now()).setNotificationType(NotificationType.EXCHANGE_CHAIN_INVITATION).setBookExchangeChain(exchangeChain).build();
             notificationsDao.saveNotification(exchangeChainRequestNotification);
         }
     }

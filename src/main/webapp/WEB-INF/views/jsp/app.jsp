@@ -65,10 +65,10 @@
 					<a class="navbar-brand" href="#"><img src="../resources/core/img/logo.png"></a>
 
 				</div>
-            <div id="navbar"  ng-controller="notificationsController" class="navbar-collapse collapse" >
+            <div id="navbar"  ng-controller="notificationsController" class="" >
                 <div ng-if="!isUserMobile">
             					<ul class="nav navbar-nav">
-            						<li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
+            						<li class="active"><a href="#/"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
             					</ul>
             					<form class="navbar-form navbar-left" role="search" ng-controller="NavBarSearchController">
             						<div class="form-group" ng-show="searchBarVisible">
@@ -135,8 +135,10 @@
 
 
             									<div ng-class="{'cursor-pointer': notification.notificationType == 'EXCHANGE_CHAIN_INVITATION'}" class="notification-item" ng-click="notificationClicked(notification)">
-            										<p class="item-info">{{notification.message}}</p>
+            									    <p ng-if="notification.notificationType == 'EXCHANGE_CHAIN_INVITATION' || notification.notificationType == 'DIRECT_EXCHANGE_INVITATION'" ng-click="notificationClicked(notification)" class="item-info">{{notification.message}}</p>
+            										<a ng-if="notification.notificationType != 'RATE_EXCHANGE_RATING' && notification.notificationType != 'EXCHANGE_CHAIN_INVITATION' && notification.notificationType != 'DIRECT_EXCHANGE_INVITATION'" href="{{notification.url}}" class="item-info">{{notification.message}}</a>
             										<div class="row" ng-if="notification.notificationType == 'RATE_EXCHANGE_RATING' && !notification.rated" id="ratingNotificationContainer">
+            										    <p class="item-info">{{notification.message}}</p>
             											<ng-rate-it ng-model="notification.rating" ng-click="userRatingSet(notification)"></ng-rate-it>
             											<textarea class="form-control" type="textarea" ng-model="notification.ratingComment" placeholder="Write Comment Here" maxlength="140" rows="7"></textarea>
             											<a class="ghost-button  offers-received-button text-uppercase" ng-if="notification.showRateButton" ng-click="rateUser(notification)"><span class="glyphicon glyphicon-comment"></span> Rate</a>
@@ -228,8 +230,6 @@
 		<script src="../resources/core/js/app/services/categoryService.js "></script>
 		<script src="../resources/core/js/app/services/ratingService.js "></script>
 		<script src="../resources/core/js/app/services/searchService.js "></script>
-
-		<script type='text/javascript' src='../resources/core/js/app/eventRecordService.js'></script>
 
 
 

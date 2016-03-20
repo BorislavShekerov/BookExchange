@@ -120,7 +120,7 @@ body {
 /* Paralax Styles */
 
 .home {
-    background: url(/resources/core/img/reading-2.jpg) no-repeat center center fixed;
+    background: url(/resources/core/img/reading-2-minified.jpg);
     display: table;
     height: 100%;
     position: relative;
@@ -131,6 +131,12 @@ body {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+}
+
+@media only screen and  (max-width:374px){
+    .home{
+        min-height:760px;
+    }
 }
 
 #scrollButtonHolder{
@@ -299,20 +305,135 @@ a:active {
          color:white !important;
     }
 
-@media only screen and(min-width:320px) and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
    #scrollButtonHolder{
         left:40%;
    }
 
+   #scrollButtonHolder{
+        left:42%;
+   }
    #login-dp .bottom > span{
        color:black;
    }
 
+   #navbar{
+        overflow:hidden;
+   }
+
+   .footer-distributed{
+        padding:25px 20px;
+   }
+
+   .footer-right{
+        margin-bottom:0px;
+   }
+
 }
+.margin-top-sm{
+    margin-top:2.0em !important;
+}
+.navbar-right {
+    margin-right:0px;
+}
+
+@media screen and (min-width:320px) and (max-width: 767px) {
+	   #outer-box img {
+	    max-height:350px !important;
+	    min-height:350px !important;
+	   }
+	   }
+
+	   @media screen and (max-width:320px){
+	    #outer-box img {
+        	    max-height:300px !important;
+        	    min-height:300px !important;
+        	   }
+	   }
 
 
 @media only screen and (max-width:320px){
      .navbar-header > button {
         margin-right: 4.0em;
        }
+
+        #scrollButtonHolder{
+                left:42%;
+           }
+
+           #navbar{
+                   overflow:hidden;
+              }
+
+              .footer-distributed{
+                      padding:25px 20px;
+                 }
+
+                 .footer-right{
+                         margin-bottom:0px;
+                    }
+
 }
+
+
+       @media screen and (min-width:375px) and (max-width: 767px) {
+                                    .book-owner-details > #avatarHolder{
+                                        margin-bottom: -4.9em !important;
+                                    }
+
+                                    .book-owner-details > #avatarHolder >img{
+                                        max-height:55px;
+                                    }
+                                      .book-owner-details > #details{
+                                      margin-left:5.0em;
+                                      margin-bottom: 1.0em;
+                                      }
+
+                                      #offers-made > .media > div > a > img{
+                                        display:inline !important;
+                                      }
+
+                                      .modal-title > span {
+                                        opacity:0.6;
+                                      }
+
+                                      .nav>li{
+                                        margin-left:1.0em;
+                                      }
+
+                        		}
+
+                        		 @media screen and (min-width:320px) and (max-width: 374px) {
+                        		      .book-owner-details > #avatarHolder{
+                                                                margin-bottom: -4.9em !important;
+                                                            }
+
+                                                            #avatarHolder >img{
+                                                                max-height:50px;
+                                                                 min-height:50px;
+                                                            }
+                                                              .book-owner-details > #details{
+                                                              margin-left:5.0em;
+                                                              margin-bottom: 1.0em;
+                                                              }
+
+                                                                .book-owner-details-wrap{
+                                                                    max-height:50px;
+                                                                    min-height:50px;
+                                                                }
+
+                                                                #userPostedDetails  a{
+                                                                    font-size: 0.9em;
+                                                                }
+                                                              #offers-made > .media > div > a > img{
+                                                                display:inline !important;
+                                                              }
+
+                                                              .modal-title > span {
+                                                                opacity:0.6;
+                                                              }
+
+                                                               .nav>li{
+                                                                                                      margin-right:2.0em;
+                                                                                                    }
+                        		 }

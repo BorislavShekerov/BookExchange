@@ -1,4 +1,5 @@
-bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', '$interval','$rootScope', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService, $interval,$rootScope) {
+bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','bookService', 'exchangeService', '$http', '$uibModal', 'ngToast', '$document', '$window','searchService', '$interval','$rootScope','eventRecordService', function ($scope, $location, dataService, bookService, exchangeService, $http, $uibModal, ngToast, $document, $window, searchService, $interval,$rootScope, eventRecordService) {
+    eventRecordService.setSelectedItem("Exchange");
 	dataService.setEmail(email);
     $rootScope.shouldSlideMenuIn = false;
 
@@ -43,7 +44,9 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
         bookOnExchange.hoveredOver = true;
     }
 
-
+    $scope.changeFilterState = function(){
+        $scope.filterExpanded = !$scope.filterExpanded;
+    }
 	function init() {
 
 		var allBooksPromise = bookService.getAllBooks();
@@ -90,20 +93,14 @@ bookApp.controller('exchangeController', ['$scope', '$location', 'dataService','
 		alert("Error");
 	});
 
-	$scope.initiateExchange = function (title, ownedBy) {
-		angular.forEach($scope.booksDisplayed, function (value, index) {
-			if (value.title == title && value.ownerEmail == ownedBy) {
-				exchangeService.setBookToExchangeFor(value);
-				openExchangeModal();
-			}
-		});
-	}
-
-	function openExchangeModal(){
+	$scope.openExchangeModal = function(bookInterestedIn){
 	    	var promptWindow = $uibModal.open({
         				animation: true,
         				templateUrl: '/offerExchange',
-        				controller: 'exchangeOfferController'
+        				controller: 'exchangeOfferController',
+        				resolve: {
+                                   						bookToExchangeFor: bookInterestedIn
+                                   					}
         			});
 
         		          promptWindow.result.then(function (result) {

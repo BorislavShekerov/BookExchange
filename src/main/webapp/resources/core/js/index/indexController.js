@@ -292,9 +292,13 @@ bookApp.controller('indexController', ['$scope', 'categoryService', '$document',
 		var someElement = angular.element(document.getElementById('custom-search-input'));
 		$scope.hideVerticalScroll = false;
 		$scope.showBouncingScrollArrow = false;
-		$document.scrollToElementAnimated(someElement, 60).then(function () {
+		$document.scrollToElementAnimated(someElement, 60 , 700).then(function () {
 			console && console.log('You just scrolled to the top!');
 		});
+	}
+
+	$scope.filterButtonClicked = function(){
+	    $scope.filterExpanded =! $scope.filterExpanded;
 	}
 
 }]);

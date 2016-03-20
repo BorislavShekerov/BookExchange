@@ -35,7 +35,7 @@
 		<!-- Fixed navbar -->
 
 		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container">
+
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 						<span class="sr-only">Toggle navigation</span>
@@ -46,7 +46,7 @@
 					<a class="navbar-brand" href="#"><img src="resources/core/img/logo.png"></a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav">
+					<ul ng-if="!isUserMobile" class="nav navbar-nav">
 						<li class="active"><a href="#"><span class="glyphicon glyphicon-home margin-right-small"></span>Home</a></li>
 					</ul>
 					<form class="navbar-form navbar-left" role="search" class="ng-cloak" ng-show="shouldFixCategoriesFilter">
@@ -58,7 +58,7 @@
 
 						<!-- Login Drop Down -->
 						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+							<a ng-class="{'text-center': isUserMobile}" href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
 							<ul id="login-dp" class="dropdown-menu">
 								<li>
 									<div class="row">
@@ -97,7 +97,7 @@
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
-			</div>
+
 		</nav>
 
 		<div id="home" class="home">
@@ -133,7 +133,7 @@
 					</form>
 				</div>
 				<div class="col-md-2" ng-if="!isUserMobile">
-					<a id="filterButton" class="ghost-button filter-button" ng-click="filterExpanded =! filterExpanded" ng-class="{'filter-button-clicked': filterExpanded}"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</a>
+					<a id="filterButton" class="ghost-button filter-button" ng-click="filterButtonClicked()" ng-class="{'filter-button-clicked': filterExpanded}"><span class="glyphicon" ng-class="{'glyphicon-chevron-down':!filterExpanded,'glyphicon-chevron-up':filterExpanded}"></span>Filter</a>
 				</div>
 			</div>
 
@@ -157,9 +157,9 @@
 						<div ng-cloak id="book-details-wrap" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.mouseEntered ,'fadeIn': bookOnExchange.hoveredOver}" class="book-owner-details-wrap">
 						</div>
 						<div id="userPostedDetails" ng-if="bookOnExchange.hoveredOver" ng-class="{'animated': bookOnExchange.hoveredOver ,'fadeIn': bookOnExchange.hoveredOver}" class="row book-owner-details">
-							<div class="col-md-4">
+							<div class="col-md-4" id="avatarHolder">
 								<img class="img-responsive" src="{{bookOnExchange.ownerAvatar}}" /> </div>
-							<div class="col-md-7">
+							<div class="col-md-7 margin-top-sm" id="details">
 								<a>{{bookOnExchange.ownerFirstname + " " + bookOnExchange.ownerLastname}}</a>
 							</div>
 						</div>
@@ -187,6 +187,7 @@
 
 		</div>
 		<footer class="footer-distributed">
+		    <div ng-if="!isUserMobile">
 			<div class="footer-left">
 				<img src="resources/core/img/logo.png">
 				<p class="footer-company-name">WeSwap &copy; 2015</p>
@@ -204,6 +205,7 @@
 					<i class="fa fa-envelope"></i>
 					<p><a href="mailto:support@company.com">support@bookexchange.com</a></p>
 				</div>
+			</div>
 			</div>
 			<div class="footer-right">
 				<p class="footer-company-about">
